@@ -138,7 +138,7 @@ const niconico = async (liveId: string) => {
   async function onMessage_comment(evt: WebSocket.MessageEvent) {
     if (typeof evt.data === "string") {
       //コメント部分のみを抽出
-      const comment = JSON.parse(evt.data).chat?.content;
+      const comment = JSON.parse(evt.data).chat;
       //コメントを出力
       if (comment) {
         console.log(comment);
