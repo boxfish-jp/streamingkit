@@ -3,7 +3,6 @@ import cheerio from "cheerio";
 
 const getWss = async (liveId: string) => {
   const url = "https://live2.nicovideo.jp/watch/" + liveId;
-  console.log(url);
   const streamPage = await fetcher(url);
   const $ = cheerio.load(streamPage);
   const embeddedData = $("#embedded-data").attr("data-props");
