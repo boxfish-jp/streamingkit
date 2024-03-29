@@ -141,7 +141,8 @@ const niconico = async (liveId: string) => {
       const comment = JSON.parse(evt.data).chat;
       //コメントを出力
       if (comment) {
-        console.log(comment);
+        const sendData = JSON.stringify(comment);
+        console.log(sendData, ",");
       }
     }
 

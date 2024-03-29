@@ -10,7 +10,7 @@ const twitch = async (channelId: string) => {
   client.on("message", (channel, tags, message, self) => {
     if (self) return;
 
-    console.log(`${tags["display-name"]}: ${message}`);
+    console.log(`user:${tags["display-name"]} content:${message}`);
   });
 };
 
