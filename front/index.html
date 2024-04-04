@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div id="main"></div>
+    <script src="change.js"></script>
+    <script>
+      async function editHtml(com) {
+        clearInterval(intervalid);
+        var mainDiv = document.getElementById("main");
+        mainDiv.innerHTML =
+          '<video id="frame" height="450" autoplay src=""></video>';
+        document.getElementById("frame").src = "../video/" + command + ".mp4";
+
+        document.getElementById("frame").addEventListener("ended", function () {
+          window.location.reload();
+        });
+      }
+
+      // JavaScriptの決まり文句
+      intervalid = setInterval(async () => {
+        switch (command) {
+          case "":
+            window.location.reload();
+            break;
+          default:
+            await editHtml(command);
+            break;
+        }
+      }, 500);
+      function _switch(command) {}
+    </script>
+  </body>
+</html>
