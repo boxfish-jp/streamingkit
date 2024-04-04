@@ -1,11 +1,12 @@
 import videoCommands from "../lib/videoCommands";
+import writeCommand from "./writeCommand";
 
 const main = async (comment: string) => {
   if (comment != "" || comment != undefined) {
     const commands = await videoCommands();
     for (let command of commands) {
       if (comment.indexOf(command) !== -1) {
-        console.log("command: " + command);
+        await writeCommand(command);
         return;
       }
     }
@@ -13,16 +14,16 @@ const main = async (comment: string) => {
       const random = Math.floor(Math.random() * 100);
       console.log(random);
       if (random < 25) {
-        console.log("command: エクスプロージョン1");
+        await writeCommand("エクスプロージョン1");
         return;
       } else if (random >= 25 && random < 50) {
-        console.log("command: エクスプロージョン2");
+        await writeCommand("エクスプロージョン2");
         return;
       } else if (random >= 50 && random < 75) {
-        console.log("command: エクスプロージョン3");
+        await writeCommand("エクスプロージョン3");
         return;
       } else {
-        console.log("command: エクスプロージョン4");
+        await writeCommand("エクスプロージョン4");
         return;
       }
     }
