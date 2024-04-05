@@ -1,4 +1,4 @@
-import main from "./main";
+import command from "./command";
 
 process.stdin.setEncoding("utf8");
 
@@ -30,6 +30,6 @@ process.stdin.on("data", async (chunk: string) => {
     comment.push(chunk.split("content:")[1]);
   }
   for (let comme of comment) {
-    main(comme);
+    command(comme);
   }
 });
