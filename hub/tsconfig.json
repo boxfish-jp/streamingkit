@@ -10,5 +10,6 @@
     "esModuleInterop": true
   },
   "compileOnSave": true,
-  "include": ["src", "__tests__", "lib"]
+  "include": ["src", "__tests__", "lib"],
+  "exclude": ["node_modules"]
 }

@@ -1,5 +1,6 @@
 import videoCommands from "../lib/videoCommands";
-import writeCommand from "./writeCommand";
+import writeCommand from "../lib/writeCommand";
+import { eduRegist, eduRemove } from "../lib/education";
 
 const main = async (comment: string) => {
   if (comment != "" || comment != undefined) {
@@ -27,14 +28,19 @@ const main = async (comment: string) => {
         return;
       }
     }
-    if (comment.startsWith("/emotion")) {
-      comment = comment.replace("/emotion", "");
-    }
     if (comment.startsWith("教育:")) {
-      console.log("command: 教育");
+      const edu = comment.split(":");
+      if (edu.length !== 3) {
+        comment = "教育コマンドの形式が間違っています";
+      }
+      await eduRegist(edu[1], edu[2]);
     }
     if (comment.startsWith("忘却:")) {
-      console.log("command: 忘却");
+      const edu = comment.split(":");
+      if (edu.length !== 2) {
+        comment = "忘却コマンドの形式が間違っています";
+      }
+      await eduRemove(edu[1]);
     }
     if (comment.indexOf("https://") !== -1) {
       console.log("command: URL");
