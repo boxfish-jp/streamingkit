@@ -28,4 +28,14 @@ const eduRemove = async (word: string) => {
   writeFile(eduJson);
 };
 
-export { eduRegist, eduRemove };
+const filterComment = async (comment: string) => {
+  const eduData = readFile();
+  for (let key in eduData) {
+    if (comment.indexOf(key) !== -1) {
+      comment = comment.replace(new RegExp(key, "g"), eduData[key]);
+    }
+  }
+  return comment;
+};
+
+export { eduRegist, eduRemove, filterComment };

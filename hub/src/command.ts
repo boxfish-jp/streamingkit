@@ -1,6 +1,6 @@
 import videoCommands from "../lib/videoCommands";
 import writeCommand from "../lib/writeCommand";
-import { eduRegist, eduRemove } from "../lib/education";
+import { eduRegist, eduRemove, filterComment } from "../lib/education";
 import spotify from "../lib/spotify";
 
 const command = async (comment: string) => {
@@ -48,6 +48,7 @@ const command = async (comment: string) => {
     if (comment.indexOf("https://open.spotify.com/") !== -1) {
       return await spotify(comment);
     }
+    comment = await filterComment(comment);
     return comment;
   }
   return "";

@@ -30,6 +30,8 @@ process.stdin.on("data", async (chunk: string) => {
     comment.push(chunk.split("content:")[1]);
   }
   for (let comme of comment) {
-    command(comme);
+    comme = comme.replace("\n", "");
+    comme = await command(comme);
+    console.log(comme);
   }
 });
