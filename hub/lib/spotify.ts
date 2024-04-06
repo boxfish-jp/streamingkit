@@ -15,7 +15,7 @@ const spotify = async (url: string) => {
       result = await new Promise((resolve, reject) => {
         exec(
           `spt play -q -u spotify:track:${path[3]} -t`,
-          { cwd: "./lib" },
+          { cwd: "./hub/lib" },
           (err, stdout, stderr) => {
             if (err || (!stdout && !stderr)) {
               resolve("URLが正しくないかも");
@@ -27,7 +27,11 @@ const spotify = async (url: string) => {
     } catch (e) {
       result = "URLが正しくないかも";
     }
-    return result;
+    if (result != "URLが正しくないかも") {
+      return "キューに追加しました";
+    } else {
+      return result;
+    }
   } else {
     return "urlが正しくないよ";
   }
