@@ -8,7 +8,7 @@ import io
 
 def preventSleep():
     while True:
-        time.sleep(1000 * 60)
+        time.sleep(1000 * 15)
         watchPlay.preventSleep()
 
 
