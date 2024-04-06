@@ -34,7 +34,7 @@ process.stdin.on("data", async (chunk: string) => {
   } else {
     comment.push(chunk.split("content:")[1]);
   }
-  if (comment.length == 1) {
+  if (comment.length == 1 && !setuping) {
     let comme = comment[0];
     comme = comme.replace("\n", "");
     comme = await command(comme);
