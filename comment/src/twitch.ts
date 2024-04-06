@@ -10,7 +10,13 @@ const twitch = async (channelId: string) => {
   client.on("message", (channel, tags, message, self) => {
     if (self) return;
 
-    console.log(`user:${tags["display-name"]} content:${message}`);
+    console.log(
+      JSON.stringify({
+        user_id: tags["display-name"],
+        content: message,
+        no: -1,
+      }) + ","
+    );
   });
 };
 
