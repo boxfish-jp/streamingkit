@@ -1,6 +1,7 @@
 *node_modules
 *package-lock.json
 *yarn.lock
+*__pycache__
 /video
 /front/change.js
 /hub/education.json
