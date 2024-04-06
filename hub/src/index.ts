@@ -2,6 +2,11 @@ import command from "./command";
 
 process.stdin.setEncoding("utf8");
 
+let setuping = true;
+setTimeout(() => {
+  setuping = false;
+}, 5000);
+
 let nicoComeNum = 0;
 process.stdin.on("data", async (chunk: string) => {
   let comment = [];
@@ -29,7 +34,8 @@ process.stdin.on("data", async (chunk: string) => {
   } else {
     comment.push(chunk.split("content:")[1]);
   }
-  for (let comme of comment) {
+  if (comment.length == 1) {
+    let comme = comment[0];
     comme = comme.replace("\n", "");
     comme = await command(comme);
     console.log(comme);
