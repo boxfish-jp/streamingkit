@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 
-const spotify = async (url: string) => {
+const spotifyUrl = async (url: string) => {
   const urlobj = new URL(url);
   const path = urlobj.pathname.split("/");
   if (path.length !== 4 || path[1] !== "intl-ja") {
@@ -36,4 +36,30 @@ const spotify = async (url: string) => {
     return "urlが正しくないよ";
   }
 };
-export default spotify;
+
+const spotifyWord = async (word: string) => {
+  let result: string;
+  try {
+    result = await new Promise((resolve, reject) => {
+      exec(
+        `spt play -q -n ${word} -t`,
+        { cwd: "./hub/lib" },
+        (err, stdout, stderr) => {
+          if (err || (!stdout && !stderr)) {
+            resolve("追加できませんでした");
+          }
+          resolve(stdout);
+        }
+      );
+    });
+  } catch (e) {
+    result = "追加できませんでした";
+  }
+  if (result != "追加できませんでした") {
+    return "キューに追加しました";
+  } else {
+    return result;
+  }
+};
+
+export { spotifyUrl, spotifyWord };
