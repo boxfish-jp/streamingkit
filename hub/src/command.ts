@@ -35,7 +35,7 @@ const command = async (comment: string) => {
         return "教育コマンドの形式が間違っています";
       }
       await eduRegist(edu[1], edu[2]);
-      return `${edu[1]}は${edu[1]}と覚えました`;
+      return `${edu[1]}は${edu[2]}と覚えました`;
     }
     if (comment.startsWith("忘却:")) {
       const edu = comment.split(":");
