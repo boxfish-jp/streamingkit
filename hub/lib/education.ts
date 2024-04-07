@@ -29,6 +29,12 @@ const eduRemove = async (word: string) => {
 };
 
 const filterComment = async (comment: string) => {
+  if (comment.search(/https?:\/\//) !== -1) {
+    comment = comment.replace(
+      /https?:\/\/[\w!?/\+\-_~=;\.,*&@#$%\(\)\'\[\]]+(\?[a-zA-Z0-9%=\-&_]+)?/g,
+      "URL省略"
+    );
+  }
   const eduData = readFile();
   for (let key in eduData) {
     if (comment.indexOf(key) !== -1) {
