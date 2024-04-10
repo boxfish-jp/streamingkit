@@ -3,6 +3,7 @@ import query from "@/lib/query";
 
 export default async function Home() {
   const images = await query(10, 0);
+  images.reverse();
 
   const fullPaths = images.map(
     (image) => `${process.env.ENDPOINT}/img/${image.path}`
