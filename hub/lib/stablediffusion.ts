@@ -3,10 +3,11 @@ dotenv.config();
 
 const makeImgTxt = async (
   prompt: string,
-  negativePrompt: string,
+  negativePrompt?: string,
   batchSize?: number,
   steps?: number
 ) => {
+  negativePrompt = negativePrompt ? negativePrompt : "";
   batchSize = batchSize ? batchSize : 1;
   steps = steps ? steps : 50;
   const prompts = {
