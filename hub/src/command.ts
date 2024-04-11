@@ -2,7 +2,6 @@ import videoCommands from "../lib/videoCommands";
 import writeCommand from "../lib/writeCommand";
 import { eduRegist, eduRemove, filterComment } from "../lib/education";
 import { spotifyUrl, spotifyWord } from "../lib/spotify";
-import makeImgTxt from "../lib/stablediffusion";
 
 const command = async (comment: string) => {
   if (comment != "" || comment != undefined) {
@@ -52,10 +51,6 @@ const command = async (comment: string) => {
     if (comment.startsWith("spo:")) {
       const word = comment.replace("spo:", "");
       return await spotifyWord(word);
-    }
-    if (comment.startsWith("pro:")) {
-      const word = comment.replace("pro:", "");
-      return await makeImgTxt(word, "");
     }
     comment = await filterComment(comment);
     return comment;
