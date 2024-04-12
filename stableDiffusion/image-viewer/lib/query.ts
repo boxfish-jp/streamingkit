@@ -7,7 +7,13 @@ const query = async (limit: number, offset: number) => {
   console.log(url);
   const res = await fetch(url, { cache: "no-cache" });
   const result = (await res.json()) as {
-    results: { id: number; iaddtime: string; path: string }[];
+    results: {
+      id: number;
+      iaddtime: string;
+      path: string;
+      prompt: string;
+      negative: string;
+    }[];
   };
   return result.results;
 };

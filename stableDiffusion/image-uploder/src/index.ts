@@ -14,6 +14,8 @@ app.get('/', (c) => c.text('Hello World'));
 app.post('/upload', async (c) => {
 	const body = await c.req.parseBody();
 	const file = body.upload as File;
+	const negative = body.negative as string;
+	const prompt = body.prompt as string;
 	const bucket = c.env.imageDB;
 	const filename = `${new Date().getTime()}-${file.name}`;
 	const response = await bucket.put(filename, await file.arrayBuffer(), {
@@ -22,7 +24,7 @@ app.post('/upload', async (c) => {
 		},
 	});
 
-	const sql = `INSERT INTO imagePath (path) VALUES ('${filename}')`;
+	const sql = `INSERT INTO imagePath (path, prompt, negative) VALUES ('${filename}', '${prompt}', '${negative}')`;
 	let result = await c.env.pathDB.prepare(sql).all();
 	console.log(result);
 

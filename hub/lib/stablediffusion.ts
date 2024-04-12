@@ -32,6 +32,8 @@ const makeImgTxt = async (
   // const bodyImg = { upload: img };
   const formData = new FormData();
   formData.append("upload", decode);
+  formData.append("prompt", prompts.prompt);
+  formData.append("negative", prompts.negative_prompt);
   const res2 = await fetch(url, {
     method: "POST",
     body: formData,
