@@ -14,7 +14,6 @@ const command = async (comment: string) => {
     }
     if (comment.indexOf("エクスプロージョン") !== -1) {
       const random = Math.floor(Math.random() * 100);
-      console.log(random);
       if (random < 25) {
         await writeCommand("エクスプロージョン1");
         return "";

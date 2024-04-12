@@ -62,7 +62,6 @@ process.stdin.on("data", async (chunk: string) => {
         const command = sdParseCom(comme.content);
         const index = sDcommands.findIndex((v) => v.user_id === comme.id);
         if (index == -1) {
-          console.log("prompt", command.prompt);
           comme.content = await makeImgTxt(
             command.prompt,
             command.negative,
@@ -71,7 +70,6 @@ process.stdin.on("data", async (chunk: string) => {
           );
         } else {
           const beforeCommand = sDcommands[index].command;
-          console.log("prompt", beforeCommand.prompt + command.prompt);
           comme.content = await makeImgTxt(
             beforeCommand.prompt + command.prompt,
             beforeCommand.negative + command.negative,

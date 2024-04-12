@@ -22,7 +22,6 @@ const extractPrompt = (comment: string) => {
     const index = comment.indexOf(key);
     if (index !== -1) {
       const data = comment.slice(index).trim();
-      console.log(data);
       result.push(cleanPrompt(data, key));
     } else {
       result.push("");
