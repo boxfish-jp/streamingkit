@@ -8,24 +8,25 @@ const command = async (comment: string) => {
     const commands = await videoCommands();
     for (let command of commands) {
       if (comment.indexOf(command) !== -1) {
-        await writeCommand(command);
-        return "";
-      }
-    }
-    if (comment.indexOf("エクスプロージョン") !== -1) {
-      const random = Math.floor(Math.random() * 100);
-      if (random < 25) {
-        await writeCommand("エクスプロージョン1");
-        return "";
-      } else if (random >= 25 && random < 50) {
-        await writeCommand("エクスプロージョン2");
-        return "";
-      } else if (random >= 50 && random < 75) {
-        await writeCommand("エクスプロージョン3");
-        return "";
-      } else {
-        await writeCommand("エクスプロージョン4");
-        return "";
+        if (comment.indexOf("エクスプロージョン") !== -1) {
+          const random = Math.floor(Math.random() * 100);
+          if (random < 25) {
+            await writeCommand("エクスプロージョン1");
+            return "";
+          } else if (random >= 25 && random < 50) {
+            await writeCommand("エクスプロージョン2");
+            return "";
+          } else if (random >= 50 && random < 75) {
+            await writeCommand("エクスプロージョン3");
+            return "";
+          } else {
+            await writeCommand("エクスプロージョン4");
+            return "";
+          }
+        } else {
+          await writeCommand(command);
+          return comment.length > command.length ? comment : "";
+        }
       }
     }
     if (comment.startsWith("教育:")) {
