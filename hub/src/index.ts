@@ -1,7 +1,8 @@
 import command from "./command";
 import makeImgTxt from "../lib/stablediffusion";
-import extractPrompt from "../lib/sdParseCommand";
+import SdParseCommand from "../lib/sdParseCommand";
 import SdHistory from "../lib/sdHistory";
+import sdCommandType from "../types/sdCommandType";
 
 process.stdin.setEncoding("utf8");
 
@@ -11,18 +12,6 @@ setTimeout(() => {
 }, 5000);
 
 const sdHistory = new SdHistory();
-
-const sdParseCom = (command: string) => {
-  const result = extractPrompt(command);
-  const batch = isNaN(Number(result[2])) ? 1 : Number(result[2]);
-  const steps = isNaN(Number(result[3])) ? 1 : Number(result[3]);
-  return {
-    prompt: result[0],
-    negative: result[1],
-    batch: batch,
-    steps: steps,
-  };
-};
 
 let nicoComeNum = 0;
 process.stdin.on("data", async (chunk: string) => {
@@ -57,43 +46,31 @@ process.stdin.on("data", async (chunk: string) => {
     // stable diffusionの処理
     if (comme.content.startsWith("p:") || comme.content.startsWith("n:")) {
       if (!comme.content.endsWith("/c")) {
-        const command = sdParseCom(comme.content);
+        const command = new SdParseCommand(comme.content).parseCommand();
         const beforeCommand = sdHistory.findOne(comme.id);
         if (beforeCommand === undefined) {
-          comme.content = await makeImgTxt(
-            command.prompt,
-            command.negative,
-            command.batch,
-            command.steps
-          );
+          comme.content = await makeImgTxt(command);
         } else {
-          comme.content = await makeImgTxt(
-            beforeCommand.command.prompt + command.prompt,
-            beforeCommand.command.negative + command.negative,
-            command.batch,
-            command.steps
-          );
+          const newCommand: sdCommandType = {
+            prompt: beforeCommand.command.prompt + command.prompt,
+            negative: beforeCommand.command.negative + command.negative,
+            batch: command.batch,
+            steps: command.steps,
+          };
+          comme.content = await makeImgTxt(newCommand);
           sdHistory.deleteOne(comme.id);
         }
       } else {
-        const command = sdParseCom(comme.content.replace("/c", ""));
+        const command = new SdParseCommand(
+          comme.content.replace("/c", "")
+        ).parseCommand();
         // 既に配列にuser_idが存在するか
         const beforeCommand = sdHistory.findOne(comme.id);
         if (beforeCommand === undefined) {
-          sdHistory.addOne(comme.id, {
-            prompt: command.prompt,
-            negative: command.negative,
-            batch: command.batch,
-            steps: command.steps,
-          });
+          sdHistory.addOne(comme.id, command);
           comme.content = "続きを入力してね";
         } else {
-          sdHistory.updateOne(comme.id, {
-            prompt: command.prompt,
-            negative: command.negative,
-            batch: command.batch,
-            steps: command.steps,
-          });
+          sdHistory.updateOne(comme.id, command);
           comme.content = "続きを入力してね";
         }
       }

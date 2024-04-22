@@ -1,28 +1,20 @@
+import sdCommandType from "../types/sdCommandType";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const makeImgTxt = async (
-  prompt: string,
-  negativePrompt?: string,
-  batchSize?: number,
-  steps?: number
-) => {
-  negativePrompt = negativePrompt ? negativePrompt : "";
-  batchSize = batchSize ? batchSize : 1;
-  steps = steps ? steps : 50;
-  const prompts = {
-    prompt: prompt,
-    negative_prompt: negativePrompt,
-    batch_size: batchSize,
-    steps: steps,
+const makeImgTxt = async (prompts: sdCommandType) => {
+  const body = {
+    prompt: prompts.prompt,
+    negativePrompt: prompts.negative,
+    batchSize: prompts.batch,
+    steps: prompts.steps,
   };
-
   const res = await fetch("http://127.0.0.1:7860/sdapi/v1/txt2img", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(prompts),
+    body: JSON.stringify(body),
   });
   const data = await res.json();
   const img: string = data.images[0];
@@ -33,7 +25,7 @@ const makeImgTxt = async (
   const formData = new FormData();
   formData.append("upload", decode);
   formData.append("prompt", prompts.prompt);
-  formData.append("negative", prompts.negative_prompt);
+  formData.append("negative", prompts.negative);
   const res2 = await fetch(url, {
     method: "POST",
     body: formData,
