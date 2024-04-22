@@ -1,6 +1,7 @@
 import command from "./command";
 import makeImgTxt from "../lib/stablediffusion";
 import extractPrompt from "../lib/sdParseCommand";
+import SdHistory from "../lib/sdHistory";
 
 process.stdin.setEncoding("utf8");
 
@@ -9,10 +10,7 @@ setTimeout(() => {
   setuping = false;
 }, 5000);
 
-let sDcommands: {
-  user_id: string;
-  command: { prompt: string; negative: string; batch: number; steps: number };
-}[] = [];
+const sdHistory = new SdHistory();
 
 const sdParseCom = (command: string) => {
   const result = extractPrompt(command);
@@ -60,8 +58,8 @@ process.stdin.on("data", async (chunk: string) => {
     if (comme.content.startsWith("p:") || comme.content.startsWith("n:")) {
       if (!comme.content.endsWith("/c")) {
         const command = sdParseCom(comme.content);
-        const index = sDcommands.findIndex((v) => v.user_id === comme.id);
-        if (index == -1) {
+        const beforeCommand = sdHistory.findOne(comme.id);
+        if (beforeCommand === undefined) {
           comme.content = await makeImgTxt(
             command.prompt,
             command.negative,
@@ -69,38 +67,33 @@ process.stdin.on("data", async (chunk: string) => {
             command.steps
           );
         } else {
-          const beforeCommand = sDcommands[index].command;
           comme.content = await makeImgTxt(
-            beforeCommand.prompt + command.prompt,
-            beforeCommand.negative + command.negative,
+            beforeCommand.command.prompt + command.prompt,
+            beforeCommand.command.negative + command.negative,
             command.batch,
             command.steps
           );
-          sDcommands = sDcommands.filter((v) => v.user_id !== comme.id);
+          sdHistory.deleteOne(comme.id);
         }
       } else {
         const command = sdParseCom(comme.content.replace("/c", ""));
         // 既に配列にuser_idが存在するか
-        const index = sDcommands.findIndex((v) => v.user_id === comme.id);
-        if (index === -1) {
-          sDcommands.push({
-            user_id: comme.id,
-            command: {
-              prompt: command.prompt,
-              negative: command.negative,
-              batch: command.batch,
-              steps: command.steps,
-            },
+        const beforeCommand = sdHistory.findOne(comme.id);
+        if (beforeCommand === undefined) {
+          sdHistory.addOne(comme.id, {
+            prompt: command.prompt,
+            negative: command.negative,
+            batch: command.batch,
+            steps: command.steps,
           });
           comme.content = "続きを入力してね";
         } else {
-          const beforeCommand = sDcommands[index].command;
-          sDcommands[index].command = {
-            prompt: beforeCommand.prompt + command.prompt,
-            negative: beforeCommand.negative + command.negative,
+          sdHistory.updateOne(comme.id, {
+            prompt: command.prompt,
+            negative: command.negative,
             batch: command.batch,
             steps: command.steps,
-          };
+          });
           comme.content = "続きを入力してね";
         }
       }
