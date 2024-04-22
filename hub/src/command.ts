@@ -2,9 +2,13 @@ import videoCommands from "../lib/videoCommands";
 import writeCommand from "../lib/writeCommand";
 import { eduRegist, eduRemove, filterComment } from "../lib/education";
 import { spotifyUrl, spotifyWord } from "../lib/spotify";
+import gemini from "../lib/gemini";
 
 const command = async (comment: string) => {
   if (comment != "" || comment != undefined) {
+    if (comment.startsWith("邪神ちゃん、")) {
+      return await gemini(comment);
+    }
     const commands = await videoCommands();
     for (let command of commands) {
       if (comment.indexOf(command) !== -1) {
