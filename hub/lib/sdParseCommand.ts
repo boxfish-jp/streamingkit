@@ -1,33 +1,57 @@
-const promptKey = ["p:", "n:", "b:", "s:"];
+import sdCommandType from "../types/sdCommandType";
 
-const cleanPrompt = (input: string, searchPrompt: string) => {
-  let output = input;
-  for (const key of promptKey) {
-    if (key === searchPrompt) {
-      continue;
-    }
-    const index = output.indexOf(key);
-    if (index !== -1) {
-      output = output.slice(0, index).trim();
-    }
-    output = output.trim();
+class SdParseCommand {
+  private command: string = "";
+  private promptKey = ["p:", "n:", "b:", "s:"];
+
+  constructor(comment: string) {
+    this.command = comment;
   }
-  output = output.replace(searchPrompt, "").trim().replace(",", "");
-  return output;
-};
 
-const extractPrompt = (comment: string) => {
-  const result: string[] = [];
-  for (const key of promptKey) {
-    const index = comment.indexOf(key);
-    if (index !== -1) {
-      const data = comment.slice(index).trim();
-      result.push(cleanPrompt(data, key));
-    } else {
-      result.push("");
+  private cleanPrompt(input: string, searchPrompt: string) {
+    let output = input;
+    for (const key of this.promptKey) {
+      if (key === searchPrompt) {
+        continue;
+      }
+      const index = output.indexOf(key);
+      if (index !== -1) {
+        output = output.slice(0, index).trim();
+      }
+      output = output.trim();
     }
+    output = output.replace(searchPrompt, "").trim().replace(",", "");
+    return output;
   }
-  return result;
-};
 
-export default extractPrompt;
+  private extractPrompt() {
+    const result: string[] = [];
+    for (const key of this.promptKey) {
+      const index = this.command.indexOf(key);
+      if (index !== -1) {
+        const data = this.command.slice(index).trim();
+        result.push(this.cleanPrompt(data, key));
+      } else {
+        result.push("");
+      }
+    }
+    return result;
+  }
+
+  public parseCommand() {
+    const result = this.extractPrompt();
+    const batch =
+      isNaN(Number(result[2])) || !Number(result[2]) ? 1 : Number(result[2]);
+    const steps =
+      isNaN(Number(result[3])) || !Number(result[3]) ? 50 : Number(result[3]);
+    const compleateCommand: sdCommandType = {
+      prompt: result[0],
+      negative: result[1],
+      batch: batch,
+      steps: steps,
+    };
+    return compleateCommand;
+  }
+}
+
+export default SdParseCommand;
