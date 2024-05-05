@@ -1,7 +1,7 @@
 import videoCommands from "../lib/videoCommands";
 import writeCommand from "../lib/writeCommand";
 import { eduRegist, eduRemove, filterComment } from "../lib/education";
-import { spotifyUrl, spotifyWord } from "../lib/spotify";
+import spotify from "../lib/spotify";
 import gemini from "../lib/gemini";
 
 const command = async (comment: string) => {
@@ -50,11 +50,11 @@ const command = async (comment: string) => {
       return `${edu[1]}を忘れました`;
     }
     if (comment.indexOf("https://open.spotify.com/") !== -1) {
-      return await spotifyUrl(comment);
+      return await new spotify(comment).playFromUrl();
     }
     if (comment.startsWith("spo:")) {
       const word = comment.replace("spo:", "");
-      return await spotifyWord(word);
+      return await new spotify(word).playFromWord();
     }
     comment = await filterComment(comment);
     return comment;
