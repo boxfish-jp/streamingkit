@@ -35,6 +35,7 @@ const filterComment = async (comment: string) => {
       "URL省略"
     );
   }
+  comment = comment.replace("/emotion", "");
   const eduData = readFile();
   for (let key in eduData) {
     if (comment.indexOf(key) !== -1) {
