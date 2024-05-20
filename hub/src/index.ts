@@ -3,6 +3,7 @@ import makeImgTxt from "../lib/stablediffusion";
 import SdParseCommand from "../lib/sdParseCommand";
 import SdHistory from "../lib/sdHistory";
 import sdCommandType from "../types/sdCommandType";
+import VtubeAPI from "../lib/vtubeAPI";
 
 process.stdin.setEncoding("utf8");
 
@@ -12,6 +13,7 @@ setTimeout(() => {
 }, 5000);
 
 const sdHistory = new SdHistory();
+const vtubeAPI = new VtubeAPI();
 
 let nicoComeNum = 0;
 process.stdin.on("data", async (chunk: string) => {
@@ -78,5 +80,8 @@ process.stdin.on("data", async (chunk: string) => {
     // stable diffusionの処理ここまで
     comme.content = await command(comme.content);
     console.log(comme.content);
+    //const result = await vtubeAPI(comme.content);
+    //result && console.log(result);
+    await vtubeAPI.sendAPI(comme.content);
   }
 });
