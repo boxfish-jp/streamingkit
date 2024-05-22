@@ -17,8 +17,16 @@ const vtubeAPI = new VtubeAPI();
 
 let nicoComeNum = 0;
 process.stdin.on("data", async (chunk: string) => {
+  const chunkStr = chunk;
+  if (chunk.toString().trim() === "interupt") {
+    await vtubeAPI.interupt();
+    return;
+  }
+  if (!chunk.toString().trim().startsWith("{")) {
+    return;
+  }
   let comment: { id: string; content: string }[] = [];
-  const styleChunk = "[" + chunk.trim().slice(0, -1) + "]";
+  const styleChunk = "[" + chunkStr.trim().slice(0, -1) + "]";
   const data = JSON.parse(styleChunk) as {
     thread: string;
     no: number;

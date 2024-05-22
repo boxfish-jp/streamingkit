@@ -65,6 +65,24 @@ class VtubeAPI {
     this.updateSendedList(key);
     return "VtuberAPIが応答しませんでしたの";
   }
+
+  public async interupt() {
+    if (this.sendedList.length === 0) {
+      return;
+    }
+    const deleteKey = this.sendedList[this.sendedList.length - 1].key;
+    for (let i = 0; i <= 3; i++) {
+      try {
+        const response = await fetch(
+          "http://192.168.68.110:8888/interupt?key=" + deleteKey
+        );
+        if (response.ok) {
+          this.updateSendedList(deleteKey);
+          return;
+        }
+      } catch (e) {}
+    }
+  }
 }
 
 export default VtubeAPI;
