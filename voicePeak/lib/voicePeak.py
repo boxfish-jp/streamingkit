@@ -2,7 +2,18 @@ import win32api
 import win32con
 import win32gui
 import time
+import requests
 from .watchPlay import nowPlaying
+
+
+def notifySpeaking(status):
+    try:
+        response = requests.get(
+            "http://192.168.68.110:8888/speaking?speaking=" + status, timeout=(2.0, 2.0)
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        pass
 
 
 def sendVoicePeak(message):
@@ -29,12 +40,14 @@ def sendVoicePeak(message):
         VoicePeak, win32con.WM_KILLFOCUS, 0, 0
     )  # テキストエリアのフォーカスを外す
 
+    notifySpeaking("true")
     time.sleep(0.8)
     # 再生
     win32gui.SendMessage(
         VoicePeak, win32con.WM_CHAR, 32, 0
     )  # スペースを送信して、読み上げを実行
     nowPlaying()
+    notifySpeaking("false")
 
     # 入力した文字を削除
     win32gui.SendMessage(
