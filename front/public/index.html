@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>React tsx-esm-standalone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clifford: "#da373d",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+      // typescript用のpresetを登録する
+      Babel.registerPreset("tsx", {
+        presets: [
+          [
+            Babel.availablePresets["typescript"], // preset-typescriptを指定
+            { allExtensions: true, isTSX: true }, // allExtensionsは、isTSX利用時に必要なためセット
+          ],
+        ],
+      });
+    </script>
+    <script
+      src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+      integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/babel"
+      data-type="module"
+      data-presets="tsx,react"
+      src="./index.tsx"
+    ></script>
+  </head>
+  <body>
+    <div id="app">a</div>
+  </body>
+</html>
