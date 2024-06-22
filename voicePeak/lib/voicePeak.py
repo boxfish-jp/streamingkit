@@ -9,7 +9,7 @@ from .watchPlay import nowPlaying
 def notifySpeaking(status):
     try:
         response = requests.get(
-            "http://192.168.68.110:8888/speaking?speaking=" + status, timeout=(2.0, 2.0)
+            "http://192.168.68.110:8888/speaking?speaking=" + status, timeout=(4.0, 4.0)
         )
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
@@ -17,6 +17,7 @@ def notifySpeaking(status):
 
 
 def sendVoicePeak(message):
+    notifySpeaking("true")
     # ウインドウハンドルを取得
     VoicePeak = win32gui.FindWindow(
         None, "VOICEPEAK"
@@ -40,7 +41,6 @@ def sendVoicePeak(message):
         VoicePeak, win32con.WM_KILLFOCUS, 0, 0
     )  # テキストエリアのフォーカスを外す
 
-    notifySpeaking("true")
     time.sleep(0.8)
     # 再生
     win32gui.SendMessage(
