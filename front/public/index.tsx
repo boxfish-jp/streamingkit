@@ -3,7 +3,7 @@ import ReactDOM from "https://cdn.skypack.dev/react-dom@17";
 
 const { useState } = React;
 
-const socket = io("http://localhost:3000", { path: "/socket/" });
+const socket = io("http://192.168.68.118:3535/", { path: "/socket" });
 const App = () => {
   const [message, setMessage] = useState("");
   socket.on("message", async (message) => {
@@ -18,7 +18,14 @@ const App = () => {
 
   return (
     <div class={"w-full"}>
-      <p class={"text-3xl text-white mx-auto w-fit"}>{message}</p>
+      <div>
+        <p
+          class={"text-3xl text-white mx-auto font-bold w-fit"}
+          style={{ WebkitTextStroke: "3px pink" }}
+        >
+          {message}
+        </p>
+      </div>
     </div>
   );
 };
