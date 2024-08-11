@@ -19,6 +19,15 @@ export const niconico = async (userId: string) => {
         }) + ","
       );
     })
+    .on("simpleNotification", (notification) => {
+      console.log(
+        JSON.stringify({
+          user_id: "niconico",
+          content: notification.message.value,
+          no: -1,
+        }) + ","
+      );
+    })
     .on("changeState", (state) => {
       const nusiCome = state.marque?.display?.operatorComment?.content;
       if (nusiCome) {
