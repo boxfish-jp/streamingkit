@@ -12,6 +12,7 @@
   "author": "boxfish",
   "license": "ISC",
   "dependencies": {
+    "@kikurage/nicolive-api": "^0.0.4",
     "@types/tmi.js": "^1.8.6",
     "cheerio": "^1.0.0-rc.12",
     "tmi.js": "^1.8.5",

@@ -1,8 +1,8 @@
-import niconico from "./niconico";
+import { niconico } from "./niconico";
 import twitch from "./twitch";
 
 const main = () => {
-  niconico("co5043209");
+  niconico("98746932");
   twitch("boxfish_jp");
 };
 
