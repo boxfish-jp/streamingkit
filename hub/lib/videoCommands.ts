@@ -1,7 +1,8 @@
 import { readdir } from "fs";
 import path from "path";
+import writeCommand from "../lib/writeCommand";
 
-const videoCommands = async () => {
+export const videoCommands = async () => {
   const directoryPath = path.join(__dirname, "../../video");
 
   return new Promise<string[]>((resolve, reject) => {
@@ -18,4 +19,29 @@ const videoCommands = async () => {
   });
 };
 
-export default videoCommands;
+export const checkSpecialCommand = async (comment: string) => {
+  if (comment.startsWith("エクスプロージョン")) {
+    const random = Math.floor(Math.random() * 100);
+    if (random < 25) {
+      await writeCommand("エクスプロージョン1");
+    } else if (random >= 25 && random < 50) {
+      await writeCommand("エクスプロージョン2");
+    } else if (random >= 50 && random < 75) {
+      await writeCommand("エクスプロージョン3");
+    } else {
+      await writeCommand("エクスプロージョン4");
+    }
+    comment = "";
+  }
+  else if (comment.startsWith("?")) {
+    await writeCommand("？");
+    comment = "";
+  } else if (comment.startsWith("8888")) {
+    await writeCommand("８８８８");
+    comment = "";
+  } else if (comment.startsWith("omg")) {
+    await writeCommand("OMG");
+    comment = "";
+  }
+  return comment;
+} 
