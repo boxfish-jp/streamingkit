@@ -12,7 +12,6 @@ export const videoCommands = async () => {
         reject(err);
       } else {
         const commands = files.map((file) => file.replace(".mp4", ""));
-        commands.push("エクスプロージョン")
         resolve(commands);
       }
     });
