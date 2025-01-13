@@ -16,7 +16,7 @@ def Startlogging():
     for line in iter(proc.stdout.readline, b""):
         if not interrupt:
             break
-        out = line.decode("utf-8")
+        out = line.decode("cp932")
         pipeMess.append(out.replace("\r\n", ""))
 
 

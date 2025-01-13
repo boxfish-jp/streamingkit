@@ -1,7 +1,7 @@
 import time
 import threading
 import lib.watchPlay as watchPlay
-import lib.voicePeak as voicePeak
+from lib.voicePeak import VoicePeak
 import sys
 import io
 
@@ -14,7 +14,7 @@ def preventSleep():
 
 def setup():
     print("wait")
-    time.sleep(5)
+    time.sleep(3)
     prelog = ""
     while True:
         nowLog = watchPlay.checkLog()
@@ -25,10 +25,8 @@ def setup():
             if nowLog == "UPLINK":
                 print("start")
                 break
+    voicePeak = VoicePeak()
     voicePeak.setupVoicePeak()
-
-
-def readPipe():
     for line in io.TextIOWrapper(sys.stdin.buffer, encoding="utf-8"):
         voicePeak.sendVoicePeak(line.strip())
 
@@ -39,4 +37,3 @@ prevent = threading.Thread(target=preventSleep)
 log.start()
 prevent.start()
 setup()
-readPipe()
