@@ -5,3 +5,4 @@
 /front/change.js
 /hub/education.json
 .env
+.venv/
