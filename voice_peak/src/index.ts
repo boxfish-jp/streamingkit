@@ -1,6 +1,6 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { exec, execSync } from 'node:child_process'
+import { exec, execSync, spawn } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 
 const app = new Hono()
@@ -16,10 +16,17 @@ app.post('/', async (c) => {
   if (typeof text !== 'string') {
     return c.text('text is required', 400)
   }
-  const command = `./Voicepeak/voicepeak -s ${text}`;
   try {
-    const result = execSync(command);
-    console.log(result.toString());
+    const result = spawn("./Voicepeak/voicepeak", ["-s", text], {
+      stdio: ["pipe", "pipe", "inherit"],
+    });
+    for await (const s of result.stdout) {
+      console.log(`${s}`);
+    }
+    const status = await new Promise((resolve, reject) => {
+      result.on("close", resolve);
+    });
+    console.log(status);
     const wavdata = readFileSync("./output.wav");
     return c.body(wavdata, 200, { 'Content-Type': 'audio/wav' })
   } catch (e) {
