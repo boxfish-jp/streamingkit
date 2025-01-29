@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/1.0/kikurage-nicolive-api-0.0.4.2.tgz",
     "dotenv": "^16.4.5"
   }
 }
