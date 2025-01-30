@@ -1,22 +1,52 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { type Socket, io } from "socket.io-client";
+
+const hostname = "localhost";
+const port = "3000";
 
 export const App = () => {
-	const [count, setCount] = useState(0);
+	const socketRef = useRef<Socket>();
+	const [videoName, setVideoName] = useState<string>("");
+
+	useEffect(() => {
+		const socketUrl = `http://${hostname}:${port}`;
+		const socket = io(socketUrl, { path: "/ws" });
+		socketRef.current = socket;
+
+		socket.on("connect", () => {
+			console.log("connect");
+		});
+
+		socket.on("play", (videoName: string) => {
+			const name = `../../video/${videoName}.mp4`;
+			console.log(name);
+			setVideoName(name);
+		});
+		return () => {
+			if (socket.connected) {
+				socket.disconnect();
+			}
+		};
+	}, []);
+
+	const onEnded = () => {
+		setVideoName("");
+	};
 
 	return (
 		<>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button type="button" onClick={() => setCount((count) => count + 1)}>
-					count is {count}
-				</button>
-				<p className="bg-black">
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
+			<section className="h-36 flex justify-end w-full">
+				{videoName && (
+					// biome-ignore lint/a11y/useMediaCaption: <explanation>
+					<video
+						className="h-36"
+						controls
+						onEnded={onEnded}
+						src={videoName}
+						autoPlay={true}
+					/>
+				)}
+			</section>
 		</>
 	);
 };
