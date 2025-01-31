@@ -1,8 +1,0 @@
-*node_modules
-*package-lock.json
-*yarn.lock
-*__pycache__
-/front/change.js
-/hub/education.json
-.env
-.venv/
