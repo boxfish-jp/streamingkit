@@ -1,1 +1,2 @@
-ts-node comment/src/index.ts | ts-node hub/src/index.ts | python voicepeak/jyashin.py
+cd stream_kit
+pnpm run dev
