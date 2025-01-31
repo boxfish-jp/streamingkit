@@ -2,6 +2,8 @@ import { readdir } from "node:fs";
 import { join } from "node:path";
 import { ioServer } from ".";
 import type { Comment } from "./comment";
+import { eduRegist, eduRemove } from "./lib/education";
+import { playSpotifyFromURL } from "./lib/spotify";
 
 export interface Command {
 	keyword: string;
@@ -10,9 +12,17 @@ export interface Command {
 
 export const getCommands = async () => {
 	const normalCommands = await getNormalCommands();
-	return [...normalCommands];
+	const specialCommands = getSpecialCommands();
+	const educationCommands = getEducationCommands();
+	return [
+		...normalCommands,
+		...specialCommands,
+		...educationCommands,
+		spotifyUrl,
+	];
 };
-export const getSpecialCommands = (): Command[] => {
+
+const getSpecialCommands = (): Command[] => {
 	const exprosion: Command = {
 		keyword: "エクスプロージョン",
 		process: async (comment: Comment): Promise<Comment> => {
@@ -57,10 +67,9 @@ export const getSpecialCommands = (): Command[] => {
 	return [exprosion, hatena, patipati, omg];
 };
 
-export const getNormalCommands = async (): Promise<Command[]> => {
-	const directoryPath = join(__dirname, "../../video");
+const getNormalCommands = async (): Promise<Command[]> => {
 	const normalKeywords = await new Promise<string[]>((resolve, reject) => {
-		readdir(directoryPath, (err, files) => {
+		readdir("../video", (err, files) => {
 			if (err) {
 				console.log("Unable to scan directory: ");
 				reject(err);
@@ -83,4 +92,40 @@ export const getNormalCommands = async (): Promise<Command[]> => {
 		});
 	}
 	return commands;
+};
+
+const getEducationCommands = (): Command[] => {
+	const register: Command = {
+		keyword: "教育:",
+		process: async (comment: Comment): Promise<Comment> => {
+			const edu = comment.content.split(":");
+			if (edu.length !== 3) {
+				comment.content = "教育コマンドの形式が間違っています";
+				return comment;
+			}
+			eduRegist(edu[1], edu[2]);
+			comment.content = `${edu[1]}は${edu[2]}と覚えました`;
+			return comment;
+		},
+	};
+	const remove: Command = {
+		keyword: "忘却:",
+		process: async (comment: Comment): Promise<Comment> => {
+			const edu = comment.content.split(":");
+			if (edu.length !== 2) {
+				comment.content = "忘却コマンドの形式が間違っています";
+				return comment;
+			}
+			eduRemove(edu[1]);
+			comment.content = `${edu[1]}を忘れました`;
+			return comment;
+		},
+	};
+
+	return [register, remove];
+};
+
+const spotifyUrl: Command = {
+	keyword: "https://open.spotify.com/",
+	process: playSpotifyFromURL,
 };

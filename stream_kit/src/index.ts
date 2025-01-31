@@ -2,6 +2,7 @@ import type { Server as HttpServer } from "node:http";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { Server as SocketServer } from "socket.io";
+import { getCommands } from "./command";
 import { niconico } from "./get_comment";
 import { Player } from "./player";
 
@@ -31,10 +32,14 @@ ioServer.on("error", (err) => {
 });
 
 const player = new Player();
-niconico("lv346910090", async (comment) => {
+niconico("lv346916834", async (comment) => {
+	const commands = await getCommands();
+	for (const command of commands) {
+		if (comment.content.startsWith(command.keyword)) {
+			player.addQueue(await command.process(comment));
+			return;
+		}
+	}
+	comment.fillter();
 	player.addQueue(comment);
 });
-
-setInterval(() => {
-	ioServer.emit("play", "にゃんぱすー");
-}, 10000);
