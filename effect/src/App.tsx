@@ -40,7 +40,7 @@ export const App = () => {
 					// biome-ignore lint/a11y/useMediaCaption: <explanation>
 					<video
 						className="h-36"
-						controls
+						controls={false}
 						onEnded={onEnded}
 						src={videoName}
 						autoPlay={true}
