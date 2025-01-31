@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { Server as SocketServer } from "socket.io";
 import { getCommands } from "./command";
 import { niconico } from "./get_comment";
+import { getStreamingInfo } from "./get_streaming_info";
 import { Player } from "./player";
 
 const app = new Hono();
@@ -31,15 +32,25 @@ ioServer.on("error", (err) => {
 	console.log(err);
 });
 
-const player = new Player();
-niconico("lv346916834", async (comment) => {
-	const commands = await getCommands();
-	for (const command of commands) {
-		if (comment.content.startsWith(command.keyword)) {
-			player.addQueue(await command.process(comment));
-			return;
-		}
+const main = async () => {
+	const liveInfo = await getStreamingInfo();
+	const player = new Player();
+	if (!liveInfo) {
+		console.error("Failed to get live info");
+		return;
 	}
-	comment.fillter();
-	player.addQueue(comment);
-});
+	console.log(liveInfo);
+	niconico(liveInfo.liveId, async (comment) => {
+		const commands = await getCommands();
+		for (const command of commands) {
+			if (comment.content.startsWith(command.keyword)) {
+				player.addQueue(await command.process(comment));
+				return;
+			}
+		}
+		comment.fillter();
+		player.addQueue(comment);
+	});
+};
+
+main();
