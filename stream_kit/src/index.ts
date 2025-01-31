@@ -2,6 +2,7 @@ import type { Server as HttpServer } from "node:http";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { Server as SocketServer } from "socket.io";
+import { CommentServer, bot } from "./bot";
 import { getCommands } from "./command";
 import { niconico } from "./get_comment";
 import { getStreamingInfo } from "./get_streaming_info";
@@ -34,11 +35,15 @@ ioServer.on("error", (err) => {
 
 const main = async () => {
 	const liveInfo = await getStreamingInfo();
-	const player = new Player();
-	if (!liveInfo) {
+	if (!liveInfo || !liveInfo.nicoWsurl || !liveInfo.vposBaseTime) {
 		console.error("Failed to get live info");
 		return;
 	}
+	const commentServer = new CommentServer(
+		liveInfo.nicoWsurl,
+		liveInfo.vposBaseTime,
+	);
+	const player = new Player();
 	console.log(liveInfo);
 	niconico(liveInfo.liveId, async (comment) => {
 		const commands = await getCommands();
@@ -47,6 +52,10 @@ const main = async () => {
 				player.addQueue(await command.process(comment));
 				return;
 			}
+		}
+		if (comment.content.startsWith("。")) {
+			bot(comment, commentServer);
+			return;
 		}
 		comment.fillter();
 		player.addQueue(comment);

@@ -40,6 +40,23 @@ export const playSpotifyFromURL = async (comment: Comment) => {
 	return comment;
 };
 
+export const getSongName = async () => {
+	let result = "";
+	try {
+		result = await new Promise((resolve, reject) => {
+			exec("spt playback", (err: unknown, stdout: string, stderr: unknown) => {
+				if (err || (!stdout && !stderr)) {
+					resolve("error");
+				}
+				resolve(stdout.replace("🔀 ▶ ", ""));
+			});
+		});
+	} catch (e) {
+		result = "error";
+	}
+	return result;
+};
+
 const lintPath = (path: string[]) => {
 	for (const p of path) {
 		if (p === "playlist") {
