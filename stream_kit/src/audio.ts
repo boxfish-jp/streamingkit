@@ -20,12 +20,12 @@ export class AudioHandler {
 				}),
 			});
 			if (response.status !== 200 || response.body === null) {
-				throw new Error("Failed to get voice peak data");
+				return undefined;
 			}
 			const data = await response.arrayBuffer();
 			return new WavData(data);
 		} catch (e) {
-			throw new Error("Failed to get voice peak data");
+			return undefined;
 		}
 	}
 
@@ -37,9 +37,7 @@ export class AudioHandler {
 
 	private async _ffplay(filePath: string) {
 		try {
-			const stdout = execSync(
-				`ffplay -autoexit ${filePath} -nodisp -volume 60`,
-			);
+			const stdout = execSync(`ffplay -autoexit ${filePath} -nodisp`);
 			console.log(`stdout: ${stdout.toString()}`);
 		} catch (e) {
 			console.error(`Error: ${e}`);

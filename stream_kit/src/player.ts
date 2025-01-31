@@ -17,6 +17,9 @@ export class Player {
 		const comment = this._queue[0];
 		const audio = new AudioHandler(comment.content);
 		const wavData = await audio.getVoicePeakData();
+		if (wavData === undefined) {
+			return;
+		}
 		await audio.play(wavData);
 		this._queue.shift();
 		if (this._queue.length === 0) {
