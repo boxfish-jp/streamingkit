@@ -29,13 +29,13 @@ task = "https://open.spotify.com/playlist/6k1uAvFFTknwimCs8QZCkm?si=1c043078d645
 task = "https://clumsy-fight-294.notion.site/1851cddf59bc8083b5f6ccf222c265ac"
 
 ["ターミナル"]
-task = Wezterm
+task = "Wezterm"
 
 ["Terminal"]
-task = Wezterm
+task = "Wezterm"
 
 ["terminal"]
-task = Wezterm
+task = "Wezterm"
 
 ["エディター"]
 task = "メイン: LazyVim, サブ: VSCode"
