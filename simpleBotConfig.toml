@@ -1,0 +1,50 @@
+[x]
+task = "https://x.com/boxfish_jp"
+
+[X]
+task = "https://x.com/boxfish_jp"
+
+[twitter]
+task = "https://x.com/boxfish_jp"
+
+[Twitter]
+task = "https://x.com/boxfish_jp"
+
+[github]
+task = "https://github.com/boxfish-jp"
+
+[GitHub]
+task = "https://github.com/boxfish-jp"
+
+["annict"]
+task = "https://annict.com/@boxfish_jp"
+
+["Annict"]
+task = "https://annict.com/@boxfish_jp"
+
+["アニソン"]
+task = "https://open.spotify.com/playlist/6k1uAvFFTknwimCs8QZCkm?si=1c043078d64542e1"
+
+["壁紙"]
+task = "https://clumsy-fight-294.notion.site/1851cddf59bc8083b5f6ccf222c265ac"
+
+["ターミナル"]
+task = Wezterm
+
+["Terminal"]
+task = Wezterm
+
+["terminal"]
+task = Wezterm
+
+["エディター"]
+task = "メイン: LazyVim, サブ: VSCode"
+
+["editor"]
+task = "Main: LazyVim, Sub: VSCode"
+
+["Editor"]
+task = "Main: LazyVim, Sub: VSCode"
+
+["設定"]
+task = "ターミナル: https://github.com/boxfish-jp/wezterm-setting, エディター: https://github.com/boxfish-jp/nvim-setting"

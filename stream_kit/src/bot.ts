@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { load } from "js-toml";
 import type { Comment } from "./comment";
 import { getSongName } from "./lib/spotify";
 
@@ -7,9 +9,25 @@ export const bot = async (comment: Comment, server: CommentServer) => {
 		const name = await getSongName();
 		server.send(name);
 	}
+	const simpleTasks = await simpleBotTasks();
+	for (const task of simpleTasks) {
+		if (content.startsWith(task.keyword)) {
+			server.send(task.task);
+		}
+	}
 
 	comment.content = "";
 	return comment;
+};
+
+const simpleBotTasks = async () => {
+	const toml = await readFile("../simpleBotConfig.toml", "utf-8");
+	const parsedData = load(toml);
+	const tasks = Object.entries(parsedData).map(([keyword, value]) => ({
+		keyword,
+		task: typeof value.task === "string" ? (value.task as string) : "",
+	}));
+	return tasks;
 };
 
 export class CommentServer {
@@ -28,7 +46,6 @@ export class CommentServer {
 		const vpos = Math.round(
 			(new Date().getTime() - this._vposBaseTime * 1000) / 10,
 		);
-		console.log(vpos);
 		this._ws.send(
 			JSON.stringify({
 				type: "postComment",

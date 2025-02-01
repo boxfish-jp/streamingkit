@@ -8,6 +8,7 @@
     "@hono/node-server": "^1.13.7",
     "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/1.0/kikurage-nicolive-api-0.0.4.2.tgz",
     "hono": "^4.6.19",
+    "js-toml": "^1.0.1",
     "puppeteer": "^24.1.1",
     "socket.io": "^4.8.1"
   },
