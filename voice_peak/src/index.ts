@@ -1,7 +1,7 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { exec, execSync, spawn } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { spawn } from 'node:child_process'
+import { readFileSync, unlinkSync } from 'node:fs'
 
 const app = new Hono()
 
@@ -16,8 +16,9 @@ app.post('/', async (c) => {
   if (typeof text !== 'string') {
     return c.text('text is required', 400)
   }
+  const fileName = `${Date.now()}.wav`;
   try {
-    const result = spawn("./Voicepeak/voicepeak", ["-s", text], {
+    const result = spawn("./Voicepeak/voicepeak", ["-s", text, "-o", fileName], {
       stdio: ["pipe", "pipe", "inherit"],
     });
     for await (const s of result.stdout) {
@@ -27,10 +28,15 @@ app.post('/', async (c) => {
       result.on("close", resolve);
     });
     console.log(status);
-    const wavdata = readFileSync("./output.wav");
+    if (status !== 0) {
+      return c.text('Error', 500)
+    }
+    const wavdata = readFileSync(fileName);
     return c.body(wavdata, 200, { 'Content-Type': 'audio/wav' })
   } catch (e) {
     return c.text('Error', 500)
+  } finally {
+    unlinkSync(fileName);
   }
 })
 
