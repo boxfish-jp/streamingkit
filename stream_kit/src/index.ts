@@ -44,7 +44,7 @@ const main = async () => {
 		liveInfo.vposBaseTime,
 	);
 	const player = new Player();
-	console.log(liveInfo);
+	console.log("start");
 	niconico(liveInfo.liveId, async (comment) => {
 		const commands = await getCommands();
 		for (const command of commands) {
