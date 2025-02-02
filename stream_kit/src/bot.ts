@@ -9,6 +9,11 @@ export const bot = async (comment: Comment, server: CommentServer) => {
 		const name = await getSongName();
 		server.send(name);
 	}
+	if (content.startsWith("h") || content.startsWith("ｈ")) {
+		const keywords = await getSimpleBotTasksKeywords();
+		keywords.push("曲");
+		server.send(keywords.join(","));
+	}
 	const simpleTasks = await simpleBotTasks();
 	for (const task of simpleTasks) {
 		if (content.startsWith(task.keyword)) {
@@ -33,6 +38,12 @@ const simpleBotTasks = async () => {
 		}
 	}
 	return tasks;
+};
+
+const getSimpleBotTasksKeywords = async () => {
+	const toml = await readFile("../simpleBotConfig.toml", "utf-8");
+	const parsedData = load(toml);
+	return Object.keys(parsedData);
 };
 
 export class CommentServer {
