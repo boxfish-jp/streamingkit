@@ -58,7 +58,7 @@ const main = async () => {
 			bot(comment, commentServer);
 			return;
 		}
-		player.addQueue(comment);
+		player.addQueue(comment.getEducatiedComment());
 	});
 };
 
