@@ -7,6 +7,12 @@ export class Comment {
 	}
 
 	fillter() {
+		this.content = this.content.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (char) =>
+			String.fromCharCode(char.charCodeAt(0) - 0xfee0),
+		);
+		this.content = this.content.replace(/[A-Za-z]/g, (char) =>
+			char.toLowerCase(),
+		);
 		if (this.content.search(/https?:\/\//) !== -1) {
 			this.content = this.content.replace(
 				/https?:\/\/[\w!?/\+\-_~=;\.,*&@#$%\(\)\'\[\]]+(\?[a-zA-Z0-9%=\-&_]+)?/g,

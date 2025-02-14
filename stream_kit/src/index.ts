@@ -46,6 +46,7 @@ const main = async () => {
 	const player = new Player();
 	console.log("start");
 	niconico(liveInfo.liveId, async (comment) => {
+		comment.fillter();
 		const commands = await getCommands();
 		for (const command of commands) {
 			if (comment.content.startsWith(command.keyword)) {
@@ -57,7 +58,6 @@ const main = async () => {
 			bot(comment, commentServer);
 			return;
 		}
-		comment.fillter();
 		player.addQueue(comment);
 	});
 };
