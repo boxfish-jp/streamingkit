@@ -26,7 +26,8 @@ export class Player {
 					continue;
 				}
 				this._queue.shift();
-				await audio.play(wavData);
+				//await audio.play(wavData);
+				await audio.sendServer(wavData);
 			}
 		} finally {
 			this.isProcessing = false;
