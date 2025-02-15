@@ -1,10 +1,10 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
-    "strict": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-  }
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "CommonJS",
+		"strict": true,
+		"skipLibCheck": true,
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx"
+	}
 }
