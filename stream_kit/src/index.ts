@@ -2,6 +2,7 @@ import type { Server as HttpServer } from "node:http";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { Server as SocketServer } from "socket.io";
+import { advertise } from "./advertise";
 import { CommentServer, bot } from "./bot";
 import { getCommands } from "./command";
 import { niconico } from "./get_comment";
@@ -54,10 +55,15 @@ const main = async () => {
 				return;
 			}
 		}
-		if (comment.content.startsWith("。")) {
+		if (comment.isRequestBot) {
 			bot(comment, commentServer);
 			return;
 		}
+
+		if (comment.isRequestAdvertise) {
+			advertise(commentServer);
+		}
+
 		player.addQueue(comment.getEducatiedComment());
 	});
 };

@@ -40,7 +40,7 @@ const simpleBotTasks = async () => {
 	return tasks;
 };
 
-const getSimpleBotTasksKeywords = async () => {
+export const getSimpleBotTasksKeywords = async () => {
 	const toml = await readFile("../simpleBotConfig.toml", "utf-8");
 	const parsedData = load(toml);
 	return Object.keys(parsedData);

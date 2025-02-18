@@ -5,6 +5,15 @@ export class Comment {
 	constructor(content: string) {
 		this.content = content;
 	}
+
+	get isRequestBot(): boolean {
+		return this.content.startsWith("。");
+	}
+
+	get isRequestAdvertise(): boolean {
+		return this.content.startsWith("30分延長しました");
+	}
+
 	getEducatiedComment() {
 		let text = this.content;
 		if (this.content.search(/https?:\/\//) !== -1) {
