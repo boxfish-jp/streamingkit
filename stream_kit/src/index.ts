@@ -15,7 +15,7 @@ app.get("/", (c) => {
 	return c.text("Hello Hono!");
 });
 
-export const port = 3000;
+export const port = 3002;
 export const hostname = "localhost";
 console.log(`Server is running on http://localhost:${port}`);
 
@@ -58,10 +58,6 @@ const main = async () => {
 		if (comment.isRequestBot) {
 			bot(comment, commentServer);
 			return;
-		}
-
-		if (comment.isRequestAdvertise) {
-			advertise(commentServer);
 		}
 
 		player.addQueue(comment.getEducatiedComment());

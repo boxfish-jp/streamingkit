@@ -21,3 +21,7 @@ task = "https://open.spotify.com/playlist/6k1uAvFFTknwimCs8QZCkm?si=1c043078d645
 ["壁紙"]
 keywords = ["壁紙"]
 task = "https://clumsy-fight-294.notion.site/1851cddf59bc8083b5f6ccf222c265ac"
+
+["do"]
+keywords = ["do", "やれ"]
+task = "https://youtu.be/JV3KOJ_Z4Vs?si=dKcVDMkcWcRNwRak"

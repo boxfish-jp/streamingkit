@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { type Socket, io } from "socket.io-client";
 
 const hostname = "localhost";
-const port = "3000";
+const port = "3002";
 
 export const App = () => {
 	const socketRef = useRef<Socket>();

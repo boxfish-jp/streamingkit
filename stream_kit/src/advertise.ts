@@ -3,11 +3,13 @@ import { type CommentServer, getSimpleBotTasksKeywords } from "./bot";
 
 export const advertise = async (server: CommentServer) => {
 	const contents = await getAdvertiseContents();
-	if (contents.howto.length) {
-		server.send(contents.howto[getRandomInt(contents.howto.length)]);
-	}
-	if (contents.advertise.length) {
-		server.send(contents.advertise[getRandomInt(contents.advertise.length)]);
+	const which = getRandomInt(2);
+	if (which === 0) {
+		server.send(`bot:${contents.howto[getRandomInt(contents.howto.length)]}`);
+	} else {
+		server.send(
+			`bot:${contents.advertise[getRandomInt(contents.advertise.length)]}`,
+		);
 	}
 };
 
