@@ -8,6 +8,7 @@ import { getCommands } from "./command";
 import { niconico } from "./get_comment";
 import { getStreamingInfo } from "./get_streaming_info";
 import { Player } from "./player";
+import { sendOtherServer } from "./send_other_server";
 
 const app = new Hono();
 
@@ -48,6 +49,7 @@ const main = async () => {
 	console.log("start");
 	niconico(liveInfo.liveId, async (comment) => {
 		comment.fillter();
+		sendOtherServer(comment);
 		const commands = await getCommands();
 		for (const command of commands) {
 			if (comment.content.startsWith(command.keyword)) {
