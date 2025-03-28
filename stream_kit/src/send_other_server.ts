@@ -23,17 +23,20 @@ const otherServers: OtherServer[] = [
 export const sendOtherServer = async (comment: Comment) => {
 	const requestsServer = otherServers.map(
 		(otherServer) =>
-			new Promise(() => {
-				console.log(otherServer.body(comment));
-				try {
-					fetch(otherServer.url, {
-						method: otherServer.method,
-						body: otherServer.body(comment),
-						headers: {
-							"content-type": "application/json",
-						},
+			new Promise((resolve) => {
+				fetch(otherServer.url, {
+					method: otherServer.method,
+					body: otherServer.body(comment),
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then((response) => {
+						resolve(response);
+					})
+					.catch((error) => {
+						resolve(null); // Resolve even on failure to prevent program stop
 					});
-				} catch (e) {}
 			}),
 	);
 	Promise.all(requestsServer);
