@@ -2,7 +2,6 @@ import type { Server as HttpServer } from "node:http";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { Server as SocketServer } from "socket.io";
-import { advertise } from "./advertise";
 import { CommentServer, bot } from "./bot";
 import { getCommands } from "./command";
 import { niconico } from "./get_comment";
@@ -11,10 +10,6 @@ import { Player } from "./player";
 import { sendOtherServer } from "./send_other_server";
 
 const app = new Hono();
-
-app.get("/", (c) => {
-	return c.text("Hello Hono!");
-});
 
 export const port = 3002;
 export const hostname = "localhost";
@@ -63,6 +58,16 @@ const main = async () => {
 		}
 
 		player.addQueue(comment.getEducatiedComment());
+	});
+	app.get("/", (c) => {
+		return c.text("Hello Hono!");
+	});
+
+	app.post("/", async (c) => {
+		console.log("post");
+		const body = (await c.req.parseBody()) as { who: string; content: string };
+		commentServer.send(`AIずんだもん:${body.content}`);
+		return c.text("ok");
 	});
 };
 
