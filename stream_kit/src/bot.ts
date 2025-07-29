@@ -4,10 +4,15 @@ import type { Comment } from "./comment";
 import { getSongName } from "./lib/spotify";
 
 export const bot = async (comment: Comment, server: CommentServer) => {
-	const content = comment.content.replace("。", "");
+	const content = comment.content.replace("。", "").toLowerCase();
 	if (content.startsWith("曲")) {
 		const name = await getSongName();
 		server.send(name);
+	}
+	if (content.startsWith("h") || content.startsWith("ｈ")) {
+		const keywords = await getSimpleBotTasksKeywords();
+		keywords.push("曲");
+		server.send(keywords.join(","));
 	}
 	const simpleTasks = await simpleBotTasks();
 	for (const task of simpleTasks) {
@@ -23,11 +28,22 @@ export const bot = async (comment: Comment, server: CommentServer) => {
 const simpleBotTasks = async () => {
 	const toml = await readFile("../simpleBotConfig.toml", "utf-8");
 	const parsedData = load(toml);
-	const tasks = Object.entries(parsedData).map(([keyword, value]) => ({
-		keyword,
-		task: typeof value.task === "string" ? (value.task as string) : "",
-	}));
+	const tasks: { keyword: string; task: string }[] = [];
+	for (const [name, value] of Object.entries(parsedData)) {
+		for (const keyword of value.keywords) {
+			tasks.push({
+				keyword: keyword.toLowerCase(),
+				task: typeof value.task === "string" ? (value.task as string) : "",
+			});
+		}
+	}
 	return tasks;
+};
+
+export const getSimpleBotTasksKeywords = async () => {
+	const toml = await readFile("../simpleBotConfig.toml", "utf-8");
+	const parsedData = load(toml);
+	return Object.keys(parsedData);
 };
 
 export class CommentServer {

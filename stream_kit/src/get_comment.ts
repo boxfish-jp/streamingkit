@@ -8,10 +8,10 @@ export const niconico = async (
 ) => {
 	new NicoliveClient({ liveId: liveId })
 		.on("chat", (chat: Chat) => {
-			if (chat.name === "ふぐお/AI Vtuber開発中") {
+			if (chat.name === "ふぐお") {
 				return;
 			}
-			const newComment = new Comment(chat.content);
+			const newComment = new Comment("viewer", chat.content);
 			onReceive(newComment);
 		})
 		.on("simpleNotification", (notification) => {
@@ -19,7 +19,7 @@ export const niconico = async (
 			if (!content) {
 				return;
 			}
-			const newComment = new Comment(notification.message.value);
+			const newComment = new Comment("bot", notification.message.value);
 			onReceive(newComment);
 		})
 		.on("changeState", (state) => {
@@ -27,7 +27,7 @@ export const niconico = async (
 			if (!nusiCome) {
 				return;
 			}
-			const newComment = new Comment(nusiCome);
+			const newComment = new Comment("fuguo", nusiCome);
 			onReceive(newComment);
 		})
 		.connect();

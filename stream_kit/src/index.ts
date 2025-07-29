@@ -7,14 +7,11 @@ import { getCommands } from "./command";
 import { niconico } from "./get_comment";
 import { getStreamingInfo } from "./get_streaming_info";
 import { Player } from "./player";
+import { sendOtherServer } from "./send_other_server";
 
 const app = new Hono();
 
-app.get("/", (c) => {
-	return c.text("Hello Hono!");
-});
-
-export const port = 3000;
+export const port = 3002;
 export const hostname = "localhost";
 console.log(`Server is running on http://localhost:${port}`);
 
@@ -44,8 +41,10 @@ const main = async () => {
 		liveInfo.vposBaseTime,
 	);
 	const player = new Player();
-	console.log(liveInfo);
+	console.log("start");
 	niconico(liveInfo.liveId, async (comment) => {
+		comment.fillter();
+		sendOtherServer(comment);
 		const commands = await getCommands();
 		for (const command of commands) {
 			if (comment.content.startsWith(command.keyword)) {
@@ -53,12 +52,22 @@ const main = async () => {
 				return;
 			}
 		}
-		if (comment.content.startsWith("。")) {
+		if (comment.isRequestBot) {
 			bot(comment, commentServer);
 			return;
 		}
-		comment.fillter();
-		player.addQueue(comment);
+
+		player.addQueue(comment.getEducatiedComment());
+	});
+	app.get("/", (c) => {
+		return c.text("Hello Hono!");
+	});
+
+	app.post("/", async (c) => {
+		console.log("post");
+		const body = (await c.req.parseBody()) as { who: string; content: string };
+		commentServer.send(`AIずんだもん:${body.content}`);
+		return c.text("ok");
 	});
 };
 
