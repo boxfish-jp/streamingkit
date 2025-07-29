@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 REM --- 設定項目 ---
 REM 目標ラウドネスパラメータ
-set TARGET_I=-0
+set TARGET_I=-23
 set TARGET_LRA=7
 set TARGET_TP=-2
 
