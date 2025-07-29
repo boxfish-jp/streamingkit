@@ -8,7 +8,7 @@ export const niconico = async (
 ) => {
 	new NicoliveClient({ liveId: liveId })
 		.on("chat", (chat: Chat) => {
-			if (chat.name === "ふぐお/AI Vtuber開発中") {
+			if (chat.name === "ふぐお") {
 				return;
 			}
 			const newComment = new Comment("viewer", chat.content);
