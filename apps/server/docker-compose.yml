@@ -1,0 +1,18 @@
+services:
+  server:
+    build: .
+    container_name: streaming_kit_server 
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Tokyo
+    volumes:
+      # ホストのモノレポ全体をマウント
+      - .:/app
+    ports:
+      # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
+      - "8080:3000"
+      # Next.js アプリ本体 -> localhost:3001 でアクセス
+      - "3001:3001"
+    shm_size: "1gb"
+    restart: unless-stopped
