@@ -109,7 +109,7 @@ importers:
         specifier: ^5.3.1
         version: 5.4.21(@types/node@20.19.24)
 
-  apps/server:
+  apps/stream_orchestrator:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.6

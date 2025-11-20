@@ -1,18 +1,22 @@
 services:
   orchestrator:
-    build: .
+    build: 
+      context: .
+      dockerfile: apps/stream_orchestrator/Dockerfile
+      #target: "dev" 
     container_name: stream_orchestrator
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Tokyo
     volumes:
-      # ホストのモノレポ全体をマウント
-      - .:/app
+      - ./apps/stream_orchestrator/:/app-dev/
+      - ./node_modules/:/node_modules
     ports:
       # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
       - "8080:3000"
       # Next.js アプリ本体 -> localhost:3001 でアクセス
-      - "3001:3001"
+      - "3444:3444"
     shm_size: "1gb"
-    restart: unless-stopped
+    #restart: unless-stopped
+    #command: pnpm --filter stream_orchestrator dev
