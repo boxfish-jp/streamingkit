@@ -1,7 +1,7 @@
 services:
-  server:
+  orchestrator:
     build: .
-    container_name: streaming_kit_server 
+    container_name: stream_orchestrator
     environment:
       - PUID=1000
       - PGID=1000
