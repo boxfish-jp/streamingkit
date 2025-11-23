@@ -1,6 +1,8 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import { event_bus } from "./event_bus.js";
 
+/*
 const app = new Hono();
 
 app.get("/", (c) => {
@@ -16,3 +18,4 @@ serve(
     console.log(`Server is running on http://localhost:${info.port}`);
   },
 );
+*/
