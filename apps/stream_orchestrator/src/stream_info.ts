@@ -1,5 +1,5 @@
 export class StreamInfo {
-  private _isStreaming = false;
+  private _streamId: number | undefined = undefined;
   private _userId: string;
   private _poolingId: NodeJS.Timeout | undefined = undefined;
   private _checkIsStreamingIntervalMs = 30000;
@@ -8,8 +8,32 @@ export class StreamInfo {
     this._userId = userId;
     this.checkIsStreaming();
   }
+
+  private _setStreamId(stringId: string) {
+    const id = Number(stringId.replace("lv", ""));
+
+    if (Number.isNaN(id)) {
+      throw new Error("cannot parse stream ID");
+    }
+    this._streamId = id;
+  }
+
+  get streamUrl(): string | undefined {
+    return this._streamId
+      ? `https://live.nicovideo.jp/watch/lv${this._streamId}`
+      : undefined;
+  }
+
+  get streamLv(): string | undefined {
+    return this._streamId ? `lv${this._streamId}` : undefined;
+  }
+
+  get streamId(): number | undefined {
+    return this._streamId;
+  }
+
   get isStreaming(): boolean {
-    return this._isStreaming;
+    return this._streamId !== undefined;
   }
 
   get userId(): string {
@@ -22,7 +46,7 @@ export class StreamInfo {
 
   startPooling(): void {
     this._poolingId = setInterval(async () => {
-      if (!this._isStreaming) {
+      if (!this.isStreaming) {
         await this.checkIsStreaming();
       }
     }, this._checkIsStreamingIntervalMs);
@@ -36,17 +60,20 @@ export class StreamInfo {
           "X-Frontend-Id": "6",
         },
       });
-      if (response.ok) {
-        const label = (await response.json()).activities[0]?.label?.text;
-        if (label) {
-          if (label === "LIVE") {
-            this._isStreaming = true;
-          }
-        } else {
-          throw new Error("No label found in response");
-        }
-      } else {
+      if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.status}`);
+      }
+      const json = await response.json();
+      const label = json.activities[0]?.label?.text;
+      if (!label) {
+        throw new Error("No label found in response");
+      }
+      if (label === "LIVE") {
+        const streamId = json.activities[0]?.content?.id;
+        if (!streamId) {
+          throw new Error("streamId not found in response");
+        }
+        this._setStreamId(streamId);
       }
     } catch (error) {
       //TODO: エラーをバスに流す処理の追加
