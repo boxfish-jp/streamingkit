@@ -1,8 +1,8 @@
 export class StreamInfo {
-  private _streamId: number | undefined = undefined;
-  private _userId: string;
+  private _streamId: number | undefined = undefined; // 生放送IDのうち、lv以降の数字
+  private _userId: string; // ニコニコのuserId
   private _poolingId: NodeJS.Timeout | undefined = undefined;
-  private _checkIsStreamingIntervalMs = 30000;
+  private _checkIsStreamingIntervalMs = 30000; // 配信しているかをポーリングする時間間隔
 
   constructor(userId: string) {
     this._userId = userId;
@@ -18,16 +18,19 @@ export class StreamInfo {
     this._streamId = id;
   }
 
+  // 配信先のurl
   get streamUrl(): string | undefined {
     return this._streamId
       ? `https://live.nicovideo.jp/watch/lv${this._streamId}`
       : undefined;
   }
 
+  // lvまで含めた配信先のID
   get streamLv(): string | undefined {
     return this._streamId ? `lv${this._streamId}` : undefined;
   }
 
+  // lvは含まない数字のみの配信先ID
   get streamId(): number | undefined {
     return this._streamId;
   }
@@ -64,11 +67,13 @@ export class StreamInfo {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
       const json = await response.json();
+      // jsonの中の一番最初の番組(最新)のラベルを探す。
       const label = json.activities[0]?.label?.text;
       if (!label) {
         throw new Error("No label found in response");
       }
       if (label === "LIVE") {
+        // その番組のlvから始まるIDを取得する。
         const streamId = json.activities[0]?.content?.id;
         if (!streamId) {
           throw new Error("streamId not found in response");
