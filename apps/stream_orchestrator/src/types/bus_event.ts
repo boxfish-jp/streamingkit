@@ -1,8 +1,6 @@
-import type { StreamStatus } from "./stream_status.js";
-
 export interface BusEvent {
   comment: [who: string, content: string];
-  statusStream: [status: StreamStatus];
+  streamInfo: [isStreaming: boolean, streamId?: number];
   /*
   statusComment: never;
   statusMakeAudio: never;
