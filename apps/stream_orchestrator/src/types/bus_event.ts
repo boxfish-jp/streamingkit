@@ -1,5 +1,5 @@
 export interface BusEvent {
-  comment: [who: string, content: string];
+  comment: [comment: Comment];
   streamInfo: [isStreaming: boolean, streamId?: number];
   /*
   statusComment: never;

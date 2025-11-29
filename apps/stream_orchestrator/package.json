@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",
+    "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz",
     "hono": "^4.10.4"
   },
   "devDependencies": {
