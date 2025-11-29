@@ -10,8 +10,7 @@ services:
       - PGID=1000
       - TZ=Asia/Tokyo
     volumes:
-      - ./apps/stream_orchestrator/:/app-dev/
-      - ./node_modules/:/node_modules
+      - .:/app-dev/
     ports:
       # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
       - "8080:3000"

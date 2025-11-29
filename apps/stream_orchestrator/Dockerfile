@@ -9,8 +9,8 @@ RUN apt-get update && \
 RUN npm install -g pnpm
 RUN curl -L -o voicepeak_jashinchan_freetrial.zip "https://download.dreamtonics.com/voicepeak-jashinchan-trial/voicepeak_jashinchan_freetrial.zip" && \
     unzip -O cp932 voicepeak_jashinchan_freetrial.zip && \
-    unzip -O cp932 "VOICEPEAK 邪神ちゃん 無料お試し版/Linux/Voicepeak-linux64.zip" && \
-    chmod +x ./Voicepeak/voicepeak
+    unzip -O cp932 "/VOICEPEAK 邪神ちゃん 無料お試し版/Linux/Voicepeak-linux64.zip" -d /config && \
+    chmod +x /config/Voicepeak/voicepeak
 
 FROM base AS dev
 WORKDIR /app-dev
