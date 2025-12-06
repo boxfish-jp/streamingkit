@@ -3,7 +3,7 @@ import { type ServerType, serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { Server as SocketServer } from "socket.io";
-import type { Message } from "./types/bus_event.js";
+import type { Message } from "./types/message.js";
 
 export class OrchestratorServer {
   private _app = new Hono();

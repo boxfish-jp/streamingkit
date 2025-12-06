@@ -106,7 +106,11 @@ export class CheckStreamInfo {
       }
     }
     for (const callback of this._notifyStreamingInfoCallbacks) {
-      callback({ isStreaming: this.isStreaming, streamId: this._streamId });
+      callback({
+        type: "streaming_info",
+        isStreaming: this.isStreaming,
+        streamId: this.streamId,
+      });
     }
   }
 }

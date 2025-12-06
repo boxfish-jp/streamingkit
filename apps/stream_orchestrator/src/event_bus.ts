@@ -1,6 +1,6 @@
-import type { Message } from "./types/bus_event.js";
+import type { Message } from "./types/message.js";
 
-class Bus {
+export class Bus {
   private _listeners: Array<(message: Message) => void> = [];
 
   emit(message: Message) {

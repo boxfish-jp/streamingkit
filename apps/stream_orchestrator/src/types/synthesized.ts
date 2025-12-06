@@ -1,3 +1,6 @@
-import type { WavData } from "../wav_data.js";
+export interface SynthesizedMessage {
+  type: "synthesized";
+  buffer: Buffer;
+}
 
-export type NotifySynthesized = (wavdata: WavData) => void;
+export type NotifySynthesized = (message: SynthesizedMessage) => void;

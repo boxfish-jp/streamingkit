@@ -5,7 +5,7 @@ import type {
   SimpleNotificationV2,
 } from "@kikurage/nicolive-api";
 import { NicoliveClient } from "@kikurage/nicolive-api/node.js";
-import { Comment, type NotifyCommentCallback } from "./types/comment.js";
+import { CommentMessage, type NotifyCommentCallback } from "./types/comment.js";
 import type { NotifyError } from "./types/error.js";
 
 export class ListenComment {
@@ -65,7 +65,7 @@ export class ListenComment {
     if (chat.name === "ふぐお") {
       return;
     }
-    const newComment = new Comment(
+    const newComment = new CommentMessage(
       "viewer",
       chat.content,
       chat.name,
@@ -80,8 +80,9 @@ export class ListenComment {
     if (!content) {
       return;
     }
-    const newComment = new Comment("bot", content);
-    this._emitCommentCallBacks.forEach((cb) => cb(newComment));
+    this._emitCommentCallBacks.forEach((cb) =>
+      cb(new CommentMessage("bot", content)),
+    );
   }
 
   private _onSimpleNotificationV2(notification: SimpleNotificationV2) {
@@ -89,8 +90,9 @@ export class ListenComment {
     if (!content) {
       return;
     }
-    const newComment = new Comment("bot", content);
-    this._emitCommentCallBacks.forEach((cb) => cb(newComment));
+    this._emitCommentCallBacks.forEach((cb) =>
+      cb(new CommentMessage("bot", content)),
+    );
   }
 
   private _onChangeState(state: NicoliveState) {
@@ -98,7 +100,8 @@ export class ListenComment {
     if (!nusiCome) {
       return;
     }
-    const newComment = new Comment("fuguo", nusiCome);
-    this._emitCommentCallBacks.forEach((cb) => cb(newComment));
+    this._emitCommentCallBacks.forEach((cb) =>
+      cb(new CommentMessage("fuguo", nusiCome)),
+    );
   }
 }

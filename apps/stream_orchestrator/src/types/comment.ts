@@ -1,13 +1,15 @@
 type CommentLabel = "viewer" | "bot" | "fuguo";
 
-export type NotifyCommentCallback = (comment: Comment) => void;
+export type NotifyCommentCallback = (message: CommentMessage) => void;
 
-export class Comment {
+export class CommentMessage {
+  readonly type = "comment";
   readonly label: CommentLabel;
   readonly username?: string;
   readonly rawUserId?: bigint;
   readonly hashedUserId?: string;
-  content: string;
+  readonly content: string;
+  speekText: string;
 
   constructor(
     label: CommentLabel,
@@ -18,6 +20,7 @@ export class Comment {
   ) {
     this.label = label;
     this.content = content;
+    this.speekText = content;
     this.username = username;
     this.rawUserId = rawUserId;
     this.hashedUserId = hashedUserId;
