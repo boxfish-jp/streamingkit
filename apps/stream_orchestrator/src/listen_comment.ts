@@ -43,7 +43,7 @@ export class ListenComment {
         .on("simpleNotification", this._onSimpleNotification)
         .on("simpleNotificationV2", this._onSimpleNotificationV2)
         .on("changeState", this._onChangeState);
-      client.connect();
+      await client.connect();
       this._stopListen = () => {
         try {
           client?.disconnect();
