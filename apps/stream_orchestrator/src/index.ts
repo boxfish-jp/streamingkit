@@ -1,5 +1,6 @@
 import { CheckStreamInfo } from "./check_stream_info.js";
 import { clean } from "./clean.js";
+import { getEducationConfigs } from "./education.js";
 import { Bus } from "./event_bus.js";
 import { ListenComment } from "./listen_comment.js";
 import { SynthesizeRunner } from "./synthesize.js";
@@ -10,6 +11,7 @@ let isStreaming = false;
 // const checkStreamInfo = new CheckStreamInfo("");
 const listenComment = new ListenComment();
 const makeAudioRunner = new SynthesizeRunner();
+// TODO: コマンド追加の実装
 const commands: Command[] = [];
 
 const main = (message: Message) => {
@@ -41,7 +43,8 @@ const main = (message: Message) => {
     case "synthesized":
       break;
     case "instSyntesize": {
-      const cleanText = clean(message.content);
+      const educationConfigs = getEducationConfigs();
+      const cleanText = clean(message.content, educationConfigs);
       makeAudioRunner.addQueue(cleanText);
       break;
     }
