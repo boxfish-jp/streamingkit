@@ -3,9 +3,8 @@ import { readFileSync } from "node:fs";
 import { TaskRunner } from "task_runner";
 import type { NotifyError } from "./types/error.js";
 import type { NotifySynthesized } from "./types/synthesized.js";
-import { WavData } from "./wav_data.js";
 
-export class MakeAudioRunner {
+export class SynthesizeRunner {
   private _taskRunner = new TaskRunner();
   private _onErrorCallbacks: Array<NotifyError> = [];
   private _notifySynthesizedCallbacks: Array<NotifySynthesized> = [];
@@ -56,8 +55,9 @@ export class MakeAudioRunner {
       }
       clearTimeout(timeout);
       const data = readFileSync(fileName);
-      const wavData = new WavData(data);
-      this._notifySynthesizedCallbacks.forEach((cb) => cb(wavData));
+      this._notifySynthesizedCallbacks.forEach((cb) =>
+        cb({ type: "synthesized", buffer: data }),
+      );
     };
     const errorHandler = (error: unknown) => {
       this._onErrorCallbacks.forEach((cb) => cb(String(error)));
