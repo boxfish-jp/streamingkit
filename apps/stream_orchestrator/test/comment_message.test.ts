@@ -30,6 +30,16 @@ describe("commentMessage: filter", () => {
     );
   });
 
+  test("複数の変換対象が含まれたURLはそのまま出力", () => {
+    const message: CommentMessage = new CommentMessage(
+      "viewer",
+      "https://www.youtube.com/watch?v=JwWVgGE5b0Q https://www.youtube.com/watch?v=JwWVgGE5b0Q",
+    );
+    expect(message.filteredContent).toBe(
+      "https://www.youtube.com/watch?v=JwWVgGE5b0Q https://www.youtube.com/watch?v=JwWVgGE5b0Q",
+    );
+  });
+
   test("URLの中に変換対象(全角アルファベット)とその外に変換対象(全角アルファベット)は、URLはそのままで変換対象は小文字にする。", () => {
     const message: CommentMessage = new CommentMessage(
       "viewer",
