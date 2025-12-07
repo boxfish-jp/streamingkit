@@ -33,11 +33,18 @@ const main = (message: Message) => {
       bus_evnet.emit({ type: "instSyntesize", content: message.content });
       break;
     case "streaming_info":
-      if (message.isStreaming && !isStreaming) {
-        if (message.streamId) {
+      if (message.isStreaming) {
+        if (message.streamId && !isStreaming) {
+          // TODO: 配信の開始を検知したことをユーザーに通知する処理の実装
           listenComment.start(`lv${message.streamId}`);
         }
         isStreaming = true;
+      } else {
+        if (isStreaming) {
+          // TODO: 配信の終了を検知したことをユーザーに通知する処理の実装
+          listenComment.stop();
+        }
+        isStreaming = false;
       }
       break;
     case "synthesized":
