@@ -1,12 +1,12 @@
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
-import type { NotifyError, NotifySynthesized } from "kit_models";
+import type { NotifyError, OnSynthesized, SynthesizeTag } from "kit_models";
 import { TaskRunner } from "task_runner";
 
 export class SynthesizeRunner {
   private _taskRunner = new TaskRunner();
   private _onErrorCallbacks: Array<NotifyError> = [];
-  private _notifySynthesizedCallbacks: Array<NotifySynthesized> = [];
+  private _notifySynthesizedCallbacks: Array<OnSynthesized> = [];
 
   registerOnError(callback: NotifyError) {
     this._onErrorCallbacks.push(callback);
@@ -18,17 +18,17 @@ export class SynthesizeRunner {
     );
   }
 
-  registerOnSynthesized(callback: NotifySynthesized) {
+  registerOnSynthesized(callback: OnSynthesized) {
     this._notifySynthesizedCallbacks.push(callback);
   }
 
-  removeOnSynthesized(callback: NotifySynthesized) {
+  removeOnSynthesized(callback: OnSynthesized) {
     this._notifySynthesizedCallbacks = this._notifySynthesizedCallbacks.filter(
       (cb) => cb !== callback,
     );
   }
 
-  addQueue(text: string) {
+  addQueue(text: string, tag: SynthesizeTag) {
     const task = async () => {
       const fileName = `${Date.now()}.wav`;
       const result = spawn(
@@ -55,7 +55,7 @@ export class SynthesizeRunner {
       clearTimeout(timeout);
       const data = readFileSync(fileName);
       this._notifySynthesizedCallbacks.forEach((cb) =>
-        cb({ type: "synthesized", buffer: data }),
+        cb({ type: "synthesized", buffer: data, tag: tag }),
       );
     };
     const errorHandler = (error: unknown) => {

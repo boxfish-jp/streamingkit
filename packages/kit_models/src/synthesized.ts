@@ -1,6 +1,9 @@
+import type { SynthesizeTag } from "./synthesize_tag";
+
 export interface SynthesizedMessage {
   type: "synthesized";
+  tag: SynthesizeTag;
   buffer: Buffer;
 }
 
-export type NotifySynthesized = (message: SynthesizedMessage) => void;
+export type OnSynthesized = (message: SynthesizedMessage) => void;

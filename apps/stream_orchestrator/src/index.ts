@@ -32,7 +32,11 @@ const main = (message: Message) => {
           return;
         }
       }
-      bus_evnet.emit({ type: "instSyntesize", content: message.content });
+      bus_evnet.emit({
+        type: "instSyntesize",
+        content: message.content,
+        tag: "comment",
+      });
       break;
     case "streaming_info":
       if (message.isStreaming) {
@@ -54,7 +58,7 @@ const main = (message: Message) => {
     case "instSyntesize": {
       const educationConfigs = getEducationConfigs();
       const cleanText = clean(message.content, educationConfigs);
-      makeAudioRunner.addQueue(cleanText);
+      makeAudioRunner.addQueue(cleanText, message.tag);
       break;
     }
   }
