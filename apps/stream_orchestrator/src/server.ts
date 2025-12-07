@@ -2,8 +2,8 @@ import type { Server as HttpServer } from "node:http";
 import { type ServerType, serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import type { Message } from "kit_models";
 import { Server as SocketServer } from "socket.io";
-import type { Message } from "./model/message.js";
 
 export class OrchestratorServer {
   private _app = new Hono();

@@ -1,5 +1,4 @@
-import type { NotifyError } from "./model/error.js";
-import type { NotifyStreamingInfoCallback } from "./model/stream_info.js";
+import type { NotifyError, NotifyStreamingInfoCallback } from "kit_models";
 
 export class CheckStreamInfo {
   private _streamId: number | undefined = undefined; // 生放送IDのうち、lv以降の数字

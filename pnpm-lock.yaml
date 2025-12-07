@@ -126,6 +126,12 @@ importers:
       hono:
         specifier: ^4.10.4
         version: 4.10.4
+      kit_models:
+        specifier: workspace:*
+        version: link:../../packages/kit_models
+      regexs:
+        specifier: workspace:*
+        version: link:../../packages/regexs
       socket.io:
         specifier: ^4.8.1
         version: 4.8.1
@@ -142,6 +148,14 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
+
+  packages/kit_models:
+    dependencies:
+      regexs:
+        specifier: workspace:*
+        version: link:../regexs
+
+  packages/regexs: {}
 
   packages/task_runner: {}
 

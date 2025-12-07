@@ -1,4 +1,4 @@
-import type { EducationConfig } from "./model/education_config.js";
+import type { EducationConfig } from "kit_models";
 
 // TODO: 教育コマンドの取得の実装
 export const getEducationConfigs = (): EducationConfig[] => {

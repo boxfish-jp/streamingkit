@@ -1,4 +1,4 @@
-import type { SynthesizedMessage } from "../src/model/synthesized.js";
+import type { SynthesizedMessage } from "kit_models";
 import { SynthesizeRunner } from "../src/synthesize.js";
 import { WavData } from "../src/wav_data.js";
 

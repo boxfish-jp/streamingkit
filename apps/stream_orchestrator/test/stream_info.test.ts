@@ -1,7 +1,6 @@
+import type { NotifyError, StreamInfoMessage } from "kit_models";
 import { expect, test } from "vitest";
 import { CheckStreamInfo } from "../src/check_stream_info.js";
-import type { NotifyError } from "../src/model/error.js";
-import type { StreamInfoMessage } from "../src/model/stream_info.js";
 
 test("getStreamInfo: isStreamingTrue", async () => {
   const streamInfo = new CheckStreamInfo("70969122");

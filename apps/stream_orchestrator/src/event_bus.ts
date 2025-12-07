@@ -1,4 +1,4 @@
-import type { Message } from "./model/message.js";
+import type { Message } from "kit_models";
 
 export class Bus {
   private _listeners: Array<(message: Message) => void> = [];

@@ -1,10 +1,10 @@
+import type { Command, Message } from "kit_models";
 import { CheckStreamInfo } from "./check_stream_info.js";
 import { clean } from "./clean.js";
 import { getEducationConfigs } from "./education.js";
 import { Bus } from "./event_bus.js";
 import { ListenComment } from "./listen_comment.js";
-import type { Command } from "./model/command.js";
-import type { Message } from "./model/message.js";
+import { OrchestratorServer } from "./server.js";
 import { SynthesizeRunner } from "./synthesize.js";
 
 let isStreaming = false;
@@ -13,8 +13,10 @@ const listenComment = new ListenComment();
 const makeAudioRunner = new SynthesizeRunner();
 // TODO: コマンド追加の実装
 const commands: Command[] = [];
+const orchestratorServer = new OrchestratorServer("localhost", 8888);
 
 const main = (message: Message) => {
+  orchestratorServer.emitMessage(message);
   switch (message.type) {
     case "comment":
       for (const command of commands) {

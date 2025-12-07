@@ -1,5 +1,5 @@
-import type { EducationConfig } from "./model/education_config.js";
-import { urlRegex } from "./url_regex.js";
+import type { EducationConfig } from "kit_models";
+import { urlRegex } from "regexs";
 
 // URLの置換や教育の実行
 export const clean = (

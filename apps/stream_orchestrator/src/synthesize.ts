@@ -1,8 +1,7 @@
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
+import type { NotifyError, NotifySynthesized } from "kit_models";
 import { TaskRunner } from "task_runner";
-import type { NotifyError } from "./model/error.js";
-import type { NotifySynthesized } from "./model/synthesized.js";
 
 export class SynthesizeRunner {
   private _taskRunner = new TaskRunner();

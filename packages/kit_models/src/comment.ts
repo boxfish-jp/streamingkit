@@ -1,4 +1,4 @@
-import { urlRegex } from "../url_regex.js";
+import { urlRegex } from "regexs";
 
 type CommentLabel = "viewer" | "bot" | "fuguo";
 
