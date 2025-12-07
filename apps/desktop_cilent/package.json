@@ -21,9 +21,6 @@
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
   },
-  "pnpm": {
-    "neverBuiltDependencies": []
-  },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
@@ -36,9 +33,11 @@
     "clsx": "^2.1.1",
     "hono": "^4.7.1",
     "lucide-react": "^0.456.0",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^4.1.9"
+    "zod": "^4.1.9",
+    "kit_models": "workspace:*"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
