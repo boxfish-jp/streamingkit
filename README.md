@@ -1,4 +1,4 @@
-# streamingkit
+# livestream_kit
 ## なにこれ
 このリポジトリは、[ふぐお](https://www.nicovideo.jp/user/98746932/live_programs)が配信中に使用している配信ツールです。
 
