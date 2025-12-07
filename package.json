@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "orchest": "pnpm -C apps/stream_orchestrator",
+    "desktop": "pnpm -C apps/desktop_cilent",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
