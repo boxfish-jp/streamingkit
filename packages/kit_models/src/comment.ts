@@ -2,7 +2,7 @@ import { urlRegex } from "regexs";
 
 type CommentLabel = "viewer" | "bot" | "fuguo";
 
-export type NotifyCommentCallback = (message: CommentMessage) => void;
+export type OnCommentCallback = (message: CommentMessage) => void;
 
 export class CommentMessage {
   readonly type = "comment";

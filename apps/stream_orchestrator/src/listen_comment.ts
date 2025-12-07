@@ -7,17 +7,24 @@ import type {
 import { NicoliveClient } from "@kikurage/nicolive-api/node.js";
 import {
   CommentMessage,
-  type NotifyCommentCallback,
   type NotifyError,
+  type OnCommentCallback,
 } from "kit_models";
 
 export class ListenComment {
   private _stopListen: (() => void) | null = null;
-  private _emitCommentCallBacks: Array<NotifyCommentCallback> = [];
+  private _onCommentCallBacks: Array<OnCommentCallback> = [];
   private _onErrorCallbacks: Array<NotifyError> = [];
 
-  registerOnComment(callback: NotifyCommentCallback) {
-    this._emitCommentCallBacks.push(callback);
+  constructor() {
+    this._onChat = this._onChat.bind(this);
+    this._onSimpleNotification = this._onSimpleNotification.bind(this);
+    this._onSimpleNotificationV2 = this._onSimpleNotificationV2.bind(this);
+    this._onChangeState = this._onChangeState.bind(this);
+  }
+
+  registerOnComment(callback: OnCommentCallback) {
+    this._onCommentCallBacks.push(callback);
   }
 
   registerOnError(callback: NotifyError) {
@@ -30,8 +37,8 @@ export class ListenComment {
     );
   }
 
-  removeOnComment(callback: NotifyCommentCallback) {
-    this._emitCommentCallBacks = this._emitCommentCallBacks.filter(
+  removeOnComment(callback: OnCommentCallback) {
+    this._onCommentCallBacks = this._onCommentCallBacks.filter(
       (cb) => cb !== callback,
     );
   }
@@ -75,7 +82,7 @@ export class ListenComment {
       chat.rawUserId,
       chat.hashedUserId,
     );
-    this._emitCommentCallBacks.forEach((cb) => cb(newComment));
+    this._onCommentCallBacks.forEach((cb) => cb(newComment));
   }
 
   private _onSimpleNotification(notification: SimpleNotification) {
@@ -83,7 +90,7 @@ export class ListenComment {
     if (!content) {
       return;
     }
-    this._emitCommentCallBacks.forEach((cb) =>
+    this._onCommentCallBacks.forEach((cb) =>
       cb(new CommentMessage("bot", content)),
     );
   }
@@ -93,7 +100,7 @@ export class ListenComment {
     if (!content) {
       return;
     }
-    this._emitCommentCallBacks.forEach((cb) =>
+    this._onCommentCallBacks.forEach((cb) =>
       cb(new CommentMessage("bot", content)),
     );
   }
@@ -103,7 +110,7 @@ export class ListenComment {
     if (!nusiCome) {
       return;
     }
-    this._emitCommentCallBacks.forEach((cb) =>
+    this._onCommentCallBacks.forEach((cb) =>
       cb(new CommentMessage("fuguo", nusiCome)),
     );
   }
