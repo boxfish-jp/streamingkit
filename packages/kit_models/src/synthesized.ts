@@ -6,4 +6,4 @@ export interface SynthesizedMessage {
   buffer: Buffer;
 }
 
-export type OnSynthesized = (message: SynthesizedMessage) => void;
+export type OnSynthesized<T> = (message: SynthesizedMessage) => T;

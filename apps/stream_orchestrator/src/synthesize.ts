@@ -6,7 +6,7 @@ import { TaskRunner } from "task_runner";
 export class SynthesizeRunner {
   private _taskRunner = new TaskRunner();
   private _onErrorCallbacks: Array<NotifyError> = [];
-  private _notifySynthesizedCallbacks: Array<OnSynthesized> = [];
+  private _notifySynthesizedCallbacks: Array<OnSynthesized<void>> = [];
 
   registerOnError(callback: NotifyError) {
     this._onErrorCallbacks.push(callback);
@@ -18,11 +18,11 @@ export class SynthesizeRunner {
     );
   }
 
-  registerOnSynthesized(callback: OnSynthesized) {
+  registerOnSynthesized(callback: OnSynthesized<void>) {
     this._notifySynthesizedCallbacks.push(callback);
   }
 
-  removeOnSynthesized(callback: OnSynthesized) {
+  removeOnSynthesized(callback: OnSynthesized<void>) {
     this._notifySynthesizedCallbacks = this._notifySynthesizedCallbacks.filter(
       (cb) => cb !== callback,
     );
