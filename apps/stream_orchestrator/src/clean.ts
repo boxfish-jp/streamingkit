@@ -1,4 +1,4 @@
-import type { EducationConfig } from "./types/education_config.js";
+import type { EducationConfig } from "./model/education_config.js";
 import { urlRegex } from "./url_regex.js";
 
 // URLの置換や教育の実行

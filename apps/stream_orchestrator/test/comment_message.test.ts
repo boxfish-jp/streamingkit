@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { CommentMessage } from "../src/types/comment.js";
+import { CommentMessage } from "../src/model/comment.js";
 
 describe("commentMessage: filter", () => {
   test("変換対象がない文字列はそのまま出力", () => {

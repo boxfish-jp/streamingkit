@@ -3,9 +3,9 @@ import { clean } from "./clean.js";
 import { getEducationConfigs } from "./education.js";
 import { Bus } from "./event_bus.js";
 import { ListenComment } from "./listen_comment.js";
+import type { Command } from "./model/command.js";
+import type { Message } from "./model/message.js";
 import { SynthesizeRunner } from "./synthesize.js";
-import type { Command } from "./types/command.js";
-import type { Message } from "./types/message.js";
 
 let isStreaming = false;
 // const checkStreamInfo = new CheckStreamInfo("");

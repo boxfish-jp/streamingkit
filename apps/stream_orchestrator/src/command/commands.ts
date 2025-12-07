@@ -1,3 +1,3 @@
-import type { Command } from "../types/command.js";
+import type { Command } from "../model/command.js";
 
 const commands: Command[] = [];

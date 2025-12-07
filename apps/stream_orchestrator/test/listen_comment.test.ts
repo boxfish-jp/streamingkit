@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { ListenComment } from "../src/listen_comment.js";
-import type { NotifyError } from "../src/types/error.js";
+import type { NotifyError } from "../src/model/error.js";
 
 test("listenComent: invalid Id", async () => {
   const listenComment = new ListenComment();

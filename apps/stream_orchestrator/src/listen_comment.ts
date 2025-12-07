@@ -5,8 +5,8 @@ import type {
   SimpleNotificationV2,
 } from "@kikurage/nicolive-api";
 import { NicoliveClient } from "@kikurage/nicolive-api/node.js";
-import { CommentMessage, type NotifyCommentCallback } from "./types/comment.js";
-import type { NotifyError } from "./types/error.js";
+import { CommentMessage, type NotifyCommentCallback } from "./model/comment.js";
+import type { NotifyError } from "./model/error.js";
 
 export class ListenComment {
   private _stopListen: (() => void) | null = null;
