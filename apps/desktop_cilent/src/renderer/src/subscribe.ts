@@ -1,3 +1,7 @@
+import { Bus } from "kit_models";
+import clientSocketConnected from "./assets/client_socket_connected.wav";
+import clientSocketConnectionErrorWav from "./assets/client_socket_connection_error.wav";
+import clientSocketDisconectedWav from "./assets/client_socket_disconnected.wav";
 import { ChannelsManager } from "./channels";
 import type { AudioQueueItem } from "./lib/audio_queue";
 import { connectSocket } from "./lib/socket";
@@ -38,18 +42,77 @@ const onAudio = async (
   }
 };
 
-export const startSubscribeAudio = () => {
+let lastError = { status: "", time: 0 };
+
+export const startSubscribe = () => {
   const remove = window.api.onAudio(async (value) => {
     await onAudio(value.id, value.channel, value.audio);
   });
-  return remove;
-};
+  const bus = new Bus();
 
-export const startConnectSocket = () => {
   connectSocket(async (message) => {
-    switch (message.tag) {
-      case "comment":
-        await onAudio(Date.now(), 0, message.buffer);
+    bus.emit(message);
+  });
+
+  bus.on(async (message) => {
+    switch (message.type) {
+      case "synthesized": {
+        let channel = 0;
+        if (message.channel) {
+          channel = message.channel;
+        } else if (message.tag === "announce") {
+          channel = 4;
+        }
+        onAudio(Date.now(), channel, message.buffer);
+        break;
+      }
+      case "error":
+        switch (message.status) {
+          case "clientSocketConnection":
+            if (
+              lastError.status !== message.status ||
+              lastError.time + 30000 < message.time
+            ) {
+              const response = await fetch(clientSocketConnectionErrorWav);
+              bus.emit({
+                type: "synthesized",
+                buffer: (await response.arrayBuffer()) as any,
+                tag: "announce",
+              });
+              lastError = { status: message.status, time: Date.now() };
+            }
+            break;
+          case "clientSocketDisconnected":
+            if (
+              lastError.status !== message.status ||
+              lastError.time + 30000 < message.time
+            ) {
+              const response = await fetch(clientSocketDisconectedWav);
+              bus.emit({
+                type: "synthesized",
+                buffer: (await response.arrayBuffer()) as any,
+                tag: "announce",
+              });
+              lastError = { status: message.status, time: Date.now() };
+            }
+            break;
+        }
+        break;
+      case "notify":
+        switch (message.status) {
+          case "clientSocketConnected": {
+            console.log("Socket connected notification received");
+            const response = await fetch(clientSocketConnected);
+            bus.emit({
+              type: "synthesized",
+              buffer: (await response.arrayBuffer()) as any,
+              tag: "announce",
+            });
+            break;
+          }
+        }
     }
   });
+
+  return remove;
 };

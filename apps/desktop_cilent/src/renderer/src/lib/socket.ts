@@ -1,19 +1,36 @@
-import type { Message, OnSynthesized } from "kit_models";
+import type { Message } from "kit_models";
 import { io } from "socket.io-client";
 
-export const connectSocket = (onSynthesized: OnSynthesized<Promise<void>>) => {
+export const connectSocket = (emitMessage: (message: Message) => void) => {
   const socket = io("http://localhost:8888", { path: "/ws" });
 
-  socket.on("connect", () => {
+  socket.on("connect", async () => {
     console.log("Socket connected:", socket.id);
+    emitMessage({
+      type: "notify",
+      status: "clientSocketConnected",
+    });
   });
 
   socket.on("message", async (message: Message) => {
     console.log("Received message:", message);
-    switch (message.type) {
-      case "synthesized":
-        await onSynthesized(message);
-        break;
-    }
+    emitMessage(message);
+  });
+
+  socket.on("disconnect", async (reason) => {
+    emitMessage({
+      type: "error",
+      status: "clientSocketDisconnected",
+      time: Date.now(),
+    });
+  });
+
+  socket.on("connect_error", async (err) => {
+    emitMessage({
+      type: "error",
+      status: "clientSocketConnection",
+      time: Date.now(),
+    });
+    console.log("接続エラーが発生しました:", err.message);
   });
 };

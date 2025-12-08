@@ -3,10 +3,9 @@ import "./assets/main.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { startConnectSocket, startSubscribeAudio } from "./subscribe";
+import { startSubscribe } from "./subscribe";
 
-startSubscribeAudio();
-startConnectSocket();
+startSubscribe();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
