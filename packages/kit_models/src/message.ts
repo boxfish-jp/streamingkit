@@ -1,5 +1,7 @@
 import type { CommentMessage } from "./comment.js";
+import type { ErrorMessage } from "./error.js";
 import type { InstSyntesizeMessage } from "./inst_synthesize.js";
+import type { NotifyMessage } from "./notify.js";
 import type { StreamInfoMessage } from "./stream_info.js";
 import type { SynthesizedMessage } from "./synthesized.js";
 
@@ -7,7 +9,9 @@ export type Message =
   | CommentMessage
   | StreamInfoMessage
   | SynthesizedMessage
-  | InstSyntesizeMessage;
+  | InstSyntesizeMessage
+  | ErrorMessage
+  | NotifyMessage;
 
 /*
   statusComment: never;
