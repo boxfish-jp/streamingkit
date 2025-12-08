@@ -1,7 +1,7 @@
 import type { SynthesizeTag } from "./synthesize_tag";
 
 export interface InstSyntesizeMessage {
-  type: "instSyntesize";
+  type: "instSynthesize";
   content: string;
   tag: SynthesizeTag;
 }

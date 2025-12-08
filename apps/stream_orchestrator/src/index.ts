@@ -37,7 +37,7 @@ const main = (message: Message) => {
         }
       }
       bus_evnet.emit({
-        type: "instSyntesize",
+        type: "instSynthesize",
         content: message.content,
         tag: "comment",
       });
@@ -59,7 +59,7 @@ const main = (message: Message) => {
       break;
     case "synthesized":
       break;
-    case "instSyntesize": {
+    case "instSynthesize": {
       const educationConfigs = getEducationConfigs();
       const cleanText = clean(message.content, educationConfigs);
       makeAudioRunner.addQueue(cleanText, message.tag);
