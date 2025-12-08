@@ -1,14 +1,18 @@
-import type { Command, Message } from "kit_models";
+import { Bus, type Command, type Message } from "kit_models";
 import { CheckStreamInfo } from "./check_stream_info.js";
 import { clean } from "./clean.js";
 import { getEducationConfigs } from "./education.js";
-import { Bus } from "./event_bus.js";
 import { ListenComment } from "./listen_comment.js";
 import { OrchestratorServer } from "./server.js";
 import { SynthesizeRunner } from "./synthesize.js";
 
 let isStreaming = false;
-// const checkStreamInfo = new CheckStreamInfo("");
+const bus_evnet = new Bus();
+const checkStreamInfo = new CheckStreamInfo("98746932");
+checkStreamInfo.registerNotifyCallback((message) => {
+  bus_evnet.emit(message);
+});
+checkStreamInfo.startPooling();
 const listenComment = new ListenComment();
 const makeAudioRunner = new SynthesizeRunner();
 // TODO: コマンド追加の実装
@@ -63,7 +67,5 @@ const main = (message: Message) => {
     }
   }
 };
-
-const bus_evnet = new Bus();
 
 bus_evnet.on(main);

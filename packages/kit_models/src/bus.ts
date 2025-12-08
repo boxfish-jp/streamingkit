@@ -1,4 +1,4 @@
-import type { Message } from "kit_models";
+import type { Message } from "./message.js";
 
 export class Bus {
   private _listeners: Array<(message: Message) => void> = [];
@@ -13,13 +13,3 @@ export class Bus {
     this._listeners.push(listener);
   }
 }
-
-/*
-export const event_bus = new Bus();
-const temp: Buffer = Buffer.from([0]);
-
-event_bus.emit({
-  type: "synthesized",
-  message: new WavData(temp),
-});
-*/
