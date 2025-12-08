@@ -1,1 +1,1 @@
-export type SynthesizeTag = "comment";
+export type SynthesizeTag = "comment" | "announce" | "other";
