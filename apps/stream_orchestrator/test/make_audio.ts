@@ -10,4 +10,4 @@ const onSynthesized = (message: SynthesizedMessage) => {
 };
 makeAudioRunner.registerOnSynthesized(onSynthesized);
 
-makeAudioRunner.addQueue("これはテストです。");
+makeAudioRunner.addQueue("これはテストです。", "other");
