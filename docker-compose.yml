@@ -15,7 +15,7 @@ services:
       # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
       - "8080:3000"
       # Next.js アプリ本体 -> localhost:3001 でアクセス
-      - "3444:3444"
+      - "8888:8888"
     shm_size: "1gb"
     #restart: unless-stopped
     #command: pnpm --filter stream_orchestrator dev
