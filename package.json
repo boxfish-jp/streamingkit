@@ -15,5 +15,8 @@
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
     "vitest": "4.0.13"
+  },
+  "dependencies": {
+    "socket.io-msgpack-parser": "^3.0.2"
   }
 }

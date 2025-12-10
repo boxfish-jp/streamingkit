@@ -1,8 +1,12 @@
 import type { Message } from "kit_models";
 import { io } from "socket.io-client";
+import customParser from "socket.io-msgpack-parser";
 
 export const connectSocket = (emitMessage: (message: Message) => void) => {
-  const socket = io("http://localhost:8888", { path: "/ws" });
+  const socket = io("http://localhost:8888", {
+    path: "/ws",
+    parser: customParser,
+  });
 
   socket.on("connect", async () => {
     console.log("Socket connected:", socket.id);

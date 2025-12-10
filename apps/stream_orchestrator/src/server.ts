@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Message } from "kit_models";
 import { Server as SocketServer } from "socket.io";
+import customParser from "socket.io-msgpack-parser";
 
 export class OrchestratorServer {
   private _app = new Hono();
@@ -49,14 +50,18 @@ export class OrchestratorServer {
         origin: "*",
         methods: ["GET", "POST"],
       },
+      parser: customParser,
     });
 
     this._socketServer.on("message", (message) => {
       this._onMessageCallbacks.forEach((cb) => cb(message));
     });
+
+    this._app.get("/", (c) => c.text("Orchestrator Server is running"));
   }
 
   emitMessage(message: Message) {
+    console.log("Emitting message:", message.type);
     this._socketServer.emit("message", message);
   }
 }
