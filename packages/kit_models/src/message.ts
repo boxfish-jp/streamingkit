@@ -4,6 +4,7 @@ import type { InstSyntesizeMessage } from "./inst_synthesize.js";
 import type { NotifyMessage } from "./notify.js";
 import type { StreamInfoMessage } from "./stream_info.js";
 import type { SynthesizedMessage } from "./synthesized.js";
+import type { VideoMessage } from "./video.js";
 
 export type Message =
   | CommentMessage
@@ -11,7 +12,8 @@ export type Message =
   | SynthesizedMessage
   | InstSyntesizeMessage
   | ErrorMessage
-  | NotifyMessage;
+  | NotifyMessage
+  | VideoMessage;
 
 /*
   statusComment: never;
