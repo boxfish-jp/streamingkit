@@ -15,6 +15,8 @@ export type Message =
   | NotifyMessage
   | VideoMessage;
 
+export type OnMessage = (message: Message) => void;
+
 /*
   statusComment: never;
   statusMakeAudio: never;

@@ -1,10 +1,66 @@
-import type { EducationConfig } from "kit_models";
+import { readFileSync, writeFileSync } from "node:fs";
+import type { EducationConfig, OnMessage } from "kit_models";
 
-// TODO: 教育コマンドの取得の実装
-export const getEducationConfigs = (): EducationConfig[] => {
-  throw new Error("Not implemented");
+export const getEducationConfigs = (
+  onMessage: OnMessage,
+): EducationConfig[] => {
+  try {
+    return JSON.parse(
+      readFileSync("../../education.json", "utf-8"),
+    ) as EducationConfig[];
+  } catch (error) {
+    console.log(error);
+    onMessage({
+      type: "error",
+      status: "serverReadEducation",
+      time: Date.now(),
+      message: `Failed to read education config: ${error}`,
+    });
+    return [];
+  }
 };
 
-// TODO: 教育コマンドの追加の実装
+export const addEducationCommand = (
+  config: EducationConfig,
+  onMessage: OnMessage,
+) => {
+  const configs = getEducationConfigs(onMessage);
+  configs.push(config);
+  try {
+    writeFileSync(
+      "../../education.json",
+      JSON.stringify(configs, null, 2),
+      "utf-8",
+    );
+  } catch (error) {
+    onMessage({
+      type: "error",
+      status: "serverWriteEducation",
+      time: Date.now(),
+      message: `Failed to read education config: ${error}`,
+    });
+  }
+};
 
-// TODO: 教育コマンドの削除の実装
+export const removeEducationCommand = (
+  keyword: string,
+  onMessage: OnMessage,
+) => {
+  const configs = getEducationConfigs(onMessage).filter(
+    (config) => config.key !== keyword,
+  );
+  try {
+    writeFileSync(
+      "../../education.json",
+      JSON.stringify(configs, null, 2),
+      "utf-8",
+    );
+  } catch (error) {
+    onMessage({
+      type: "error",
+      status: "serverWriteEducation",
+      time: Date.now(),
+      message: `Failed to read education config: ${error}`,
+    });
+  }
+};

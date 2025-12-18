@@ -14,35 +14,22 @@ const fuguoID = "98746932";
 
 const main = async () => {
   const checkStreamInfo = new CheckStreamInfo(fuguoID);
-  checkStreamInfo.on("streamInfo", (message) => {
+  const onMessage = (message: Message) => {
     bus_evnet.emit(message);
-  });
-  checkStreamInfo.on("error", (message) => {
-    bus_evnet.emit(message);
-  });
+  };
+  checkStreamInfo.on("streamInfo", onMessage);
+  checkStreamInfo.on("error", onMessage);
   checkStreamInfo.startPooling();
   // TODO: コマンド追加の実装
-  const commands = await getCommands((message) => {
-    bus_evnet.emit(message);
-  });
+  const commands = await getCommands(onMessage);
   const orchestratorServer = new OrchestratorServer("0.0.0.0", 8888);
-  orchestratorServer.on("message", (message) => {
-    bus_evnet.emit(message);
-  });
+  orchestratorServer.on("message", onMessage);
   const listenComment = new ListenComment();
-  listenComment.on("comment", (message) => {
-    bus_evnet.emit(message);
-  });
-  listenComment.on("error", (message) => {
-    bus_evnet.emit(message);
-  });
+  listenComment.on("comment", onMessage);
+  listenComment.on("error", onMessage);
   const makeAudioRunner = new SynthesizeRunner();
-  makeAudioRunner.on("synthesized", (message) => {
-    bus_evnet.emit(message);
-  });
-  makeAudioRunner.on("error", (message) => {
-    bus_evnet.emit(message);
-  });
+  makeAudioRunner.on("synthesized", onMessage);
+  makeAudioRunner.on("error", onMessage);
 
   const onEvent = (message: Message) => {
     orchestratorServer.emitMessage(message);
@@ -53,12 +40,10 @@ const main = async () => {
           if (command.isTarget(message)) {
             const synthesizeMessage = command.synthesize(message);
             if (synthesizeMessage) {
-              bus_evnet.emit(synthesizeMessage);
+              onMessage(synthesizeMessage);
             }
             const commandMessages = command.action(message);
-            commandMessages.forEach((message) => {
-              bus_evnet.emit(message);
-            });
+            commandMessages.forEach(onMessage);
             return;
           }
         }
@@ -87,10 +72,9 @@ const main = async () => {
       case "synthesized":
         break;
       case "instSynthesize": {
-        //const educationConfigs = getEducationConfigs();
-        //const cleanText = clean(message.content, educationConfigs);
-        //makeAudioRunner.addQueue(cleanText, message.tag);
-        makeAudioRunner.addQueue(message.content, message.tag);
+        const educationConfigs = getEducationConfigs(onMessage);
+        const cleanText = clean(message.content, educationConfigs);
+        makeAudioRunner.addQueue(cleanText, message.tag);
         break;
       }
     }

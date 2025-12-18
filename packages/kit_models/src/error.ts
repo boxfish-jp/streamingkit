@@ -6,7 +6,9 @@ export interface ErrorMessage {
     | "serverStopComment"
     | "serverWatchComment"
     | "serverGetStreamInfo"
-    | "serverSynthesize";
+    | "serverSynthesize"
+    | "serverReadEducation"
+    | "serverWriteEducation";
   time: number;
   message?: string;
 }
