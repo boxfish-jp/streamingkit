@@ -1,8 +1,7 @@
 import { Bus } from "kit_models";
 import clientSocketConnected from "./assets/client_socket_connected.wav";
-import clientSocketConnectionErrorWav from "./assets/client_socket_connection_error.wav";
-import clientSocketDisconectedWav from "./assets/client_socket_disconnected.wav";
 import { ChannelsManager } from "./channels";
+import { ErrorHandler } from "./error";
 import type { AudioQueueItem } from "./lib/audio_queue";
 import { connectSocket } from "./lib/socket";
 import { playAudioManagers } from "./play_audio";
@@ -42,7 +41,7 @@ const onAudio = async (
   }
 };
 
-let lastError = { status: "", time: 0 };
+const errorHandler = new ErrorHandler();
 
 export const startSubscribe = () => {
   const remove = window.api.onAudio(async (value) => {
@@ -66,38 +65,13 @@ export const startSubscribe = () => {
         onAudio(Date.now(), channel, message.buffer);
         break;
       }
-      case "error":
-        switch (message.status) {
-          case "clientSocketConnection":
-            if (
-              lastError.status !== message.status ||
-              lastError.time + 30000 < message.time
-            ) {
-              const response = await fetch(clientSocketConnectionErrorWav);
-              bus.emit({
-                type: "synthesized",
-                buffer: (await response.arrayBuffer()) as any,
-                tag: "announce",
-              });
-              lastError = { status: message.status, time: Date.now() };
-            }
-            break;
-          case "clientSocketDisconnected":
-            if (
-              lastError.status !== message.status ||
-              lastError.time + 30000 < message.time
-            ) {
-              const response = await fetch(clientSocketDisconectedWav);
-              bus.emit({
-                type: "synthesized",
-                buffer: (await response.arrayBuffer()) as any,
-                tag: "announce",
-              });
-              lastError = { status: message.status, time: Date.now() };
-            }
-            break;
+      case "error": {
+        const newMessage = await errorHandler.onError(message);
+        if (newMessage) {
+          bus.emit(newMessage);
         }
         break;
+      }
       case "notify":
         switch (message.status) {
           case "clientSocketConnected": {
