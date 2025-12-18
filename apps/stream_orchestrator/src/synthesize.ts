@@ -1,32 +1,20 @@
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
-import type { NotifyError, OnSynthesized, SynthesizeTag } from "kit_models";
+import { EventEmitter } from "node:stream";
+import type {
+  ErrorMessage,
+  SynthesizedMessage,
+  SynthesizeTag,
+} from "kit_models";
 import { TaskRunner } from "task_runner";
 
-export class SynthesizeRunner {
+interface SynthesizeRunnerMessages {
+  synthesized: [message: SynthesizedMessage];
+  error: [message: ErrorMessage];
+}
+
+export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
   private _taskRunner = new TaskRunner();
-  private _onErrorCallbacks: Array<NotifyError> = [];
-  private _notifySynthesizedCallbacks: Array<OnSynthesized<void>> = [];
-
-  registerOnError(callback: NotifyError) {
-    this._onErrorCallbacks.push(callback);
-  }
-
-  removeOnError(callback: NotifyError) {
-    this._onErrorCallbacks = this._onErrorCallbacks.filter(
-      (cb) => cb !== callback,
-    );
-  }
-
-  registerOnSynthesized(callback: OnSynthesized<void>) {
-    this._notifySynthesizedCallbacks.push(callback);
-  }
-
-  removeOnSynthesized(callback: OnSynthesized<void>) {
-    this._notifySynthesizedCallbacks = this._notifySynthesizedCallbacks.filter(
-      (cb) => cb !== callback,
-    );
-  }
 
   addQueue(text: string, tag: SynthesizeTag) {
     const task = async () => {
@@ -54,12 +42,15 @@ export class SynthesizeRunner {
       }
       clearTimeout(timeout);
       const data = readFileSync(fileName);
-      this._notifySynthesizedCallbacks.forEach((cb) =>
-        cb({ type: "synthesized", buffer: data, tag: tag }),
-      );
+      this.emit("synthesized", { type: "synthesized", buffer: data, tag: tag });
     };
     const errorHandler = (error: unknown) => {
-      this._onErrorCallbacks.forEach((cb) => cb(String(error)));
+      this.emit("error", {
+        type: "error",
+        status: "serverSynthesize",
+        time: Date.now(),
+        message: String(error),
+      });
     };
     this._taskRunner.addQueue(task, errorHandler);
   }

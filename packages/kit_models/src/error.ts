@@ -5,7 +5,8 @@ export interface ErrorMessage {
     | "clientSocketDisconnected"
     | "serverStopComment"
     | "serverWatchComment"
-    | "serverGetStreamInfo";
+    | "serverGetStreamInfo"
+    | "serverSynthesize";
   time: number;
   message?: string;
 }

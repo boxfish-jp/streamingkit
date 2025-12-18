@@ -29,7 +29,10 @@ listenComment.on("comment", (message) => {
 listenComment.on("error", (message) => {
   bus_evnet.emit(message);
 });
-makeAudioRunner.registerOnSynthesized((message) => {
+makeAudioRunner.on("synthesized", (message) => {
+  bus_evnet.emit(message);
+});
+makeAudioRunner.on("error", (message) => {
   bus_evnet.emit(message);
 });
 

@@ -8,6 +8,6 @@ const onSynthesized = (message: SynthesizedMessage) => {
   const wavData = new WavData(message.buffer);
   wavData.saveFile();
 };
-makeAudioRunner.registerOnSynthesized(onSynthesized);
+makeAudioRunner.on("synthesized", onSynthesized);
 
 makeAudioRunner.addQueue("これはテストです。", "other");
