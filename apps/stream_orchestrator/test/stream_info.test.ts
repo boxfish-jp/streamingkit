@@ -1,4 +1,4 @@
-import type { NotifyError, StreamInfoMessage } from "kit_models";
+import type { ErrorMessage, StreamInfoMessage } from "kit_models";
 import { expect, test } from "vitest";
 import { CheckStreamInfo } from "../src/check_stream_info.js";
 
@@ -34,7 +34,7 @@ test("getStreamInfo: callback", async () => {
     expect(info.isStreaming).toBe(true);
     expect(info.streamId).toBe(Number(`${id?.replace("lv", "")}`));
   };
-  streamInfo.registerNotifyCallback(callback);
+  streamInfo.on("streamInfo", callback);
   await streamInfo.checkIsStreaming();
   // 200ms待つ
   await new Promise((resolve) => setTimeout(resolve, 200));
@@ -43,10 +43,10 @@ test("getStreamInfo: callback", async () => {
 
 test("getStreamInfo: onErrorCallback(fetch error)", async () => {
   const streamInfo = new CheckStreamInfo("");
-  const callback: NotifyError = (error) => {
-    expect(error).toBe("Error: Failed to fetch: 400");
+  const callback = (error: ErrorMessage) => {
+    expect(error.message).toBe("Error: Failed to fetch: 400");
   };
-  streamInfo.registerOnErrorCallback(callback);
+  streamInfo.on("error", callback);
   await streamInfo.checkIsStreaming();
   // 200ms待つ
   await new Promise((resolve) => setTimeout(resolve, 200));
@@ -54,10 +54,10 @@ test("getStreamInfo: onErrorCallback(fetch error)", async () => {
 
 test("getStreamInfo: onErrorCallback(no status)", async () => {
   const streamInfo = new CheckStreamInfo("0");
-  const callback: NotifyError = (error) => {
-    expect(error).toBe("Error: No status found in response");
+  const callback = (error: ErrorMessage) => {
+    expect(error.message).toBe("Error: No status found in response");
   };
-  streamInfo.registerOnErrorCallback(callback);
+  streamInfo.on("error", callback);
   await streamInfo.checkIsStreaming();
   // 200ms待つ
   await new Promise((resolve) => setTimeout(resolve, 200));

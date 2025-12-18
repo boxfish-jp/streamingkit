@@ -11,7 +11,10 @@ const bus_evnet = new Bus();
 const cruseID = "70969122";
 const fuguoID = "98746932";
 const checkStreamInfo = new CheckStreamInfo(fuguoID);
-checkStreamInfo.registerNotifyCallback((message) => {
+checkStreamInfo.on("streamInfo", (message) => {
+  bus_evnet.emit(message);
+});
+checkStreamInfo.on("error", (message) => {
   bus_evnet.emit(message);
 });
 checkStreamInfo.startPooling();
@@ -21,6 +24,9 @@ const makeAudioRunner = new SynthesizeRunner();
 const commands: Command[] = [];
 const orchestratorServer = new OrchestratorServer("0.0.0.0", 8888);
 listenComment.on("comment", (message) => {
+  bus_evnet.emit(message);
+});
+listenComment.on("error", (message) => {
   bus_evnet.emit(message);
 });
 makeAudioRunner.registerOnSynthesized((message) => {

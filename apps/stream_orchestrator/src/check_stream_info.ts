@@ -1,15 +1,19 @@
-import type { NotifyError, NotifyStreamingInfoCallback } from "kit_models";
+import { EventEmitter } from "node:stream";
+import type { ErrorMessage, StreamInfoMessage } from "kit_models";
 
-export class CheckStreamInfo {
+interface CheckStreamInfoMessages {
+  streamInfo: [message: StreamInfoMessage];
+  error: [message: ErrorMessage];
+}
+
+export class CheckStreamInfo extends EventEmitter<CheckStreamInfoMessages> {
   private _streamId: number | undefined = undefined; // 生放送IDのうち、lv以降の数字
   private _userId: string; // ニコニコのuserId
   private _poolingId: NodeJS.Timeout | undefined = undefined;
   private _checkIsStreamingIntervalMs = 30000; // 配信しているかをポーリングする時間間隔
-  private _notifyStreamingInfoCallbacks: Array<NotifyStreamingInfoCallback> =
-    [];
-  private _onErrorCallbacks: Array<NotifyError> = [];
 
   constructor(userId: string) {
+    super();
     this._userId = userId;
     this.checkIsStreaming();
   }
@@ -52,25 +56,6 @@ export class CheckStreamInfo {
     return `https://live.nicovideo.jp/front/api/v2/user-broadcast-history?providerId=${this.userId}&providerType=user&isIncludeNonPublic=false&offset=0&limit=2&withTotalCount=true`;
   }
 
-  registerNotifyCallback(callback: NotifyStreamingInfoCallback): void {
-    this._notifyStreamingInfoCallbacks.push(callback);
-  }
-
-  removeNotifyCallback(callback: NotifyStreamingInfoCallback): void {
-    this._notifyStreamingInfoCallbacks =
-      this._notifyStreamingInfoCallbacks.filter((cb) => cb !== callback);
-  }
-
-  registerOnErrorCallback(callback: NotifyError): void {
-    this._onErrorCallbacks.push(callback);
-  }
-
-  removeOnErrorCallback(callback: NotifyError): void {
-    this._onErrorCallbacks = this._onErrorCallbacks.filter(
-      (cb) => cb !== callback,
-    );
-  }
-
   startPooling(): void {
     this._poolingId = setInterval(async () => {
       await this.checkIsStreaming();
@@ -100,17 +85,18 @@ export class CheckStreamInfo {
         this._streamId = undefined;
       }
     } catch (error) {
-      for (const callback of this._onErrorCallbacks) {
-        callback(String(error));
-      }
-    }
-    for (const callback of this._notifyStreamingInfoCallbacks) {
-      callback({
-        type: "streaming_info",
-        isStreaming: this.isStreaming,
-        streamId: this.streamId,
+      this.emit("error", {
+        type: "error",
+        status: "serverGetStreamInfo",
+        time: Date.now(),
+        message: String(error),
       });
     }
+    this.emit("streamInfo", {
+      type: "streaming_info",
+      isStreaming: this.isStreaming,
+      streamId: this.streamId,
+    });
   }
 }
 
