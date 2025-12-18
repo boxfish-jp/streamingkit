@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { EventEmitter } from "node:stream";
+import { EventEmitter } from "node:events";
 import type {
   ErrorMessage,
   SynthesizedMessage,

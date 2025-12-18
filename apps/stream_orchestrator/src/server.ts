@@ -1,5 +1,5 @@
 import type { Server as HttpServer } from "node:http";
-import { EventEmitter } from "node:stream";
+import { EventEmitter } from "node:events";
 import { type ServerType, serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
