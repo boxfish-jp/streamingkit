@@ -18,17 +18,20 @@ checkStreamInfo.on("error", (message) => {
   bus_evnet.emit(message);
 });
 checkStreamInfo.startPooling();
-const listenComment = new ListenComment();
-const makeAudioRunner = new SynthesizeRunner();
 // TODO: コマンド追加の実装
 const commands: Command[] = [];
 const orchestratorServer = new OrchestratorServer("0.0.0.0", 8888);
+orchestratorServer.on("message", (message) => {
+  bus_evnet.emit(message);
+});
+const listenComment = new ListenComment();
 listenComment.on("comment", (message) => {
   bus_evnet.emit(message);
 });
 listenComment.on("error", (message) => {
   bus_evnet.emit(message);
 });
+const makeAudioRunner = new SynthesizeRunner();
 makeAudioRunner.on("synthesized", (message) => {
   bus_evnet.emit(message);
 });

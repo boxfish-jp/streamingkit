@@ -1,4 +1,5 @@
 import type { Server as HttpServer } from "node:http";
+import { EventEmitter } from "node:stream";
 import { type ServerType, serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -6,23 +7,17 @@ import type { Message } from "kit_models";
 import { Server as SocketServer } from "socket.io";
 import customParser from "socket.io-msgpack-parser";
 
-export class OrchestratorServer {
+interface OrchestratorServerMessages {
+  message: [message: Message];
+}
+
+export class OrchestratorServer extends EventEmitter<OrchestratorServerMessages> {
   private _app = new Hono();
   private _serve: ServerType;
   private _socketServer: SocketServer;
-  private _onMessageCallbacks: Array<(message: Message) => void> = [];
-
-  registerOnMessage(callback: (message: Message) => void) {
-    this._onMessageCallbacks.push(callback);
-  }
-
-  removeOnMessage(callback: (message: Message) => void) {
-    this._onMessageCallbacks = this._onMessageCallbacks.filter(
-      (cb) => cb !== callback,
-    );
-  }
 
   constructor(hostname: string, port: number) {
+    super();
     this._app.use(
       "/*",
       cors({
@@ -54,7 +49,7 @@ export class OrchestratorServer {
     });
 
     this._socketServer.on("message", (message) => {
-      this._onMessageCallbacks.forEach((cb) => cb(message));
+      this.emit("message", message);
     });
 
     this._app.get("/", (c) => c.text("Orchestrator Server is running"));
