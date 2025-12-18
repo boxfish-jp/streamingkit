@@ -1,3 +1,4 @@
+import { EventEmitter } from "node:stream";
 import type {
   Chat,
   NicoliveState,
@@ -5,42 +6,22 @@ import type {
   SimpleNotificationV2,
 } from "@kikurage/nicolive-api";
 import { NicoliveClient } from "@kikurage/nicolive-api/node.js";
-import {
-  CommentMessage,
-  type NotifyError,
-  type OnCommentCallback,
-} from "kit_models";
+import { CommentMessage, type ErrorMessage } from "kit_models";
 
-export class ListenComment {
+interface ListenCommentEvents {
+  comment: [message: CommentMessage];
+  error: [error: ErrorMessage];
+}
+
+export class ListenComment extends EventEmitter<ListenCommentEvents> {
   private _stopListen: (() => void) | null = null;
-  private _onCommentCallBacks: Array<OnCommentCallback> = [];
-  private _onErrorCallbacks: Array<NotifyError> = [];
 
   constructor() {
+    super();
     this._onChat = this._onChat.bind(this);
     this._onSimpleNotification = this._onSimpleNotification.bind(this);
     this._onSimpleNotificationV2 = this._onSimpleNotificationV2.bind(this);
     this._onChangeState = this._onChangeState.bind(this);
-  }
-
-  registerOnComment(callback: OnCommentCallback) {
-    this._onCommentCallBacks.push(callback);
-  }
-
-  registerOnError(callback: NotifyError) {
-    this._onErrorCallbacks.push(callback);
-  }
-
-  removeOnError(callback: NotifyError) {
-    this._onErrorCallbacks = this._onErrorCallbacks.filter(
-      (cb) => cb !== callback,
-    );
-  }
-
-  removeOnComment(callback: OnCommentCallback) {
-    this._onCommentCallBacks = this._onCommentCallBacks.filter(
-      (cb) => cb !== callback,
-    );
   }
 
   async start(lvid: string) {
@@ -59,11 +40,21 @@ export class ListenComment {
           client?.disconnect();
           client = null;
         } catch (error) {
-          this._onErrorCallbacks.forEach((cb) => cb(String(error)));
+          this.emit("error", {
+            type: "error",
+            status: "serverStopComment",
+            time: Date.now(),
+            message: error,
+          } as ErrorMessage);
         }
       };
     } catch (error) {
-      this._onErrorCallbacks.forEach((cb) => cb(String(error)));
+      this.emit("error", {
+        type: "error",
+        status: "serverWatchComment",
+        time: Date.now(),
+        message: error,
+      } as ErrorMessage);
     }
   }
 
@@ -75,14 +66,16 @@ export class ListenComment {
     if (chat.name === "ふぐお") {
       return;
     }
-    const newComment = new CommentMessage(
-      "viewer",
-      chat.content,
-      chat.name,
-      chat.rawUserId,
-      chat.hashedUserId,
+    this.emit(
+      "comment",
+      new CommentMessage(
+        "viewer",
+        chat.content,
+        chat.name,
+        chat.rawUserId,
+        chat.hashedUserId,
+      ),
     );
-    this._onCommentCallBacks.forEach((cb) => cb(newComment));
   }
 
   private _onSimpleNotification(notification: SimpleNotification) {
@@ -90,9 +83,7 @@ export class ListenComment {
     if (!content) {
       return;
     }
-    this._onCommentCallBacks.forEach((cb) =>
-      cb(new CommentMessage("bot", content)),
-    );
+    this.emit("comment", new CommentMessage("bot", content));
   }
 
   private _onSimpleNotificationV2(notification: SimpleNotificationV2) {
@@ -100,9 +91,7 @@ export class ListenComment {
     if (!content) {
       return;
     }
-    this._onCommentCallBacks.forEach((cb) =>
-      cb(new CommentMessage("bot", content)),
-    );
+    this.emit("comment", new CommentMessage("bot", content));
   }
 
   private _onChangeState(state: NicoliveState) {
@@ -110,8 +99,6 @@ export class ListenComment {
     if (!nusiCome) {
       return;
     }
-    this._onCommentCallBacks.forEach((cb) =>
-      cb(new CommentMessage("fuguo", nusiCome)),
-    );
+    this.emit("comment", new CommentMessage("fuguo", nusiCome));
   }
 }

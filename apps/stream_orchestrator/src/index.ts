@@ -8,7 +8,9 @@ import { SynthesizeRunner } from "./synthesize.js";
 
 let isStreaming = false;
 const bus_evnet = new Bus();
-const checkStreamInfo = new CheckStreamInfo("98746932");
+const cruseID = "70969122";
+const fuguoID = "98746932";
+const checkStreamInfo = new CheckStreamInfo(fuguoID);
 checkStreamInfo.registerNotifyCallback((message) => {
   bus_evnet.emit(message);
 });
@@ -17,12 +19,19 @@ const listenComment = new ListenComment();
 const makeAudioRunner = new SynthesizeRunner();
 // TODO: コマンド追加の実装
 const commands: Command[] = [];
-const orchestratorServer = new OrchestratorServer("localhost", 8888);
+const orchestratorServer = new OrchestratorServer("0.0.0.0", 8888);
+listenComment.on("comment", (message) => {
+  bus_evnet.emit(message);
+});
+makeAudioRunner.registerOnSynthesized((message) => {
+  bus_evnet.emit(message);
+});
 
 const main = (message: Message) => {
   orchestratorServer.emitMessage(message);
   switch (message.type) {
     case "comment":
+      console.log(message.content);
       for (const command of commands) {
         if (command.isTarget(message)) {
           const synthesizeMessage = command.synthesize(message);
@@ -47,6 +56,7 @@ const main = (message: Message) => {
         if (message.streamId && !isStreaming) {
           // TODO: 配信の開始を検知したことをユーザーに通知する処理の実装
           listenComment.start(`lv${message.streamId}`);
+          console.log("配信開始を検知しました。", message.streamId);
         }
         isStreaming = true;
       } else {
@@ -60,9 +70,10 @@ const main = (message: Message) => {
     case "synthesized":
       break;
     case "instSynthesize": {
-      const educationConfigs = getEducationConfigs();
-      const cleanText = clean(message.content, educationConfigs);
-      makeAudioRunner.addQueue(cleanText, message.tag);
+      //const educationConfigs = getEducationConfigs();
+      //const cleanText = clean(message.content, educationConfigs);
+      //makeAudioRunner.addQueue(cleanText, message.tag);
+      makeAudioRunner.addQueue(message.content, message.tag);
       break;
     }
   }
