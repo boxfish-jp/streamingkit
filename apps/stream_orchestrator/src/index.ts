@@ -2,7 +2,11 @@ import { Bus, type Message } from "kit_models";
 import { CheckStreamInfo } from "./check_stream_info.js";
 import { clean } from "./clean.js";
 import { getCommands } from "./command/commands.js";
-import { getEducationConfigs } from "./education.js";
+import {
+  addEducationConfig,
+  getEducationConfigs,
+  removeEducationConfig,
+} from "./education.js";
 import { ListenComment } from "./listen_comment.js";
 import { OrchestratorServer } from "./server.js";
 import { SynthesizeRunner } from "./synthesize.js";
@@ -75,6 +79,15 @@ const main = async () => {
         const educationConfigs = getEducationConfigs(onMessage);
         const cleanText = clean(message.content, educationConfigs);
         makeAudioRunner.addQueue(cleanText, message.tag);
+        break;
+      }
+      case "addEducation": {
+        const config = { key: message.key, value: message.value };
+        addEducationConfig(config, onMessage);
+        break;
+      }
+      case "removeEducation": {
+        removeEducationConfig(message.key, onMessage);
         break;
       }
     }

@@ -20,7 +20,7 @@ export const getEducationConfigs = (
   }
 };
 
-export const addEducationCommand = (
+export const addEducationConfig = (
   config: EducationConfig,
   onMessage: OnMessage,
 ) => {
@@ -42,7 +42,7 @@ export const addEducationCommand = (
   }
 };
 
-export const removeEducationCommand = (
+export const removeEducationConfig = (
   keyword: string,
   onMessage: OnMessage,
 ) => {
