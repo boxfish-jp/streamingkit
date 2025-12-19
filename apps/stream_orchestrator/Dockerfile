@@ -1,17 +1,12 @@
-FROM linuxserver/webtop:ubuntu-xfce AS base
+FROM node:24 AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN apt-get update && \
-    apt-get install -y curl gnupg unzip && \
-    curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
-    apt-get install -y nodejs
+RUN apt-get update && apt-get install -y \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN npm install -g pnpm
-RUN curl -L -o voicepeak_jashinchan_freetrial.zip "https://download.dreamtonics.com/voicepeak-jashinchan-trial/voicepeak_jashinchan_freetrial.zip"
-RUN unzip -O cp932 voicepeak_jashinchan_freetrial.zip && \
-    unzip -O cp932 "/VOICEPEAK 邪神ちゃん 無料お試し版/Linux/Voicepeak-linux64.zip" -d /config && \
-    chmod +x /config/Voicepeak/voicepeak && \
-    chmod -R a+rw /config/
 
 FROM base AS dev
 WORKDIR /app-dev

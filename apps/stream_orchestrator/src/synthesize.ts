@@ -21,7 +21,7 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
       const fileName = `${Date.now()}.wav`;
       try {
         const result = spawn(
-          "/config/Voicepeak/voicepeak",
+          "/app-dev/voicepeak/mountspace/Voicepeak/voicepeak",
           ["-s", text, "-o", fileName],
           {
             stdio: ["pipe", "pipe", "inherit"],
