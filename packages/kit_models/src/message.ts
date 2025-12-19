@@ -1,4 +1,8 @@
 import type { CommentMessage } from "./comment.js";
+import type {
+  AddEducationMessage,
+  RemoveEducationMessage,
+} from "./education.js";
 import type { ErrorMessage } from "./error.js";
 import type { InstSyntesizeMessage } from "./inst_synthesize.js";
 import type { NotifyMessage } from "./notify.js";
@@ -13,7 +17,9 @@ export type Message =
   | InstSyntesizeMessage
   | ErrorMessage
   | NotifyMessage
-  | VideoMessage;
+  | VideoMessage
+  | AddEducationMessage
+  | RemoveEducationMessage;
 
 export type OnMessage = (message: Message) => void;
 
