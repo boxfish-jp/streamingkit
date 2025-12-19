@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { EventEmitter } from "node:events";
+import { readFileSync } from "node:fs";
 import type {
   ErrorMessage,
   SynthesizedMessage,
@@ -19,39 +19,59 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
   addQueue(text: string, tag: SynthesizeTag) {
     const task = async () => {
       const fileName = `${Date.now()}.wav`;
-      const result = spawn(
-        "/config/Voicepeak/voicepeak",
-        ["-s", text, "-o", fileName],
-        {
-          stdio: ["pipe", "pipe", "inherit"],
-        },
-      );
-      const timeout = setTimeout(() => {
-        result.kill();
-        throw new Error("Timeout");
-      }, 30000);
-      for await (const s of result.stdout) {
-        console.log(`${s}`);
+      try {
+        const result = spawn(
+          "/config/Voicepeak/voicepeak",
+          ["-s", text, "-o", fileName],
+          {
+            stdio: ["pipe", "pipe", "inherit"],
+          },
+        );
+
+        try {
+          const timeout = setTimeout(() => {
+            this.emit("error", {
+              type: "error",
+              status: "serverSynthesizeDelay",
+              time: Date.now(),
+              message: "Timeout",
+            });
+          }, 30000);
+
+          // エラーイベントをPromiseで待つ
+          const status = await new Promise<number>((resolve, reject) => {
+            result.on("close", resolve);
+            result.on("error", reject);
+          });
+
+          clearTimeout(timeout);
+
+          if (status !== 0) {
+            throw new Error("voicepeak status error");
+          }
+          const data = readFileSync(fileName);
+          this.emit("synthesized", {
+            type: "synthesized",
+            buffer: data,
+            tag: tag,
+          });
+        } catch (error) {
+          this.emit("error", {
+            type: "error",
+            status: "serverSynthesize",
+            time: Date.now(),
+            message: String(error),
+          });
+        }
+      } catch (error) {
+        this.emit("error", {
+          type: "error",
+          status: "serverSynthesize",
+          time: Date.now(),
+          message: String(error),
+        });
       }
-      const status = await new Promise((resolve) => {
-        result.on("close", resolve);
-      });
-      console.log(status);
-      if (status !== 0) {
-        throw new Error("voicepeak status error");
-      }
-      clearTimeout(timeout);
-      const data = readFileSync(fileName);
-      this.emit("synthesized", { type: "synthesized", buffer: data, tag: tag });
     };
-    const errorHandler = (error: unknown) => {
-      this.emit("error", {
-        type: "error",
-        status: "serverSynthesize",
-        time: Date.now(),
-        message: String(error),
-      });
-    };
-    this._taskRunner.addQueue(task, errorHandler);
+    this._taskRunner.addQueue(task);
   }
 }

@@ -7,6 +7,7 @@ export interface ErrorMessage {
     | "serverWatchComment"
     | "serverGetStreamInfo"
     | "serverSynthesize"
+    | "serverSynthesizeDelay"
     | "serverReadEducation"
     | "serverWriteEducation";
   time: number;
