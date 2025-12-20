@@ -5,6 +5,7 @@ export * from "./education_config.ts";
 export * from "./error.ts";
 export * from "./inst_synthesize.ts";
 export * from "./message.ts";
+export * from "./spotify.ts";
 export * from "./stream_info.ts";
 export * from "./synthesize_tag.ts";
 export * from "./synthesized.ts";

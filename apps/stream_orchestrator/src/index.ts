@@ -9,12 +9,16 @@ import {
 } from "./education.js";
 import { ListenComment } from "./listen_comment.js";
 import { OrchestratorServer } from "./server.js";
+import { SpotifyClient } from "./spotify.js";
 import { SynthesizeRunner } from "./synthesize.js";
 
 let isStreaming = false;
 const bus_evnet = new Bus();
 const cruseID = "70969122";
 const fuguoID = "98746932";
+const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
+const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
+const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
 
 const main = async () => {
   const checkStreamInfo = new CheckStreamInfo(fuguoID);
@@ -24,8 +28,7 @@ const main = async () => {
   checkStreamInfo.on("streamInfo", onMessage);
   checkStreamInfo.on("error", onMessage);
   checkStreamInfo.startPooling();
-  // TODO: コマンド追加の実装
-  const commands = await getCommands(onMessage);
+  const commands = await getCommands();
   const orchestratorServer = new OrchestratorServer("0.0.0.0", 8888);
   orchestratorServer.on("message", onMessage);
   const listenComment = new ListenComment();
@@ -34,6 +37,12 @@ const main = async () => {
   const makeAudioRunner = new SynthesizeRunner();
   makeAudioRunner.on("synthesized", onMessage);
   makeAudioRunner.on("error", onMessage);
+  const spotifyClient = new SpotifyClient(
+    spotifyClientId,
+    spotifyClientSecret,
+    spotifyRefreshToken,
+  );
+  spotifyClient.on("onMessage", onMessage);
 
   const onEvent = (message: Message) => {
     orchestratorServer.emitMessage(message);
@@ -89,6 +98,11 @@ const main = async () => {
       case "removeEducation": {
         removeEducationConfig(message.key, onMessage);
         break;
+      }
+      case "spotify": {
+        if (message.content.instruction === "addQueue") {
+          spotifyClient.addQueue(message.content.uri);
+        }
       }
     }
   };

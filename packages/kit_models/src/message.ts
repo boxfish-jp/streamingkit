@@ -6,6 +6,7 @@ import type {
 import type { ErrorMessage } from "./error.js";
 import type { InstSyntesizeMessage } from "./inst_synthesize.js";
 import type { NotifyMessage } from "./notify.js";
+import type { SpotifyMessage } from "./spotify.js";
 import type { StreamInfoMessage } from "./stream_info.js";
 import type { SynthesizedMessage } from "./synthesized.js";
 import type { VideoMessage } from "./video.js";
@@ -19,7 +20,8 @@ export type Message =
   | NotifyMessage
   | VideoMessage
   | AddEducationMessage
-  | RemoveEducationMessage;
+  | RemoveEducationMessage
+  | SpotifyMessage;
 
 export type OnMessage = (message: Message) => void;
 

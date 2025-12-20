@@ -9,7 +9,10 @@ export interface ErrorMessage {
     | "serverSynthesize"
     | "serverSynthesizeDelay"
     | "serverReadEducation"
-    | "serverWriteEducation";
+    | "serverWriteEducation"
+    | "serverSpotifyTokenNotFound"
+    | "serverFailedToGetSpotifyToken"
+    | "serverFailedToAddSpotifyQueue";
   time: number;
   message?: string;
 }
