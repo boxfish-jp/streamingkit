@@ -1,5 +1,6 @@
 import { Bus } from "kit_models";
 import clientSocketConnected from "./assets/client_socket_connected.wav";
+import spotfiyAddQueue from "./assets/spotify_add_queue.wav";
 import { ChannelsManager } from "./channels";
 import { ErrorHandler } from "./error";
 import type { AudioQueueItem } from "./lib/audio_queue";
@@ -83,6 +84,15 @@ export const startSubscribe = () => {
               tag: "announce",
             });
             break;
+          }
+          case "successfulAddSpotifyQueue": {
+            console.log("Spotify add queue notification received");
+            const response = await fetch(spotfiyAddQueue);
+            bus.emit({
+              type: "synthesized",
+              buffer: (await response.arrayBuffer()) as any,
+              tag: "announce",
+            });
           }
         }
     }
