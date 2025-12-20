@@ -42,6 +42,7 @@ const main = async () => {
     spotifyClientSecret,
     spotifyRefreshToken,
   );
+  spotifyClient.start();
   spotifyClient.on("onMessage", onMessage);
 
   const onEvent = (message: Message) => {

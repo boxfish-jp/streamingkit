@@ -40,7 +40,7 @@ export class SpotifyClient extends EventEmitter<SpotifyClientEvents> {
       });
     }
 
-    const url = `https://api.spotify.com/v1/me/player/queue?uri=${encodeURIComponent(trackUri)}`;
+    const url = `https://api.spotify.com/v1/me/player/queue?uri=${encodeURIComponent(`spotify:track:${trackUri}`)}`;
 
     try {
       const response = await fetch(url, {
