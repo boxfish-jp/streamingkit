@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
-import { readFileSync } from "node:fs";
+import { readFileSync, unlinkSync } from "node:fs";
 import type {
   ErrorMessage,
   SynthesizedMessage,
@@ -55,6 +55,7 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
             buffer: data,
             tag: tag,
           });
+          unlinkSync(fileName);
         } catch (error) {
           this.emit("error", {
             type: "error",
