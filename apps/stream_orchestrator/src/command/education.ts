@@ -10,7 +10,7 @@ export const getEducationCommands = () => {
     {
       isTarget: (comment) => comment.content.startsWith("教育:"),
       synthesize: (comment) => {
-        const edu = comment.content.split(":");
+        const edu = comment.filteredContent.split(":");
         if (edu.length !== 3) {
           return {
             type: "instSynthesize",
@@ -25,7 +25,7 @@ export const getEducationCommands = () => {
         } as InstSyntesizeMessage;
       },
       action: (comment) => {
-        const edu = comment.content.split(":");
+        const edu = comment.filteredContent.split(":");
         if (edu.length !== 3) {
           return [];
         }
@@ -39,9 +39,9 @@ export const getEducationCommands = () => {
       },
     },
     {
-      isTarget: (comment) => comment.content.startsWith("忘却:"),
+      isTarget: (comment) => comment.filteredContent.startsWith("忘却:"),
       synthesize: (comment) => {
-        const edu = comment.content.split(":");
+        const edu = comment.filteredContent.split(":");
         if (edu.length !== 2) {
           return {
             type: "instSynthesize",
@@ -56,7 +56,7 @@ export const getEducationCommands = () => {
         } as InstSyntesizeMessage;
       },
       action: (comment) => {
-        const edu = comment.content.split(":");
+        const edu = comment.filteredContent.split(":");
         if (edu.length !== 2) {
           return [];
         }

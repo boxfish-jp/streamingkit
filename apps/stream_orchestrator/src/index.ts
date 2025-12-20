@@ -63,7 +63,7 @@ const main = async () => {
         }
         bus_evnet.emit({
           type: "instSynthesize",
-          content: message.content,
+          content: message.filteredContent,
           tag: "comment",
         });
         break;
@@ -100,10 +100,15 @@ const main = async () => {
         removeEducationConfig(message.key, onMessage);
         break;
       }
-      case "spotify": {
-        if (message.content.instruction === "addQueue") {
-          spotifyClient.addQueue(message.content.uri);
+      case "spotify":
+        {
+          if (message.content.instruction === "addQueue") {
+            spotifyClient.addQueue(message.content.uri);
+          }
         }
+        break;
+      case "error": {
+        console.log("Error:", message.message);
       }
     }
   };

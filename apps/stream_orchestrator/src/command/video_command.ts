@@ -21,12 +21,12 @@ export const getVideoCommands = async () => {
   const commands: Command[] = [];
   for (const keyword of keywords) {
     commands.push({
-      isTarget: (comment) => comment.content.startsWith(keyword),
+      isTarget: (comment) => comment.filteredContent.startsWith(keyword),
       synthesize: (comment: CommentMessage) => {
-        if (comment.content.length > keyword.length) {
+        if (comment.filteredContent.length > keyword.length) {
           return {
             type: "instSynthesize",
-            content: comment.content,
+            content: comment.filteredContent,
             tag: "comment",
           } as InstSyntesizeMessage;
         }
