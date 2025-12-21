@@ -177,8 +177,8 @@ importers:
         specifier: ^1.19.6
         version: 1.19.6(hono@4.10.4)
       '@kikurage/nicolive-api':
-        specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz
-        version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz
+        specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
+        version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
       hono:
         specifier: ^4.10.4
         version: 4.10.4
@@ -366,8 +366,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@bufbuild/protobuf@2.10.1':
-    resolution: {integrity: sha512-ckS3+vyJb5qGpEYv/s1OebUHDi/xSNtfgw1wqKZo7MR9F2z+qXr0q5XagafAG/9O0QPVIUfST0smluYSTpYFkg==}
+  '@bufbuild/protobuf@2.10.2':
+    resolution: {integrity: sha512-uFsRXwIGyu+r6AMdz+XijIIZJYpoWeYzILt5yZ2d3mCjQrWUTVpVD9WL/jZAbvp+Ed04rOhrsk7FiTcEDseB5A==}
 
   '@develar/schema-utils@2.6.5':
     resolution: {integrity: sha512-0cp4PsWQ/9avqTVMCtZ+GirikIA36ikvjtHweU4/j8yLtgObI0+JUPhYFScgwlteveGB1rt3Cm8UhN04XayDig==}
@@ -799,8 +799,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@kikurage/nicolive-api@https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz':
-    resolution: {tarball: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz}
+  '@kikurage/nicolive-api@https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz':
+    resolution: {tarball: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz}
     version: 0.0.4
 
   '@malept/cross-spawn-promise@1.1.1':
@@ -3835,7 +3835,7 @@ snapshots:
   '@biomejs/cli-win32-x64@2.0.6':
     optional: true
 
-  '@bufbuild/protobuf@2.10.1': {}
+  '@bufbuild/protobuf@2.10.2': {}
 
   '@develar/schema-utils@2.6.5':
     dependencies:
@@ -4158,9 +4158,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@kikurage/nicolive-api@https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz':
+  '@kikurage/nicolive-api@https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz':
     dependencies:
-      '@bufbuild/protobuf': 2.10.1
+      '@bufbuild/protobuf': 2.10.2
       cheerio: 1.1.2
       ws: 8.18.3
     transitivePeerDependencies:

@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.6",
-    "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.7/nicolive-api.tar.gz",
+    "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz",
     "hono": "^4.10.4",
-    "socket.io": "^4.8.1",
-    "task_runner": "workspace:*",
     "kit_models": "workspace:*",
-    "regexs": "workspace:*"
+    "regexs": "workspace:*",
+    "socket.io": "^4.8.1",
+    "task_runner": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
