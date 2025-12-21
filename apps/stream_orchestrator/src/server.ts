@@ -57,6 +57,11 @@ export class OrchestratorServer extends EventEmitter<OrchestratorServerMessages>
 
   emitMessage(message: Message) {
     console.log("Emitting message:", message.type);
-    this._socketServer.emit("message", message);
+    try {
+      this._socketServer.emit("message", message);
+    } catch (e) {
+      console.log("Error emitting Message type:", message.type);
+      console.log("Error emitting message:", e);
+    }
   }
 }

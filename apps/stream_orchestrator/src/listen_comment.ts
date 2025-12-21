@@ -6,7 +6,7 @@ import type {
   SimpleNotificationV2,
 } from "@kikurage/nicolive-api";
 import { NicoliveClient } from "@kikurage/nicolive-api/node.js";
-import { CommentMessage, type ErrorMessage } from "kit_models";
+import type { CommentMessage, ErrorMessage } from "kit_models";
 
 interface ListenCommentEvents {
   comment: [message: CommentMessage];
@@ -66,16 +66,14 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
     if (chat.name === "ふぐお") {
       return;
     }
-    this.emit(
-      "comment",
-      new CommentMessage(
-        "viewer",
-        chat.content,
-        chat.name,
-        chat.rawUserId,
-        chat.hashedUserId,
-      ),
-    );
+    this.emit("comment", {
+      type: "comment",
+      label: "viewer",
+      content: chat.content,
+      username: chat.name,
+      rawUserId: chat.rawUserId,
+      hashedUserId: chat.hashedUserId,
+    } as CommentMessage);
   }
 
   private _onSimpleNotification(notification: SimpleNotification) {
@@ -83,7 +81,11 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
     if (!content) {
       return;
     }
-    this.emit("comment", new CommentMessage("bot", content));
+    this.emit("comment", {
+      type: "comment",
+      label: "bot",
+      content: content,
+    } as CommentMessage);
   }
 
   private _onSimpleNotificationV2(notification: SimpleNotificationV2) {
@@ -91,7 +93,11 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
     if (!content) {
       return;
     }
-    this.emit("comment", new CommentMessage("bot", content));
+    this.emit("comment", {
+      type: "comment",
+      label: "bot",
+      content: content,
+    } as CommentMessage);
   }
 
   private _onChangeState(state: NicoliveState) {
@@ -99,6 +105,10 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
     if (!nusiCome) {
       return;
     }
-    this.emit("comment", new CommentMessage("fuguo", nusiCome));
+    this.emit("comment", {
+      type: "comment",
+      label: "fuguo",
+      content: nusiCome,
+    } as CommentMessage);
   }
 }

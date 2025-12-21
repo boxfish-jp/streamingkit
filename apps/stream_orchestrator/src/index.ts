@@ -1,6 +1,6 @@
 import { Bus, type Message } from "kit_models";
 import { CheckStreamInfo } from "./check_stream_info.js";
-import { clean } from "./clean.js";
+import { applyEducation, normalizeLowerCase } from "./clean.js";
 import { getCommands } from "./command/commands.js";
 import {
   addEducationConfig,
@@ -63,7 +63,7 @@ const main = async () => {
         }
         bus_evnet.emit({
           type: "instSynthesize",
-          content: message.filteredContent,
+          content: normalizeLowerCase(message.content),
           tag: "comment",
         });
         break;
@@ -87,7 +87,7 @@ const main = async () => {
         break;
       case "instSynthesize": {
         const educationConfigs = getEducationConfigs(onMessage);
-        const cleanText = clean(message.content, educationConfigs);
+        const cleanText = applyEducation(message.content, educationConfigs);
         makeAudioRunner.addQueue(cleanText, message.tag);
         break;
       }

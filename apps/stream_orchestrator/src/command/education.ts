@@ -3,6 +3,7 @@ import type {
   AddEducationMessage,
   RemoveEducationMessage,
 } from "kit_models/src/education.js";
+import { normalizeLowerCase } from "../clean.js";
 
 export const getEducationCommands = () => {
   const commands: Command[] = [];
@@ -10,7 +11,7 @@ export const getEducationCommands = () => {
     {
       isTarget: (comment) => comment.content.startsWith("教育:"),
       synthesize: (comment) => {
-        const edu = comment.filteredContent.split(":");
+        const edu = normalizeLowerCase(comment.content).split(":");
         if (edu.length !== 3) {
           return {
             type: "instSynthesize",
@@ -25,7 +26,7 @@ export const getEducationCommands = () => {
         } as InstSyntesizeMessage;
       },
       action: (comment) => {
-        const edu = comment.filteredContent.split(":");
+        const edu = normalizeLowerCase(comment.content).split(":");
         if (edu.length !== 3) {
           return [];
         }
@@ -39,9 +40,10 @@ export const getEducationCommands = () => {
       },
     },
     {
-      isTarget: (comment) => comment.filteredContent.startsWith("忘却:"),
+      isTarget: (comment) =>
+        normalizeLowerCase(comment.content).startsWith("忘却:"),
       synthesize: (comment) => {
-        const edu = comment.filteredContent.split(":");
+        const edu = normalizeLowerCase(comment.content).split(":");
         if (edu.length !== 2) {
           return {
             type: "instSynthesize",
@@ -56,7 +58,7 @@ export const getEducationCommands = () => {
         } as InstSyntesizeMessage;
       },
       action: (comment) => {
-        const edu = comment.filteredContent.split(":");
+        const edu = normalizeLowerCase(comment.content).split(":");
         if (edu.length !== 2) {
           return [];
         }

@@ -5,6 +5,7 @@ import type {
   InstSyntesizeMessage,
   VideoMessage,
 } from "kit_models";
+import { normalizeLowerCase } from "../clean.js";
 
 export const getVideoCommands = async () => {
   const keywords = await new Promise<string[]>((resolve, reject) => {
@@ -21,12 +22,13 @@ export const getVideoCommands = async () => {
   const commands: Command[] = [];
   for (const keyword of keywords) {
     commands.push({
-      isTarget: (comment) => comment.filteredContent.startsWith(keyword),
+      isTarget: (comment) =>
+        normalizeLowerCase(comment.content).startsWith(keyword),
       synthesize: (comment: CommentMessage) => {
-        if (comment.filteredContent.length > keyword.length) {
+        if (normalizeLowerCase(comment.content).length > keyword.length) {
           return {
             type: "instSynthesize",
-            content: comment.filteredContent,
+            content: normalizeLowerCase(comment.content),
             tag: "comment",
           } as InstSyntesizeMessage;
         }
