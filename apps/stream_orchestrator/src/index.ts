@@ -70,14 +70,20 @@ const main = async () => {
       case "streaming_info":
         if (message.isStreaming) {
           if (message.streamId && !isStreaming) {
-            // TODO: 配信の開始を検知したことをユーザーに通知する処理の実装
+            bus_evnet.emit({
+              type: "notify",
+              status: "startStreaming",
+            });
             listenComment.start(`lv${message.streamId}`);
             console.log("配信開始を検知しました。", message.streamId);
           }
           isStreaming = true;
         } else {
           if (isStreaming) {
-            // TODO: 配信の終了を検知したことをユーザーに通知する処理の実装
+            bus_evnet.emit({
+              type: "notify",
+              status: "endStreaming",
+            });
             listenComment.stop();
           }
           isStreaming = false;

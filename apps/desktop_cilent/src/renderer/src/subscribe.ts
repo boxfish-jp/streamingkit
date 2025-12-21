@@ -1,6 +1,8 @@
 import { Bus } from "kit_models";
 import clientSocketConnected from "./assets/client_socket_connected.wav";
+import endStreamingWav from "./assets/end_streaming.wav";
 import spotfiyAddQueue from "./assets/spotify_add_queue.wav";
+import startStreamingWav from "./assets/start_streaming.wav";
 import { ChannelsManager } from "./channels";
 import { ErrorHandler } from "./error";
 import type { AudioQueueItem } from "./lib/audio_queue";
@@ -88,6 +90,24 @@ export const startSubscribe = () => {
           case "successfulAddSpotifyQueue": {
             console.log("Spotify add queue notification received");
             const response = await fetch(spotfiyAddQueue);
+            bus.emit({
+              type: "synthesized",
+              buffer: (await response.arrayBuffer()) as any,
+              tag: "announce",
+            });
+            break;
+          }
+          case "startStreaming": {
+            const response = await fetch(startStreamingWav);
+            bus.emit({
+              type: "synthesized",
+              buffer: (await response.arrayBuffer()) as any,
+              tag: "announce",
+            });
+            break;
+          }
+          case "endStreaming": {
+            const response = await fetch(endStreamingWav);
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
