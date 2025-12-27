@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: audio_player
+productName: desktop_client
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: audio_player 
+  executableName: desktop_client 
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
