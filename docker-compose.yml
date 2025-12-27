@@ -18,7 +18,8 @@ services:
       - PGID=1000
       - TZ=Asia/Tokyo
     volumes:
-      - .:/app-dev/
+      - ./education.json:/app/education.json
+      - ./.env:/app/.env
     ports:
       # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
       # Next.js アプリ本体 -> localhost:3001 でアクセス
