@@ -26,7 +26,7 @@ export class ErrorHandler {
             clientSocketConnectionErrorWav,
           );
         }
-        break;
+        return undefined;
       case "clientSocketDisconnected":
         if (
           this._lastError.status !== error.status ||
@@ -37,7 +37,7 @@ export class ErrorHandler {
             clientSocketDisconectedWav,
           );
         }
-        break;
+        return undefined;
       case "serverFailedToGetSpotifyToken":
         this._lastError = { status: error.status, time: Date.now() };
         return await this._synthesizeErrorAnnouncement(
@@ -71,6 +71,8 @@ export class ErrorHandler {
       case "serverWriteEducation":
         this._lastError = { status: error.status, time: Date.now() };
         return await this._synthesizeErrorAnnouncement(serverWriteEducationWav);
+      default:
+        return undefined;
     }
   }
 

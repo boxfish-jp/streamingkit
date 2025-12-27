@@ -21,7 +21,7 @@ export const connectSocket = (emitMessage: (message: Message) => void) => {
     emitMessage(message);
   });
 
-  socket.on("disconnect", async (reason) => {
+  socket.on("disconnect", async () => {
     emitMessage({
       type: "error",
       status: "clientSocketDisconnected",
