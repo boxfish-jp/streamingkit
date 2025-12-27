@@ -6,7 +6,7 @@ export interface CommentMessage {
   type: "comment";
   label: CommentLabel;
   username?: string;
-  rawUserId?: bigint;
+  rawUserId?: string;
   hashedUserId?: string;
   content: string;
 }
