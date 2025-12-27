@@ -26,8 +26,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 COPY --from=prepare /app/out/full/ .
 COPY --from=prepare /app/tsconfig.package-build.json ./
-COPY --from=prepare /app/video ./video
-COPY --from=prepare /app/.env .
 RUN pnpm turbo build 
 #RUN pnpm deploy --filter stream_orchestrator /app --legacy
 

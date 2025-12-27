@@ -20,6 +20,8 @@ services:
     volumes:
       - ./education.json:/app/education.json
       - ./.env:/app/.env
+      - ./voicepeak/mountspace/:/mountspace/
+      - ./video/:/app/video/
     ports:
       # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
       # Next.js アプリ本体 -> localhost:3001 でアクセス
