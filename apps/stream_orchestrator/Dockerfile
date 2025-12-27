@@ -12,16 +12,29 @@ FROM base AS dev
 WORKDIR /app-dev
 ENV NODE_ENV=development
 
-FROM base AS builder
-COPY . /temp
-WORKDIR /temp
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install 
-RUN pnpm run -r build
-RUN pnpm deploy --filter stream_orchestrator /app --legacy
-
-FROM base AS runner
-ENV NODE_ENV=production
+FROM base AS prepare
 WORKDIR /app
-COPY --from=builder --chown=nodejs:nodejs /app ./
-CMD ["node", "dist/index.js"]
+RUN pnpm add -g turbo
+COPY . .
+RUN turbo prune stream_orchestrator --docker
+
+FROM base AS builder
+WORKDIR /app
+ENV CI=true
+COPY --from=prepare /app/out/json/ .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile
+COPY --from=prepare /app/out/full/ .
+COPY --from=prepare /app/tsconfig.package-build.json ./
+COPY --from=prepare /app/video ./video
+COPY --from=prepare /app/.env .
+RUN pnpm turbo build 
+#RUN pnpm deploy --filter stream_orchestrator /app --legacy
+
+#FROM builder AS runner
+ENV NODE_ENV=production
+WORKDIR /app/apps/stream_orchestrator
+#COPY --from=builder /app/ .
+#WORKDIR /app/apps/stream_orchestrator
+#COPY --from=builder --chown=nodejs:nodejs /app ./
+CMD ["node", "--env-file=../../.env", "dist/index.js"]

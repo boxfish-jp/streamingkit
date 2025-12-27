@@ -1,13 +1,3 @@
 {
-	"files": [],
-	"references": [
-		{ "path": "./tsconfig.node.json" },
-		{ "path": "./tsconfig.web.json" }
-	],
-	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./src/renderer/src/*"]
-		}
-	}
+  "extends": ["./tsconfig.build.json", "../../tsconfig.develop.json"]
 }

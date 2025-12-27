@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "kit_models": ["packages/kit_models/src/index.ts"],
+      "regexs": ["packages/regexs/src/index.ts"],
+      "task_runner": ["packages/task_runner/src/index.ts"]
+    }
+  }
+}

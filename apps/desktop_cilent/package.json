@@ -9,6 +9,7 @@
     "test": "pnpm dlx tsx test/index.ts",
     "format": "biome check --write",
     "lint": "biome check --write",
+    "clean": "rm -rf dist node_modules .turbo",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",

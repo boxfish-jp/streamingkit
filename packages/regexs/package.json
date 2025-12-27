@@ -1,14 +1,20 @@
 {
   "name": "regexs",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist node_modules .turbo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.23.0"
+  "packageManager": "pnpm@10.23.0",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
 }

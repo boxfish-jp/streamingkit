@@ -1,4 +1,4 @@
-import type { SynthesizeTag } from "./synthesize_tag";
+import type { SynthesizeTag } from "./synthesize_tag.js";
 
 export interface SynthesizedMessage {
   type: "synthesized";

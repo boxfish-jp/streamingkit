@@ -1,8 +1,9 @@
-import type { Command, InstSyntesizeMessage } from "kit_models";
 import type {
   AddEducationMessage,
+  Command,
+  InstSyntesizeMessage,
   RemoveEducationMessage,
-} from "kit_models/src/education.js";
+} from "kit_models";
 import { normalizeLowerCase } from "../clean.js";
 
 export const getEducationCommands = () => {
