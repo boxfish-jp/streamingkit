@@ -16,7 +16,16 @@ interface SynthesizeRunnerMessages {
 export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
   private _taskRunner = new TaskRunner();
 
-  addQueue(text: string, tag: SynthesizeTag) {
+  addQueue(text: string, tag: SynthesizeTag, retryCount = 0) {
+    if (retryCount > 5) {
+      this.emit("error", {
+        type: "error",
+        status: "serverSynthesize",
+        time: Date.now(),
+        message: "リトライ上限を超えました",
+      });
+      return;
+    }
     const task = async () => {
       const fileName = `${Date.now()}.wav`;
       try {
@@ -47,7 +56,8 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
           clearTimeout(timeout);
 
           if (status !== 0) {
-            throw new Error("voicepeak status error");
+            this.addQueue(text, tag, retryCount + 1);
+            return;
           }
           const data = readFileSync(fileName);
           this.emit("synthesized", {
