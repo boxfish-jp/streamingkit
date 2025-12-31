@@ -100,6 +100,18 @@ export const getVideoCommands = async () => {
   commands.push(makeWildCardVideoCommand("スキピ", "スピキ"));
   commands.push(makeWildCardVideoCommand("ｽﾋｷ", "スピキ"));
   commands.push(makeWildCardVideoCommand("すぴき", "スピキ"));
+  commands.push(makeArrivalVideoCommand("のんのんびより", "にゃんぱすー"));
+  commands.push(makeArrivalVideoCommand("無職", "働いたら負け"));
+  commands.push(
+    makeArrivalVideoCommand(
+      "この素晴らしい世界に祝福を!",
+      "エクスプロージョン1",
+    ),
+  );
+  commands.push(makeArrivalVideoCommand("メイドインアビス", "おや"));
+  commands.push(makeArrivalVideoCommand("ブルーアーカイブ", "完璧"));
+  commands.push(makeArrivalVideoCommand("ｽﾋｷ", "スピキ"));
+  commands.push(makeArrivalVideoCommand("ぼっちざろっく", "ムリ"));
 
   return [...commands, explosion];
 };
@@ -116,6 +128,32 @@ const makeWildCardVideoCommand = (wildcard: string, videoName: string) => {
           tag: "comment",
         } as InstSyntesizeMessage;
       }
+    },
+    action: () => {
+      return [
+        {
+          type: "video",
+          name: videoName,
+        } as VideoMessage,
+      ];
+    },
+  } as Command;
+};
+
+const makeArrivalVideoCommand = (category: string, videoName: string) => {
+  return {
+    isTarget: (commentMessage) => {
+      return (
+        commentMessage.label === "bot" &&
+        commentMessage.content.startsWith(`「${category}」が好きな`)
+      );
+    },
+    synthesize: (comment: CommentMessage) => {
+      return {
+        type: "instSynthesize",
+        content: normalizeLowerCase(comment.content),
+        tag: "comment",
+      } as InstSyntesizeMessage;
     },
     action: () => {
       return [
