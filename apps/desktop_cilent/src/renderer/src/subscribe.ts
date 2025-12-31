@@ -1,4 +1,4 @@
-import { Bus } from "kit_models";
+import { Bus, type PingMessage } from "kit_models";
 import clientSocketConnected from "./assets/client_socket_connected.wav";
 import endStreamingWav from "./assets/end_streaming.wav";
 import spotfiyAddQueue from "./assets/spotify_add_queue.wav";
@@ -6,7 +6,7 @@ import startStreamingWav from "./assets/start_streaming.wav";
 import { ChannelsManager } from "./channels";
 import { ErrorHandler } from "./error";
 import type { AudioQueueItem } from "./lib/audio_queue";
-import { connectSocket } from "./lib/socket";
+import { SocketManager } from "./lib/socket";
 import { playAudioManagers } from "./play_audio";
 
 const onAudio = async (
@@ -52,9 +52,15 @@ export const startSubscribe = () => {
   });
   const bus = new Bus();
 
-  connectSocket(async (message) => {
+  const socketManager = SocketManager.instance();
+  socketManager.on((message) => {
     bus.emit(message);
   });
+  socketManager.connect();
+
+  setInterval(() => {
+    bus.emit({ type: "ping", who: "client" } as PingMessage);
+  }, 30000);
 
   bus.on(async (message) => {
     switch (message.type) {

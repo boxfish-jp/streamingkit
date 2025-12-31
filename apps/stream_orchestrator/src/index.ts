@@ -44,6 +44,9 @@ const main = async () => {
   );
   spotifyClient.start();
   spotifyClient.on("onMessage", onMessage);
+  setInterval(() => {
+    bus_evnet.emit({ type: "ping", who: "orchestrator" });
+  }, 30000);
 
   const onEvent = (message: Message) => {
     orchestratorServer.emitMessage(message);

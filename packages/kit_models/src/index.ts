@@ -6,6 +6,7 @@ export * from "./education_config.js";
 export * from "./error.js";
 export * from "./inst_synthesize.js";
 export * from "./message.js";
+export * from "./ping.js";
 export * from "./spotify.js";
 export * from "./stream_info.js";
 export * from "./synthesize_tag.js";
