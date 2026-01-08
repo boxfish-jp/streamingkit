@@ -108,14 +108,14 @@ describe("applyEducation:", () => {
     expect(applyEducation("ww", [])).toBe("ww");
   });
 
-  test("8が4つ以上連続する場合、888に置換する", () => {
-    expect(applyEducation("8888888888", [])).toBe("888");
+  test("8が4つ以上連続する場合、何も出力しない(動画コマンドにあるので)", () => {
+    expect(applyEducation("8888888888", [])).toBe("");
     expect(applyEducation("888", [])).toBe("888");
     expect(applyEducation("88", [])).toBe("88");
   });
 
-  test("８が4つ以上連続する場合、８８８に置換する", () => {
-    expect(applyEducation("８８８８８８８８８", [])).toBe("８８８");
+  test("８が4つ以上連続する場合、何も出力しない(動画コマンドにあるので)", () => {
+    expect(applyEducation("８８８８８８８８８", [])).toBe("");
     expect(applyEducation("８８８", [])).toBe("８８８");
     expect(applyEducation("８８", [])).toBe("８８");
   });
