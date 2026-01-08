@@ -108,6 +108,12 @@ export const getVideoCommands = async () => {
       "エクスプロージョン1",
     ),
   );
+
+  commands.push(
+    makeArrivalVideoCommand("邪神ちゃんドロップキック", "ドロップキック"),
+  );
+  commands.push(makeArrivalVideoCommand("氷菓", "私気になります"));
+  commands.push(makeArrivalVideoCommand("葬送のフリーレン", "ちっさ"));
   commands.push(makeArrivalVideoCommand("メイドインアビス", "おや"));
   commands.push(makeArrivalVideoCommand("ブルーアーカイブ", "完璧"));
   commands.push(makeArrivalVideoCommand("ｽﾋｷ", "スピキ"));
