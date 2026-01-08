@@ -112,6 +112,10 @@ export const getVideoCommands = async () => {
   commands.push(makeArrivalVideoCommand("ブルーアーカイブ", "完璧"));
   commands.push(makeArrivalVideoCommand("ｽﾋｷ", "スピキ"));
   commands.push(makeArrivalVideoCommand("ぼっちざろっく", "ムリ"));
+  commands.push(makeArrivalVideoCommand("お兄ちゃんはおしまい！", "おはよう"));
+  commands.push(makeArrivalVideoCommand("ゲーム", "ゲームのカード"));
+  commands.push(makeArrivalVideoCommand("エヴァンゲリオン", "バカ"));
+  commands.push(makeArrivalVideoCommand("ウマ娘 プリティーダービー", "わこつ"));
 
   return [...commands, explosion];
 };
