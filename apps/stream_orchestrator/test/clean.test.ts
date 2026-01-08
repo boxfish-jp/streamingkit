@@ -101,4 +101,34 @@ describe("applyEducation:", () => {
       ]),
     ).toBe("教教教教教教教教教教教教");
   });
+
+  test("wが4つ以上連続する場合、wwwに置換する", () => {
+    expect(applyEducation("wwwwwwwwwww", [])).toBe("www");
+    expect(applyEducation("www", [])).toBe("www");
+    expect(applyEducation("ww", [])).toBe("ww");
+  });
+
+  test("8が4つ以上連続する場合、888に置換する", () => {
+    expect(applyEducation("8888888888", [])).toBe("888");
+    expect(applyEducation("888", [])).toBe("888");
+    expect(applyEducation("88", [])).toBe("88");
+  });
+
+  test("８が4つ以上連続する場合、８８８に置換する", () => {
+    expect(applyEducation("８８８８８８８８８", [])).toBe("８８８");
+    expect(applyEducation("８８８", [])).toBe("８８８");
+    expect(applyEducation("８８", [])).toBe("８８");
+  });
+
+  test("あが4つ以上連続する場合、あああに置換する", () => {
+    expect(applyEducation("ああああああああ", [])).toBe("あああ");
+    expect(applyEducation("あああ", [])).toBe("あああ");
+    expect(applyEducation("ああ", [])).toBe("ああ");
+  });
+
+  test("ぁが4つ以上連続する場合、ぁぁぁに置換する", () => {
+    expect(applyEducation("ぁぁぁぁぁぁぁぁ", [])).toBe("ぁぁぁ");
+    expect(applyEducation("ぁぁぁ", [])).toBe("ぁぁぁ");
+    expect(applyEducation("ぁぁ", [])).toBe("ぁぁ");
+  });
 });

@@ -33,5 +33,10 @@ export const applyEducation = (
   for (const config of educationConfigs) {
     content = content.replaceAll(config.key, config.value);
   }
+  content = content.replace(/w{4,}/g, "www");
+  content = content.replace(/8{4,}/g, "888");
+  content = content.replace(/８{4,}/g, "８８８");
+  content = content.replace(/あ{4,}/g, "あああ");
+  content = content.replace(/ぁ{4,}/g, "ぁぁぁ");
   return content;
 };
