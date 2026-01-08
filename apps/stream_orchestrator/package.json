@@ -1,0 +1,25 @@
+{
+  "name": "stream_orchestrator",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist node_modules .turbo",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.6",
+    "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz",
+    "hono": "^4.10.4",
+    "kit_models": "workspace:*",
+    "regexs": "workspace:*",
+    "socket.io": "^4.8.1",
+    "task_runner": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}

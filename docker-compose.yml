@@ -1,0 +1,30 @@
+services:
+  voicepeak:
+    build:
+      context: ./voicepeak/
+      dockerfile: Dockerfile
+    container_name: voicepeak_setup
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./voicepeak/mountspace:/mountspace/
+  orchestrator:
+    build: 
+      context: .
+      dockerfile: apps/stream_orchestrator/Dockerfile
+    container_name: stream_orchestrator
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Tokyo
+    volumes:
+      - ./education.json:/app/education.json
+      - ./.env:/app/.env
+      - ./voicepeak/mountspace/:/mountspace/
+      - ./video/:/app/video/
+    ports:
+      # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
+      # Next.js アプリ本体 -> localhost:3001 でアクセス
+      - "8888:8888"
+    shm_size: "1gb"
+    #restart: unless-stopped

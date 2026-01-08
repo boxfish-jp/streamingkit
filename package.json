@@ -1,0 +1,27 @@
+{
+  "name": "livestream_kit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "orchest": "pnpm -C apps/stream_orchestrator",
+    "desktop": "pnpm -C apps/desktop_cilent",
+    "effect": "pnpm -C apps/effect",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "clean": "turbo clean && rm -rf node_modules .turbo",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.23.0",
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.6",
+    "turbo": "^2.7.2",
+    "vitest": "4.0.13"
+  },
+  "dependencies": {
+    "socket.io-msgpack-parser": "^3.0.2"
+  }
+}

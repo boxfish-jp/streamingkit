@@ -1,0 +1,3 @@
+{
+  "extends": ["./tsconfig.develop.json", "./tsconfig.package-build.json"]
+}

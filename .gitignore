@@ -1,0 +1,8 @@
+node_modules
+.pnpm-store
+education.json
+/voicepeak/mountspace/
+.env
+.env.local
+.turbo
+out
