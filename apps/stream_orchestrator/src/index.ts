@@ -116,8 +116,19 @@ const main = async () => {
           }
         }
         break;
-      case "error": {
-        console.log("Error:", message.message);
+      case "error":
+        {
+          console.log("Error:", message.message);
+        }
+        break;
+      case "ping": {
+        if (message.who === "client") {
+          bus_evnet.emit({
+            type: "connection",
+            status: "ok",
+            where: ["client", "orchestrator"],
+          });
+        }
       }
     }
   };

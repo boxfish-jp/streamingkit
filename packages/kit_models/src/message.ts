@@ -1,4 +1,5 @@
 import type { CommentMessage } from "./comment.js";
+import type { ConnectionMessage } from "./connection.js";
 import type {
   AddEducationMessage,
   RemoveEducationMessage,
@@ -23,7 +24,8 @@ export type Message =
   | AddEducationMessage
   | RemoveEducationMessage
   | SpotifyMessage
-  | PingMessage;
+  | PingMessage
+  | ConnectionMessage;
 
 export type OnMessage = (message: Message) => void;
 
