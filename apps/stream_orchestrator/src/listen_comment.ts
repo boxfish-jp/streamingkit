@@ -1,6 +1,8 @@
 import { EventEmitter } from "node:events";
 import type {
   Chat,
+  Gift,
+  Nicoad,
   NicoliveState,
   SimpleNotification,
   SimpleNotificationV2,
@@ -33,7 +35,9 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
         .on("chat", this._onChat)
         .on("simpleNotification", this._onSimpleNotification)
         .on("simpleNotificationV2", this._onSimpleNotificationV2)
-        .on("changeState", this._onChangeState);
+        .on("changeState", this._onChangeState)
+        .on("gift", this._onGift)
+        .on("nicoad", this._onNicoAd);
       await client.connect();
       this._stopListen = () => {
         try {
@@ -110,5 +114,27 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       label: "fuguo",
       content: nusiCome,
     } as CommentMessage);
+  }
+
+  private _onGift(gift: Gift) {
+    const message = gift.message;
+    this.emit("comment", {
+      type: "comment",
+      label: "bot",
+      content: message,
+    } as CommentMessage);
+  }
+
+  private _onNicoAd(nicoAd: Nicoad) {
+    if (nicoAd.versions.case === "v0") {
+      const message = nicoAd.versions.value.latest?.message;
+      if (message) {
+        this.emit("comment", {
+          type: "comment",
+          label: "bot",
+          content: message,
+        } as CommentMessage);
+      }
+    }
   }
 }
