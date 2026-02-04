@@ -6,7 +6,7 @@ export class SocketManager {
   private _serverUrl: string;
   private static _instance: SocketManager;
   private _onMessageCallbacks: Array<(message: Message) => void> = [];
-  private _socket: Socket;
+  private _socket: Socket | null = null;
 
   private constructor() {
     this._serverUrl = this._readUrlFromStorage();
@@ -19,7 +19,9 @@ export class SocketManager {
   public setServerUrl(url: string) {
     this._saveUrlToStorage(url);
     this._serverUrl = url;
-    this._socket.close();
+    if (this._socket) {
+      this._socket.close();
+    }
     this.connect();
   }
 
@@ -57,6 +59,7 @@ export class SocketManager {
     });
 
     this._socket.on("connect", async () => {
+      if (!this._socket) return;
       console.log("Socket connected:", this._socket.id);
       this._emit({
         type: "notify",
