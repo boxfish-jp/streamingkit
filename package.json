@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "orchest": "pnpm -C apps/stream_orchestrator",
-    "desktop": "pnpm -C apps/desktop_cilent",
+    "desktop": "pnpm -C apps/desktop_client",
     "effect": "pnpm -C apps/effect",
     "build": "turbo build",
     "dev": "turbo dev",

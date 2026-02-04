@@ -8,7 +8,7 @@ export const App = () => {
   const [videoName, setVideoName] = useState<string>("");
 
   useEffect(() => {
-    const socket = io("http://localhost:8888", {
+    const socket = io("http://192.168.68.11:8888", {
       path: "/ws",
       parser: customParser,
     });
