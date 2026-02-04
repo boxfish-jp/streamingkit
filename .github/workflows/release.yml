@@ -9,12 +9,6 @@ on:
 permissions:
   contents: write
 
-linux:
-  target:
-    - AppImage
-    - deb
-  category: Development
-
 jobs:
   release:
     runs-on: ${{ matrix.os }}
