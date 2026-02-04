@@ -31,7 +31,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: tranpile script
-        run: pnpm turbo run build --filter=desktop_cilent
+        run: pnpm turbo run build --filter=desktop_client
 
       - name: Build project (Linux)
         if: matrix.os == 'ubuntu-latest'
