@@ -117,24 +117,30 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
   }
 
   private _onGift(gift: Gift) {
-    const message = gift.message;
+    const rankingMessage =
+      gift.contributionRank == null
+        ? ""
+        : `ギフト貢献${gift.contributionRank}位`;
     this.emit("comment", {
       type: "comment",
       label: "bot",
-      content: message,
+      content: `${rankingMessage} ${gift.advertiserName}さんがギフト「${gift.itemName} (${gift.point}pt)」を贈りました。「${gift.message}」`,
     } as CommentMessage);
   }
 
   private _onNicoAd(nicoAd: Nicoad) {
     if (nicoAd.versions.case === "v0") {
-      const message = nicoAd.versions.value.latest?.message;
-      if (message) {
-        this.emit("comment", {
-          type: "comment",
-          label: "bot",
-          content: message,
-        } as CommentMessage);
+      const { latest, ranking } = nicoAd.versions.value;
+      if (!latest) {
+        return;
       }
+      const rankingMessage = ranking == null ? "" : `広告貢献${ranking}位`;
+      const message = latest.message !== undefined ? latest.message : "";
+      this.emit("comment", {
+        type: "comment",
+        label: "bot",
+        content: `${rankingMessage} ${latest.advertiser}さんが${latest.point}ポイントニコニ広告しました。「${message}」`,
+      } as CommentMessage);
     }
   }
 }
