@@ -18,15 +18,7 @@ interface ListenCommentEvents {
 export class ListenComment extends EventEmitter<ListenCommentEvents> {
   private _stopListen: (() => void) | null = null;
 
-  constructor() {
-    super();
-    this._onChat = this._onChat.bind(this);
-    this._onSimpleNotification = this._onSimpleNotification.bind(this);
-    this._onSimpleNotificationV2 = this._onSimpleNotificationV2.bind(this);
-    this._onChangeState = this._onChangeState.bind(this);
-  }
-
-  async start(lvid: string) {
+  public start = async (lvid: string) => {
     try {
       let client: NicoliveClient | null = new NicoliveClient({
         liveId: lvid,
@@ -60,13 +52,13 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
         message: error,
       } as ErrorMessage);
     }
-  }
+  };
 
-  stop() {
+  public stop = () => {
     this._stopListen?.();
-  }
+  };
 
-  private _onChat(chat: Chat) {
+  private _onChat = (chat: Chat) => {
     if (chat.name === "ふぐお") {
       return;
     }
@@ -78,9 +70,9 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       rawUserId: chat.rawUserId,
       hashedUserId: chat.hashedUserId,
     } as CommentMessage);
-  }
+  };
 
-  private _onSimpleNotification(notification: SimpleNotification) {
+  private _onSimpleNotification = (notification: SimpleNotification) => {
     const content = notification.message.value;
     if (!content) {
       return;
@@ -90,9 +82,9 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       label: "bot",
       content: content,
     } as CommentMessage);
-  }
+  };
 
-  private _onSimpleNotificationV2(notification: SimpleNotificationV2) {
+  private _onSimpleNotificationV2 = (notification: SimpleNotificationV2) => {
     const content = notification.message;
     if (!content) {
       return;
@@ -102,9 +94,9 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       label: "bot",
       content: content,
     } as CommentMessage);
-  }
+  };
 
-  private _onChangeState(state: NicoliveState) {
+  private _onChangeState = (state: NicoliveState) => {
     const nusiCome = state.marquee?.display?.operatorComment?.content;
     if (!nusiCome) {
       return;
@@ -114,9 +106,9 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       label: "fuguo",
       content: nusiCome,
     } as CommentMessage);
-  }
+  };
 
-  private _onGift(gift: Gift) {
+  private _onGift = (gift: Gift) => {
     const rankingMessage =
       gift.contributionRank == null
         ? ""
@@ -126,9 +118,9 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       label: "bot",
       content: `${rankingMessage} ${gift.advertiserName}さんがギフト「${gift.itemName} (${gift.point}pt)」を贈りました。「${gift.message}」`,
     } as CommentMessage);
-  }
+  };
 
-  private _onNicoAd(nicoAd: Nicoad) {
+  private _onNicoAd = (nicoAd: Nicoad) => {
     if (nicoAd.versions.case === "v0") {
       const { latest, ranking } = nicoAd.versions.value;
       if (!latest) {
@@ -154,5 +146,5 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
         content: "ニコニ広告されました",
       } as CommentMessage);
     }
-  }
+  };
 }
