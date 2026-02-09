@@ -141,6 +141,18 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
         label: "bot",
         content: `${rankingMessage} ${latest.advertiser}さんが${latest.point}ポイントニコニ広告しました。「${message}」`,
       } as CommentMessage);
+    } else if (nicoAd.versions.case === "v1") {
+      this.emit("comment", {
+        type: "comment",
+        label: "bot",
+        content: nicoAd.versions.value.message,
+      } as CommentMessage);
+    } else {
+      this.emit("comment", {
+        type: "comment",
+        label: "bot",
+        content: "ニコニ広告されました",
+      } as CommentMessage);
     }
   }
 }
