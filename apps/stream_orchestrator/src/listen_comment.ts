@@ -59,7 +59,7 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
   };
 
   private _onChat = (chat: Chat) => {
-    if (chat.name === "ふぐお") {
+    if (chat.rawUserId === 98746932n) {
       return;
     }
     this.emit("comment", {
