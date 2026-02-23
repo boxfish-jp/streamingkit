@@ -55,4 +55,8 @@ export class SocketClient extends EventEmitter<SocketClientEvent> {
       this.emit("connect_error", "clientSocketConnection", err);
     });
   }
+
+  emitMessage(message: Message) {
+    this._socket?.emit("message", message);
+  }
 }
