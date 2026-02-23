@@ -65,13 +65,7 @@ export const startSubscribe = () => {
   bus.on(async (message) => {
     switch (message.type) {
       case "synthesized": {
-        let channel = 0;
-        if (message.channel) {
-          channel = message.channel;
-        } else if (message.tag === "announce") {
-          channel = 4;
-        }
-        onAudio(Date.now(), channel, message.buffer);
+        onAudio(Date.now(), message.channel, message.buffer);
         break;
       }
       case "error": {
@@ -89,7 +83,7 @@ export const startSubscribe = () => {
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
-              tag: "announce",
+              channel: 4,
             });
             break;
           }
@@ -99,7 +93,7 @@ export const startSubscribe = () => {
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
-              tag: "announce",
+              channel: 4,
             });
             break;
           }
@@ -108,7 +102,7 @@ export const startSubscribe = () => {
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
-              tag: "announce",
+              channel: 4,
             });
             break;
           }
@@ -117,7 +111,7 @@ export const startSubscribe = () => {
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
-              tag: "announce",
+              channel: 4,
             });
           }
         }

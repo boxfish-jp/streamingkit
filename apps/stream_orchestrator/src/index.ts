@@ -70,7 +70,7 @@ const main = async () => {
         bus_evnet.emit({
           type: "instSynthesize",
           content: normalizeLowerCase(message.content),
-          tag: "comment",
+          channel: 0,
         });
         break;
       case "streaming_info":
@@ -100,7 +100,7 @@ const main = async () => {
       case "instSynthesize": {
         const educationConfigs = getEducationConfigs(onMessage);
         const cleanText = applyEducation(message.content, educationConfigs);
-        makeAudioRunner.addQueue(cleanText, message.tag);
+        makeAudioRunner.addQueue(cleanText, message.channel);
         break;
       }
       case "addEducation": {

@@ -1,11 +1,7 @@
 import { spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
 import { readFileSync, unlinkSync } from "node:fs";
-import type {
-  ErrorMessage,
-  SynthesizedMessage,
-  SynthesizeTag,
-} from "kit_models";
+import type { ErrorMessage, SynthesizedMessage } from "kit_models";
 import { TaskRunner } from "task_runner";
 
 interface SynthesizeRunnerMessages {
@@ -16,7 +12,7 @@ interface SynthesizeRunnerMessages {
 export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
   private _taskRunner = new TaskRunner();
 
-  addQueue(text: string, tag: SynthesizeTag, retryCount = 0) {
+  addQueue(text: string, channel: number, retryCount = 0) {
     if (retryCount > 5) {
       this.emit("error", {
         type: "error",
@@ -56,14 +52,14 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
           clearTimeout(timeout);
 
           if (status !== 0) {
-            this.addQueue(text, tag, retryCount + 1);
+            this.addQueue(text, channel, retryCount + 1);
             return;
           }
           const data = readFileSync(fileName);
           this.emit("synthesized", {
             type: "synthesized",
             buffer: data,
-            tag: tag,
+            channel: channel,
           });
           unlinkSync(fileName);
         } catch (error) {
