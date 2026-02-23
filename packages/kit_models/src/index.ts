@@ -9,6 +9,5 @@ export * from "./message.js";
 export * from "./ping.js";
 export * from "./spotify.js";
 export * from "./stream_info.js";
-export * from "./synthesize_tag.js";
 export * from "./synthesized.js";
 export * from "./video.js";
