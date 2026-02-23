@@ -14,7 +14,7 @@ export const getSpotifyCommand = (): Command => {
           {
             type: "instSynthesize",
             content: lint,
-            tag: "other",
+            channel: 4,
           } as InstSyntesizeMessage,
         ];
       }
@@ -26,7 +26,7 @@ export const getSpotifyCommand = (): Command => {
           {
             type: "instSynthesize",
             content: "urlが正しくないよ",
-            tag: "other",
+            channel: 4,
           } as InstSyntesizeMessage,
         ];
       }

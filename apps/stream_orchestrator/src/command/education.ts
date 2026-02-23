@@ -17,13 +17,13 @@ export const getEducationCommands = () => {
           return {
             type: "instSynthesize",
             content: "教育コマンドの形式が間違っています",
-            tag: "comment",
+            channel: 4,
           } as InstSyntesizeMessage;
         }
         return {
           type: "instSynthesize",
           content: `${edu[1]}は${edu[2]}と覚えました`,
-          tag: "comment",
+          channel: 4,
         } as InstSyntesizeMessage;
       },
       action: (comment) => {
@@ -49,13 +49,13 @@ export const getEducationCommands = () => {
           return {
             type: "instSynthesize",
             content: "忘却コマンドの形式が間違っています",
-            tag: "comment",
+            channel: 4,
           } as InstSyntesizeMessage;
         }
         return {
           type: "instSynthesize",
           content: `${edu[1]}を忘れました`,
-          tag: "comment",
+          channel: 4,
         } as InstSyntesizeMessage;
       },
       action: (comment) => {

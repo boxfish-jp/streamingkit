@@ -30,7 +30,7 @@ export const getVideoCommands = async () => {
           return {
             type: "instSynthesize",
             content: normalizeLowerCase(comment.content),
-            tag: "comment",
+            channel: 0,
           } as InstSyntesizeMessage;
         }
       },
@@ -55,7 +55,7 @@ export const getVideoCommands = async () => {
         return {
           type: "instSynthesize",
           content: normalizeLowerCase(comment.content),
-          tag: "comment",
+          channel: 0,
         } as InstSyntesizeMessage;
       }
     },
@@ -135,7 +135,7 @@ const makeWildCardVideoCommand = (wildcard: string, videoName: string) => {
         return {
           type: "instSynthesize",
           content: normalizeLowerCase(comment.content),
-          tag: "comment",
+          channel: 0,
         } as InstSyntesizeMessage;
       }
     },
@@ -162,7 +162,7 @@ const makeArrivalVideoCommand = (category: string, videoName: string) => {
       return {
         type: "instSynthesize",
         content: normalizeLowerCase(comment.content),
-        tag: "comment",
+        channel: 0,
       } as InstSyntesizeMessage;
     },
     action: () => {
