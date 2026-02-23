@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "hub": "pnpm -C apps/hub",
     "orchest": "pnpm -C apps/stream_orchestrator",
     "desktop": "pnpm -C apps/desktop_client",
     "effect": "pnpm -C apps/effect",
@@ -15,7 +16,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.23.0",
+  "packageManager": "pnpm@10.29.3",
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
     "turbo": "^2.7.2",
