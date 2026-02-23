@@ -207,24 +207,18 @@ importers:
 
   apps/stream_orchestrator:
     dependencies:
-      '@hono/node-server':
-        specifier: ^1.19.6
-        version: 1.19.6(hono@4.10.4)
       '@kikurage/nicolive-api':
         specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
         version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
-      hono:
-        specifier: ^4.10.4
-        version: 4.10.4
       kit_models:
         specifier: workspace:*
         version: link:../../packages/kit_models
       regexs:
         specifier: workspace:*
         version: link:../../packages/regexs
-      socket.io:
-        specifier: ^4.8.1
-        version: 4.8.1
+      socket_client:
+        specifier: workspace:*
+        version: link:../../packages/socket_client
       task_runner:
         specifier: workspace:*
         version: link:../../packages/task_runner

@@ -1,4 +1,5 @@
 import { Bus, type Message } from "kit_models";
+import { SocketClient } from "socket_client";
 import { CheckStreamInfo } from "./check_stream_info.js";
 import { applyEducation, normalizeLowerCase } from "./clean.js";
 import { getCommands } from "./command/commands.js";
@@ -8,7 +9,6 @@ import {
   removeEducationConfig,
 } from "./education.js";
 import { ListenComment } from "./listen_comment.js";
-import { OrchestratorServer } from "./server.js";
 import { SpotifyClient } from "./spotify.js";
 import { SynthesizeRunner } from "./synthesize.js";
 
@@ -29,8 +29,12 @@ const main = async () => {
   checkStreamInfo.on("error", onMessage);
   checkStreamInfo.startPooling();
   const commands = await getCommands();
-  const orchestratorServer = new OrchestratorServer("0.0.0.0", 8888);
-  orchestratorServer.on("message", onMessage);
+  const socketClient = new SocketClient();
+  socketClient.setServerUrl("http://hub:8888");
+  //socketClient.connect();
+  socketClient.on("connect", () => {
+    console.log("ハブと接続しました");
+  });
   const listenComment = new ListenComment();
   listenComment.on("comment", onMessage);
   listenComment.on("error", onMessage);
@@ -49,7 +53,6 @@ const main = async () => {
   }, 30000);
 
   const onEvent = (message: Message) => {
-    orchestratorServer.emitMessage(message);
     switch (message.type) {
       case "comment":
         console.log(message.content);
@@ -133,7 +136,11 @@ const main = async () => {
     }
   };
 
-  bus_evnet.on(onEvent);
+  socketClient.on("message", onEvent);
+  bus_evnet.on((message) => {
+    socketClient.emitMessage(message);
+    onEvent(message);
+  });
 };
 
 main();
