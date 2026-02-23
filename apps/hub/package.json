@@ -1,0 +1,26 @@
+{
+  "name": "hub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "hono": "^4.11.9",
+    "kit_models": "workspace:*",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.1",
+    "socket.io-msgpack-parser": "^3.0.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
