@@ -22,9 +22,19 @@ services:
       - ./.env:/app/.env
       - ./voicepeak/mountspace/:/mountspace/
       - ./video/:/app/video/
+    shm_size: "1gb"
+    #restart: unless-stopped
+  hub:
+    build: 
+      context: .
+      dockerfile: apps/hub/Dockerfile
+    container_name: hub
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Tokyo
+    #volumes:
     ports:
-      # Webtop (VNC/GUI操作用) -> localhost:3000 でアクセス
-      # Next.js アプリ本体 -> localhost:3001 でアクセス
       - "8888:8888"
     shm_size: "1gb"
     #restart: unless-stopped
