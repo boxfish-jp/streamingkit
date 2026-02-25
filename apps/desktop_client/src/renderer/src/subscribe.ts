@@ -47,16 +47,16 @@ const onAudio = async (
 const errorHandler = new ErrorHandler();
 
 export const startSubscribe = () => {
-  const remove = window.api.onAudio(async (value) => {
-    await onAudio(value.id, value.channel, value.audio);
-  });
   const bus = new Bus();
-
   const socketManager = SocketManager.instance();
-  socketManager.on((message) => {
+  socketManager.onMessage((message) => {
     bus.emit(message);
   });
   socketManager.connect();
+
+  const remove = window.api.onAudio(async (value) => {
+    await onAudio(value.id, value.channel, value.audio);
+  });
 
   setInterval(() => {
     bus.emit({ type: "ping", who: "client" } as PingMessage);

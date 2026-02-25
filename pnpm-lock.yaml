@@ -66,6 +66,9 @@ importers:
       socket.io-client:
         specifier: ^4.8.1
         version: 4.8.1
+      socket_client:
+        specifier: workspace:*
+        version: link:../../packages/socket_client
       tailwind-merge:
         specifier: ^2.5.4
         version: 2.6.0

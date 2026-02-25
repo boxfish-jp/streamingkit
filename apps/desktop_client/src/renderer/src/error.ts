@@ -81,7 +81,7 @@ export class ErrorHandler {
     return {
       type: "synthesized",
       buffer: (await response.arrayBuffer()) as any,
-      tag: "announce",
+      channel: 4,
     } as SynthesizedMessage;
   };
 }
