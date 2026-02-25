@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "kit_models": "workspace:*",
+    "event_emitter": "workspace:*",
     "socket.io-client": "^4.8.1"
   }
 }

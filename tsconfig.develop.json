@@ -2,10 +2,21 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "kit_models": ["packages/kit_models/src/index.ts"],
-      "regexs": ["packages/regexs/src/index.ts"],
-      "task_runner": ["packages/task_runner/src/index.ts"],
-      "socket_client": ["packages/socket_client/src/index.ts"]
+      "kit_models": [
+        "packages/kit_models/src/index.ts"
+      ],
+      "regexs": [
+        "packages/regexs/src/index.ts"
+      ],
+      "task_runner": [
+        "packages/task_runner/src/index.ts"
+      ],
+      "socket_client": [
+        "packages/socket_client/src/index.ts"
+      ],
+      "event_emitter": [
+        "packages/event_emitter/src/index.ts"
+      ]
     }
   }
 }

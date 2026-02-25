@@ -263,6 +263,9 @@ importers:
 
   packages/socket_client:
     dependencies:
+      event_emitter:
+        specifier: workspace:*
+        version: link:../event_emitter
       kit_models:
         specifier: workspace:*
         version: link:../kit_models

@@ -1,4 +1,4 @@
-import { EventEmitter } from "node:events";
+import { EventEmitter } from "event_emitter";
 import type { Message } from "kit_models";
 import { io, type Socket } from "socket.io-client";
 import customParser from "socket.io-msgpack-parser";
@@ -31,6 +31,10 @@ export class SocketClient extends EventEmitter<SocketClientEvent> {
     this.connect();
   }
 
+  get isConnected(): boolean {
+    return this._socket?.connected ?? false;
+  }
+
   public connect() {
     this._socket = io(this._serverUrl, {
       path: "/ws",
@@ -54,6 +58,10 @@ export class SocketClient extends EventEmitter<SocketClientEvent> {
     this._socket.on("connect_error", (err) => {
       this.emit("connect_error", "clientSocketConnection", err);
     });
+  }
+
+  public disconnect() {
+    this._socket?.disconnect();
   }
 
   emitMessage(message: Message) {
