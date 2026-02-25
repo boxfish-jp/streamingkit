@@ -233,6 +233,12 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  packages/event_emitter:
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
   packages/kit_models:
     dependencies:
       regexs:
