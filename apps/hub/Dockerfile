@@ -16,7 +16,7 @@ FROM base AS prepare
 WORKDIR /app
 RUN pnpm add -g turbo
 COPY . .
-RUN turbo prune stream_orchestrator --docker
+RUN turbo prune hub --docker
 
 FROM base AS builder
 WORKDIR /app
@@ -27,11 +27,10 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 COPY --from=prepare /app/out/full/ .
 COPY --from=prepare /app/tsconfig.package-build.json ./
 RUN pnpm turbo build 
-#RUN pnpm deploy --filter stream_orchestrator /app --legacy
 
 #FROM builder AS runner
 ENV NODE_ENV=production
-WORKDIR /app/apps/stream_orchestrator
+WORKDIR /app/apps/hub
 #COPY --from=builder /app/ .
 #WORKDIR /app/apps/stream_orchestrator
 #COPY --from=builder --chown=nodejs:nodejs /app ./
