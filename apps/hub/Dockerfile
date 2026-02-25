@@ -28,10 +28,6 @@ COPY --from=prepare /app/out/full/ .
 COPY --from=prepare /app/tsconfig.package-build.json ./
 RUN pnpm turbo build 
 
-#FROM builder AS runner
 ENV NODE_ENV=production
 WORKDIR /app/apps/hub
-#COPY --from=builder /app/ .
-#WORKDIR /app/apps/stream_orchestrator
-#COPY --from=builder --chown=nodejs:nodejs /app ./
-CMD ["node", "--env-file=../../.env", "dist/index.js"]
+CMD ["node", "dist/index.js"]
