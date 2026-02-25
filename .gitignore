@@ -6,3 +6,4 @@ education.json
 .env.local
 .turbo
 out
+dist
