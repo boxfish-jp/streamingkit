@@ -18,6 +18,7 @@ export class SocketManager {
     console.log("Read orchestratorUrl from storage:", item);
     const url = item ?? "http://localhost:8888";
     this._socket.setServerUrl(url);
+    this._initEventListeners();
     this.connect();
   }
 
@@ -31,11 +32,26 @@ export class SocketManager {
     if (this._socket.isConnected) {
       this._socket.disconnect();
     }
-    this._socket.connect();
+    this._socket.setServerUrl(url);
   }
 
   public connect() {
     this._socket.connect();
+  }
+
+  public onMessage(callback: (message: Message) => void) {
+    this._onMessageCallbacks.push(callback);
+    console.log(
+      "Registered new onMessage callback. Total callbacks:",
+      this._onMessageCallbacks.length,
+    );
+  }
+
+  private _emitMessage(message: Message) {
+    this._onMessageCallbacks.forEach((callback) => callback(message));
+  }
+
+  private _initEventListeners() {
     this._socket.on("message", (message) => {
       this._emitMessage(message);
     });
@@ -62,13 +78,5 @@ export class SocketManager {
         time: Date.now(),
       } as Message);
     });
-  }
-
-  public onMessage(callback: (message: Message) => void) {
-    this._onMessageCallbacks.push(callback);
-  }
-
-  private _emitMessage(message: Message) {
-    this._onMessageCallbacks.forEach((callback) => callback(message));
   }
 }
