@@ -24,28 +24,15 @@ SPOTIFY_REFRESH_TOKEN=hogeToken
 
 .envはこのリポジトリのルートディレクトリに配置してください。  
 
-次に、以下のコマンドでオーケストレーターを起動します。
+次に、以下のコマンドでオーケストレーターとハブを起動します。
 
 ```bash
-docker compose -f docker-compose.orchestrator.yml up orchestrator
+docker compose -f docker-compose..yml up orchestrator hub
 ```
 
 ### 3. デスクトップ配信クライアントのセットアップ
 
-以下のコマンドでアプリケーションをビルドします。  
-```bash
-# 依存関係のインストール
-pnpm i
-
-# windows向けにビルド
-pnpm client build:win
-
-# Linux向けにビルド
-pnpm client build:win
-```
-
-desktop_client/dist/以下にビルドされた実行ファイルが配置されます。  
-ビルドされたアプリを開きます。  
+このリポジトリのリリースページにビルド済みのクライアントがあるので、ダウンロードして起動してください。  
 
 ![クライアント](./docs/client.png)
 
