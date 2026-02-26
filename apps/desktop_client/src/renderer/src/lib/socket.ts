@@ -1,6 +1,5 @@
 import type { Message } from "kit_models";
 import { SocketClient } from "socket_client";
-import { s } from "vite/dist/node/types.d-aGj9QkWt";
 
 export class SocketManager {
   private static _instance: SocketManager;
@@ -56,7 +55,7 @@ export class SocketManager {
       } as Message);
     });
 
-    this._socket.on("connect_error", (error) => {
+    this._socket.on("connect_error", () => {
       this._emitMessage({
         type: "error",
         status: "clientSocketConnection",
