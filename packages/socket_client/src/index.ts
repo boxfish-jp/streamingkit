@@ -36,6 +36,10 @@ export class SocketClient extends EventEmitter<SocketClientEvent> {
   }
 
   public connect() {
+    if (this._socket) {
+      this._socket.disconnect();
+      this._socket = null;
+    }
     this._socket = io(this._serverUrl, {
       path: "/ws",
       parser: customParser,
