@@ -67,7 +67,7 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
       label: "viewer",
       content: chat.content,
       username: chat.name,
-      rawUserId: chat.rawUserId,
+      rawUserId: chat.rawUserId?.toString(),
       hashedUserId: chat.hashedUserId,
     } as CommentMessage);
   };
