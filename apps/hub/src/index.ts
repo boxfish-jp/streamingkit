@@ -1,5 +1,6 @@
 import type { Server as HttpServer } from "node:http";
 import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { Server as SocketServer } from "socket.io";
@@ -43,7 +44,10 @@ export const main = (name: string, port: number) => {
     });
   });
 
-  app.get("/", (c) => c.text("Orchestrator Server is running"));
+  app.get("/", (c) => c.text("Hub Server is running"));
+
+  app.use("/video/*", serveStatic({ root: "./" }));
+  app.use("/static/*", serveStatic({ root: "./" }));
 };
 
 main("0.0.0.0", 8888);

@@ -33,7 +33,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Tokyo
-    #volumes:
+    volumes:
+      - ./video/:/app/apps/hub/video/
     ports:
       - "8888:8888"
     shm_size: "1gb"

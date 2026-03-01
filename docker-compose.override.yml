@@ -21,6 +21,7 @@ services:
     user: "${UID}:${GID}"
     volumes:
       - .:/app-dev/
+      - ./video/:/app-dev/apps/hub/video/
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
     environment:

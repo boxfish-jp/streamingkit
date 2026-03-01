@@ -8,7 +8,8 @@ export const App = () => {
   const [videoName, setVideoName] = useState<string>("");
 
   useEffect(() => {
-    const socket = io("http://192.168.68.11:8888", {
+    const url = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+    const socket = io(url, {
       path: "/ws",
       parser: customParser,
     });
@@ -20,7 +21,7 @@ export const App = () => {
 
     socket.on("message", (message: Message) => {
       if (message.type === "video") {
-        const path = `../../../video/${message.name}.mp4`;
+        const path = `${url}/video/${message.name}.mp4`;
         console.log(path);
         setVideoName(path);
       }
