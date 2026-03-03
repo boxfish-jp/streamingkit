@@ -1,0 +1,21 @@
+{
+  "name": "cli",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist node_modules .turbo",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "kit_models": "workspace:*",
+    "socket_client": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
