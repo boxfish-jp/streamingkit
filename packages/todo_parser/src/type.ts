@@ -8,19 +8,19 @@ type TaskStatus =
   | "CANCELED"
   | "NONE";
 
-type UnitTask = {
-  type: "task";
+export type UnitTask = {
+  type: "unit";
   title: string;
   status: TaskStatus;
 };
 
-type TaskGroup = {
+export type GroupTask = {
   type: "group";
   title: string;
   tasks: Task[];
 };
 
-type Task = UnitTask | TaskGroup;
+export type Task = UnitTask | GroupTask;
 
 /*
 const todo: Task[] = [
