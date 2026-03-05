@@ -286,6 +286,15 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
+  packages/read_file:
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.3.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/regexs:
     devDependencies:
       typescript:
@@ -4920,7 +4929,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.3':
@@ -4930,7 +4939,7 @@ snapshots:
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
 
   '@types/debug@4.1.12':
     dependencies:
@@ -4942,7 +4951,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
 
   '@types/http-cache-semantics@4.0.4': {}
 
@@ -4950,7 +4959,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
 
   '@types/ms@2.1.0': {}
 
@@ -4972,7 +4981,7 @@ snapshots:
 
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
       xmlbuilder: 15.1.1
     optional: true
 
@@ -4989,14 +4998,14 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
 
   '@types/verror@1.10.11':
     optional: true
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.3)':
@@ -5787,7 +5796,7 @@ snapshots:
   engine.io@6.6.4:
     dependencies:
       '@types/cors': 2.8.19
-      '@types/node': 25.3.0
+      '@types/node': 25.3.3
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.7.2
