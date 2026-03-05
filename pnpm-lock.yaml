@@ -30,6 +30,9 @@ importers:
       kit_models:
         specifier: workspace:*
         version: link:../../packages/kit_models
+      promise_with_resolvers:
+        specifier: workspace:*
+        version: link:../../packages/promise_with_resolvers
       socket_client:
         specifier: workspace:*
         version: link:../../packages/socket_client
@@ -276,6 +279,12 @@ importers:
       '@types/node':
         specifier: ^25.0.3
         version: 25.0.3
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
+  packages/promise_with_resolvers:
+    devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3

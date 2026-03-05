@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "hub": "pnpm -C apps/hub",
+    "cli": "pnpm -C apps/cli",
     "orchest": "pnpm -C apps/stream_orchestrator",
     "desktop": "pnpm -C apps/desktop_client",
     "effect": "pnpm -C apps/effect",

@@ -16,6 +16,9 @@
       ],
       "event_emitter": [
         "packages/event_emitter/src/index.ts"
+      ],
+      "promise_with_resolvers": [
+        "packages/promise_with_resolvers/src/index.ts"
       ]
     }
   }
