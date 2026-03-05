@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promiseWithResolvers } from "promise_with_resolvers";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { watchFile } from "../src/watch_file.js";
+import { watchFile } from "../src/index.js";
 
 describe("watchFile:", async () => {
   let tmpDirPath = "";

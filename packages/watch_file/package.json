@@ -1,0 +1,25 @@
+{
+  "name": "watch_file",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist node_modules .turbo",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.29.3",
+  "dependencies": {
+    "chokidar": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.3",
+    "promise_with_resolvers": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

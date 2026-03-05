@@ -11,7 +11,6 @@
   "dependencies": {
     "chokidar": "^5.0.0",
     "kit_models": "workspace:*",
-    "promise_with_resolvers": "workspace:*",
     "socket_client": "workspace:*"
   },
   "devDependencies": {

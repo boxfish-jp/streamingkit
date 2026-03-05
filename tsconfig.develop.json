@@ -19,6 +19,9 @@
       ],
       "promise_with_resolvers": [
         "packages/promise_with_resolvers/src/index.ts"
+      ],
+      "watch_file": [
+        "packages/promise_with_resolvers/src/index.ts"
       ]
     }
   }
