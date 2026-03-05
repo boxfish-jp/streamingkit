@@ -326,6 +326,15 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
+  packages/todo_parser:
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.3.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/watch_file:
     dependencies:
       chokidar:
