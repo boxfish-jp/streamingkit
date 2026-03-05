@@ -17,6 +17,7 @@ export type UnitTask = {
 export type GroupTask = {
   type: "group";
   title: string;
+  status?: TaskStatus;
   tasks: Task[];
 };
 

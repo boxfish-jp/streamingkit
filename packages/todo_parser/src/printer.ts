@@ -1,10 +1,12 @@
 import type { GroupTask, Task, UnitTask } from "./type.js";
 
 const unitTaskPrinter = (unit: UnitTask, depth: number): string =>
-  `${"*".repeat(depth)} ${unit.status === "NONE" ? "" : unit.status} ${unit.title} \n`;
+  `${"*".repeat(depth)}${unit.status === "NONE" ? " " : ` ${unit.status} `}${unit.title} \n`;
 
 const groupTaskPrinter = (group: GroupTask, depth: number): string => {
-  const lines = [`${"*".repeat(depth)} ${group.title} \n`];
+  const lines = [
+    `${"*".repeat(depth)}${group.status ? ` ${group.status} ` : " "}${group.title} \n`,
+  ];
   for (const task of group.tasks) {
     if (task.type === "unit") {
       lines.push(unitTaskPrinter(task, depth + 1));
@@ -46,6 +48,7 @@ const todo: Task[] = [
     tasks: [
       {
         type: "group",
+        status: "DONE",
         title: "パーサーの自作",
         tasks: [
           {
@@ -72,7 +75,7 @@ const todo: Task[] = [
           {
             type: "unit",
             title: "具体的にどう表示するか決める",
-            status: "DONE",
+            status: "THINKING",
           },
         ],
       },
