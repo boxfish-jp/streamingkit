@@ -1,0 +1,129 @@
+import { describe, expect, test } from "vitest";
+import { parseTodo } from "../src/index.js";
+import { printTasks } from "../src/printer.js";
+
+describe("parseTodo:", () => {
+  test("todo.orgの形式の文字列をTask[]に変換できること", () => {
+    const originalTestData = `
+* effectページをhubで配信しよう
+** DONE effectページのビルド方法の調査
+** DEVELOPING effectページのhubへの配信方法の調査
+* プログラミング配信において、現在の進捗を表示する
+** DONE パーサーの自作
+*** DONE パーサの作り方調べる
+*** DONE 足し算引き算パーサで練習
+** 要件定義
+*** DONE 表示するものを決める
+*** THINKING 具体的にどう表示するか決める
+* 配信ツールダウンディテクタの構築
+** DONE オーケストレーターからメッセージのハブ機能を独立させる
+CLOSED: [2026-02-28 Sat 16:41]
+
+** ハブ機能にメッセージ監視機能をつける
+
+** ふぐおAPIの構築(別リポジトリ)
+
+** ふぐおダウンディテクタサイトの制作
+
+* effectページをhubで配信しよう
+** DONE effectページのビルド方法の調査
+CLOSED: [2026-03-01 Sun 17:43]
+** DONE websocket周りの調整
+CLOSED: [2026-03-01 Sun 18:00]
+
+* プログラミング配信において、現在の進捗を表示する
+** 要件定義
+*** DONE 表示するものを決めよう
+CLOSED: [2026-03-01 Sun 22:55]
+*** DONE 表示するものをどうやって取得するかを考えよう
+CLOSED: [2026-03-01 Sun 23:02]
+*** DONE 具体的にどう実装するか
+CLOSED: [2026-03-02 Mon 23:57]
+** ファイルの監視
+*** DONE chokidarを使ってみる
+    CLOSED: [2026-03-03 Tue 15:41]
+*** DONE chokidarでディレクトリを見張ることができるか検証
+    CLOSED: [2026-03-03 Tue 16:09]
+*** DONE CLIプロジェクトの環境構築
+    CLOSED: [2026-03-03 Tue 16:40]
+*** DONE chokidarを使ってファイル監視の実装
+    CLOSED: [2026-03-03 Tue 17:46]
+*** CANCELED flockを使ってみる
+    CLOSED: [2026-03-03 Tue 18:36]
+*** DONE  ファイルの読み取りを行う
+    CLOSED: [2026-03-05 Thu 14:40]
+*** DONE パッケージ化
+    CLOSED: [2026-03-05 Thu 16:29]
+** パーサーの自作
+*** DONE パーサの作り方調べる
+    CLOSED: [2026-03-05 Thu 17:12]
+*** DONE 足し算引き算パーサで練習
+    CLOSED: [2026-03-05 Thu 22:56]
+*** DONE ASTの定義
+    CLOSED: [2026-03-05 Thu 23:21]
+*** DONE プリンタの作成
+    CLOSED: [2026-03-06 Fri 00:02]
+*** DEVELOPING パーサの自作
+** 変更の検出
+** メッセージの送信
+** フロントエンド作成
+`;
+    const cleanedTestData = `* effectページをhubで配信しよう
+** DONE effectページのビルド方法の調査
+** DEVELOPING effectページのhubへの配信方法の調査
+* プログラミング配信において、現在の進捗を表示する
+** DONE パーサーの自作
+*** DONE パーサの作り方調べる
+*** DONE 足し算引き算パーサで練習
+** 要件定義
+*** DONE 表示するものを決める
+*** THINKING 具体的にどう表示するか決める
+* 配信ツールダウンディテクタの構築
+** DONE オーケストレーターからメッセージのハブ機能を独立させる
+** ハブ機能にメッセージ監視機能をつける
+** ふぐおAPIの構築(別リポジトリ)
+** ふぐおダウンディテクタサイトの制作
+* effectページをhubで配信しよう
+** DONE effectページのビルド方法の調査
+** DONE websocket周りの調整
+* プログラミング配信において、現在の進捗を表示する
+** 要件定義
+*** DONE 表示するものを決めよう
+*** DONE 表示するものをどうやって取得するかを考えよう
+*** DONE 具体的にどう実装するか
+** ファイルの監視
+*** DONE chokidarを使ってみる
+*** DONE chokidarでディレクトリを見張ることができるか検証
+*** DONE CLIプロジェクトの環境構築
+*** DONE chokidarを使ってファイル監視の実装
+*** CANCELED flockを使ってみる
+*** DONE ファイルの読み取りを行う
+*** DONE パッケージ化
+** パーサーの自作
+*** DONE パーサの作り方調べる
+*** DONE 足し算引き算パーサで練習
+*** DONE ASTの定義
+*** DONE プリンタの作成
+*** DEVELOPING パーサの自作
+** 変更の検出
+** メッセージの送信
+** フロントエンド作成
+`;
+
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(cleanedTestData);
+  });
+});
+
+/*
+const data2 = `
+* TODO a
+** TODO b
+*** TODO c
+* TODO a
+*** TODO c
+**** TODO d
+** TODO b
+`;
+*/
