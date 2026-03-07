@@ -68,7 +68,8 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** メッセージの送信
 ** フロントエンド作成
 `;
-    const cleanedTestData = `* effectページをhubで配信しよう
+    const cleanedTestData = `
+* effectページをhubで配信しよう
 ** DONE effectページのビルド方法の調査
 ** DEVELOPING effectページのhubへの配信方法の調査
 * プログラミング配信において、現在の進捗を表示する
@@ -108,16 +109,72 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** 変更の検出
 ** メッセージの送信
 ** フロントエンド作成
-`;
+`.trim();
 
     const parsed = parseTodo(originalTestData);
     const printed = printTasks(parsed);
     expect(printed).toEqual(cleanedTestData);
   });
-});
 
-/*
-const data2 = `
+  test("空の文字列を渡したとき、空の配列が返ってくること", () => {
+    const parsed = parseTodo("");
+    const printed = printTasks(parsed);
+    expect(printed).toEqual("");
+  });
+
+  test("改行を含む空の文字列を渡したとき、空の配列が返ってくること", () => {
+    const parsed = parseTodo("\n\n\n");
+    const printed = printTasks(parsed);
+    expect(printed).toEqual("");
+  });
+
+  test("要素が1つのときのパース", () => {
+    const originalTestData = `* TODO a`;
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(originalTestData);
+  });
+
+  test("要素の中にタスクのステータスラベルがない場合はNONEと処理される", () => {
+    const originalTestData = `* a`;
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(originalTestData);
+  });
+
+  test("兄弟要素のタスクのパース", () => {
+    const originalTestData = `
+* TODO a
+* THINKING b
+`;
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(originalTestData.trim());
+  });
+
+  test("親子要素のタスクのパース", () => {
+    const originalTestData = `
+* TODO a
+** THINKING b
+`;
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(originalTestData.trim());
+  });
+
+  test("孫要素のタスクのパース", () => {
+    const originalTestData = `
+* TODO a
+** THINKING b
+*** THINKING b
+`;
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(originalTestData.trim());
+  });
+
+  test("2レベル以上のジャンプ", () => {
+    const originalTestData = `
 * TODO a
 ** TODO b
 *** TODO c
@@ -126,4 +183,51 @@ const data2 = `
 **** TODO d
 ** TODO b
 `;
-*/
+
+    const cleanedTestData = `
+* TODO a
+** TODO b
+*** TODO c
+* TODO a
+** TODO c
+*** TODO d
+** TODO b
+`;
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(cleanedTestData.trim());
+  });
+
+  test("CLOSEDや改行など他の要素が含まれていたら無視をする", () => {
+    const originalTestData = `
+* effectページをhubで配信しよう
+** DONE effectページのビルド方法の調査
+CLOSED: [2026-03-01 Sun 17:43]
+** DONE websocket周りの調整
+CLOSED: [2026-03-01 Sun 18:00]
+
+* プログラミング配信において、現在の進捗を表示する
+** 要件定義
+*** DONE 表示するものを決めよう
+CLOSED: [2026-03-01 Sun 22:55]
+*** DONE 表示するものをどうやって取得するかを考えよう
+CLOSED: [2026-03-01 Sun 23:02]
+*** DONE 具体的にどう実装するか
+CLOSED: [2026-03-02 Mon 23:57]
+`;
+    const cleanedTestData = `
+* effectページをhubで配信しよう
+** DONE effectページのビルド方法の調査
+** DONE websocket周りの調整
+* プログラミング配信において、現在の進捗を表示する
+** 要件定義
+*** DONE 表示するものを決めよう
+*** DONE 表示するものをどうやって取得するかを考えよう
+*** DONE 具体的にどう実装するか
+`.trim();
+
+    const parsed = parseTodo(originalTestData);
+    const printed = printTasks(parsed);
+    expect(printed).toEqual(cleanedTestData);
+  });
+});

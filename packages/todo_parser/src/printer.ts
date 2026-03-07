@@ -17,5 +17,5 @@ export const printTasks = (tasks: Task[]): string => {
   for (const task of tasks) {
     lines.push(taskPrinter(task, 1));
   }
-  return lines.join("");
+  return lines.join("").trim();
 };
