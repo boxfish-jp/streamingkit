@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { parseTodo } from "../src/index.js";
-import { printTasks } from "../src/printer.js";
+import { parseDocument } from "../src/parsed_document/parser.js";
+import { printDocument } from "../src/parsed_document/printer.js";
 
-describe("parseTodo:", () => {
+describe("parseDocument:", () => {
   test("todo.orgの形式の文字列をTask[]に変換できること", () => {
     const originalTestData = `
 * effectページをhubで配信しよう
@@ -111,35 +111,60 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** フロントエンド作成
 `.trim();
 
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(cleanedTestData);
+    expect(parsed.rootIds).toEqual(["1", "2", "3", "4", "5"]);
   });
 
   test("空の文字列を渡したとき、空の配列が返ってくること", () => {
-    const parsed = parseTodo("");
-    const printed = printTasks(parsed);
+    const parsed = parseDocument("");
+    const printed = printDocument(parsed);
     expect(printed).toEqual("");
   });
 
   test("改行を含む空の文字列を渡したとき、空の配列が返ってくること", () => {
-    const parsed = parseTodo("\n\n\n");
-    const printed = printTasks(parsed);
+    const parsed = parseDocument("\n\n\n");
+    const printed = printDocument(parsed);
     expect(printed).toEqual("");
   });
 
   test("要素が1つのときのパース", () => {
     const originalTestData = `* TODO a`;
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData);
+    expect(parsed.rootIds).toEqual(["1"]);
+    expect(parsed.nodes.get("1")).toEqual({
+      id: "1",
+      depth: 1,
+      title: "a",
+      rawTag: "TODO",
+      parentId: null,
+      status: "TODO",
+      childrenIds: [],
+      lineIndex: 0,
+      path: ["a"],
+    });
   });
 
   test("要素の中にタスクのステータスラベルがない場合はNONEと処理される", () => {
     const originalTestData = `* a`;
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData);
+    expect(parsed.rootIds).toEqual(["1"]);
+    expect(parsed.nodes.get("1")).toEqual({
+      id: "1",
+      depth: 1,
+      title: "a",
+      rawTag: null,
+      parentId: null,
+      status: "TODO",
+      childrenIds: [],
+      lineIndex: 0,
+      path: ["a"],
+    });
   });
 
   test("兄弟要素のタスクのパース", () => {
@@ -147,9 +172,33 @@ CLOSED: [2026-03-02 Mon 23:57]
 * TODO a
 * THINKING b
 `;
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
+    expect(parsed.rootIds).toEqual(["1", "2"]);
+    expect(parsed.nodes.get("1")).toEqual({
+      id: "1",
+      depth: 1,
+      title: "a",
+      rawTag: "TODO",
+      parentId: null,
+      status: "TODO",
+      childrenIds: [],
+      lineIndex: 0,
+      path: ["a"],
+    });
+
+    expect(parsed.nodes.get("2")).toEqual({
+      id: "2",
+      depth: 1,
+      title: "b",
+      rawTag: "THINKING",
+      parentId: null,
+      status: "THINKING",
+      childrenIds: [],
+      lineIndex: 1,
+      path: ["b"],
+    });
   });
 
   test("親子要素のタスクのパース", () => {
@@ -157,20 +206,78 @@ CLOSED: [2026-03-02 Mon 23:57]
 * TODO a
 ** THINKING b
 `;
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
+    expect(parsed.rootIds).toEqual(["1"]);
+    expect(parsed.nodes.get("1")).toEqual({
+      id: "1",
+      depth: 1,
+      title: "a",
+      rawTag: "TODO",
+      parentId: null,
+      status: "TODO",
+      childrenIds: ["1-1"],
+      lineIndex: 0,
+      path: ["a"],
+    });
+
+    expect(parsed.nodes.get("1-1")).toEqual({
+      id: "1-1",
+      depth: 2,
+      title: "b",
+      rawTag: "THINKING",
+      parentId: "1",
+      status: "THINKING",
+      childrenIds: [],
+      lineIndex: 1,
+      path: ["a", "b"],
+    });
   });
 
   test("孫要素のタスクのパース", () => {
     const originalTestData = `
 * TODO a
 ** THINKING b
-*** THINKING b
+*** DEVELOPING b
 `;
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
+    expect(parsed.rootIds).toEqual(["1"]);
+    expect(parsed.nodes.get("1")).toEqual({
+      id: "1",
+      depth: 1,
+      title: "a",
+      rawTag: "TODO",
+      parentId: null,
+      status: "TODO",
+      childrenIds: ["1-1"],
+      lineIndex: 0,
+      path: ["a"],
+    });
+    expect(parsed.nodes.get("1-1")).toEqual({
+      id: "1-1",
+      depth: 2,
+      title: "b",
+      rawTag: "THINKING",
+      parentId: "1",
+      status: "THINKING",
+      childrenIds: ["1-1-1"],
+      lineIndex: 1,
+      path: ["a", "b"],
+    });
+    expect(parsed.nodes.get("1-1-1")).toEqual({
+      id: "1-1-1",
+      depth: 3,
+      title: "b",
+      rawTag: "DEVELOPING",
+      parentId: "1-1",
+      status: "DEVELOPING",
+      childrenIds: [],
+      lineIndex: 2,
+      path: ["a", "b", "b"],
+    });
   });
 
   test("2レベル以上のジャンプ", () => {
@@ -179,23 +286,47 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** TODO b
 *** TODO c
 * TODO a
-*** TODO c
+*** c
 **** TODO d
 ** TODO b
 `;
-
-    const cleanedTestData = `
-* TODO a
-** TODO b
-*** TODO c
-* TODO a
-** TODO c
-*** TODO d
-** TODO b
-`;
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
-    expect(printed).toEqual(cleanedTestData.trim());
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
+    expect(printed).toEqual(originalTestData.trim());
+    expect(parsed.rootIds).toEqual(["1", "2"]);
+    expect(parsed.nodes.get("2-1")).toEqual({
+      id: "2-1",
+      depth: 3,
+      title: "c",
+      rawTag: null,
+      parentId: "2",
+      status: "TODO",
+      childrenIds: ["2-1-1"],
+      lineIndex: 4,
+      path: ["a", "c"],
+    });
+    expect(parsed.nodes.get("2-1-1")).toEqual({
+      id: "2-1-1",
+      depth: 4,
+      title: "d",
+      rawTag: "TODO",
+      parentId: "2-1",
+      status: "TODO",
+      childrenIds: [],
+      lineIndex: 5,
+      path: ["a", "c", "d"],
+    });
+    expect(parsed.nodes.get("2-2")).toEqual({
+      id: "2-2",
+      depth: 2,
+      title: "b",
+      rawTag: "TODO",
+      parentId: "2",
+      status: "TODO",
+      childrenIds: [],
+      lineIndex: 6,
+      path: ["a", "b"],
+    });
   });
 
   test("CLOSEDや改行など他の要素が含まれていたら無視をする", () => {
@@ -226,8 +357,8 @@ CLOSED: [2026-03-02 Mon 23:57]
 *** DONE 具体的にどう実装するか
 `.trim();
 
-    const parsed = parseTodo(originalTestData);
-    const printed = printTasks(parsed);
+    const parsed = parseDocument(originalTestData);
+    const printed = printDocument(parsed);
     expect(printed).toEqual(cleanedTestData);
   });
 });

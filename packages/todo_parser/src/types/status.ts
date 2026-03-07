@@ -6,13 +6,6 @@ export const taskStatusList = [
   "BUILDING",
   "DONE",
   "CANCELED",
-  "NONE",
 ] as const;
 
 export type TaskStatus = (typeof taskStatusList)[number];
-
-export type Task = {
-  title: string;
-  status: TaskStatus;
-  children?: Task[];
-};
