@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { parseDocument } from "../src/parsed_document/parser.js";
-import { printDocument } from "../src/parsed_document/printer.js";
+import { parseNodes } from "../src/parsed_node/parser.js";
+import { printDocument } from "../src/parsed_node/printer.js";
 
-describe("parseDocument:", () => {
+describe("parseNodes:", () => {
   test("todo.orgの形式の文字列をTask[]に変換できること", () => {
     const originalTestData = `
 * effectページをhubで配信しよう
@@ -111,31 +111,29 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** フロントエンド作成
 `.trim();
 
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(cleanedTestData);
-    expect(parsed.rootIds).toEqual(["1", "2", "3", "4", "5"]);
   });
 
   test("空の文字列を渡したとき、空の配列が返ってくること", () => {
-    const parsed = parseDocument("");
+    const parsed = parseNodes("");
     const printed = printDocument(parsed);
     expect(printed).toEqual("");
   });
 
   test("改行を含む空の文字列を渡したとき、空の配列が返ってくること", () => {
-    const parsed = parseDocument("\n\n\n");
+    const parsed = parseNodes("\n\n\n");
     const printed = printDocument(parsed);
     expect(printed).toEqual("");
   });
 
   test("要素が1つのときのパース", () => {
     const originalTestData = `* TODO a`;
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData);
-    expect(parsed.rootIds).toEqual(["1"]);
-    expect(parsed.nodes.get("1")).toEqual({
+    expect(parsed.get("1")).toEqual({
       id: "1",
       depth: 1,
       title: "a",
@@ -150,11 +148,10 @@ CLOSED: [2026-03-02 Mon 23:57]
 
   test("要素の中にタスクのステータスラベルがない場合はNONEと処理される", () => {
     const originalTestData = `* a`;
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData);
-    expect(parsed.rootIds).toEqual(["1"]);
-    expect(parsed.nodes.get("1")).toEqual({
+    expect(parsed.get("1")).toEqual({
       id: "1",
       depth: 1,
       title: "a",
@@ -172,11 +169,10 @@ CLOSED: [2026-03-02 Mon 23:57]
 * TODO a
 * THINKING b
 `;
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
-    expect(parsed.rootIds).toEqual(["1", "2"]);
-    expect(parsed.nodes.get("1")).toEqual({
+    expect(parsed.get("1")).toEqual({
       id: "1",
       depth: 1,
       title: "a",
@@ -188,7 +184,7 @@ CLOSED: [2026-03-02 Mon 23:57]
       path: ["a"],
     });
 
-    expect(parsed.nodes.get("2")).toEqual({
+    expect(parsed.get("2")).toEqual({
       id: "2",
       depth: 1,
       title: "b",
@@ -206,11 +202,10 @@ CLOSED: [2026-03-02 Mon 23:57]
 * TODO a
 ** THINKING b
 `;
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
-    expect(parsed.rootIds).toEqual(["1"]);
-    expect(parsed.nodes.get("1")).toEqual({
+    expect(parsed.get("1")).toEqual({
       id: "1",
       depth: 1,
       title: "a",
@@ -222,7 +217,7 @@ CLOSED: [2026-03-02 Mon 23:57]
       path: ["a"],
     });
 
-    expect(parsed.nodes.get("1-1")).toEqual({
+    expect(parsed.get("1-1")).toEqual({
       id: "1-1",
       depth: 2,
       title: "b",
@@ -241,11 +236,10 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** THINKING b
 *** DEVELOPING b
 `;
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
-    expect(parsed.rootIds).toEqual(["1"]);
-    expect(parsed.nodes.get("1")).toEqual({
+    expect(parsed.get("1")).toEqual({
       id: "1",
       depth: 1,
       title: "a",
@@ -256,7 +250,7 @@ CLOSED: [2026-03-02 Mon 23:57]
       lineIndex: 0,
       path: ["a"],
     });
-    expect(parsed.nodes.get("1-1")).toEqual({
+    expect(parsed.get("1-1")).toEqual({
       id: "1-1",
       depth: 2,
       title: "b",
@@ -267,7 +261,7 @@ CLOSED: [2026-03-02 Mon 23:57]
       lineIndex: 1,
       path: ["a", "b"],
     });
-    expect(parsed.nodes.get("1-1-1")).toEqual({
+    expect(parsed.get("1-1-1")).toEqual({
       id: "1-1-1",
       depth: 3,
       title: "b",
@@ -290,11 +284,10 @@ CLOSED: [2026-03-02 Mon 23:57]
 **** TODO d
 ** TODO b
 `;
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(originalTestData.trim());
-    expect(parsed.rootIds).toEqual(["1", "2"]);
-    expect(parsed.nodes.get("2-1")).toEqual({
+    expect(parsed.get("2-1")).toEqual({
       id: "2-1",
       depth: 3,
       title: "c",
@@ -305,7 +298,7 @@ CLOSED: [2026-03-02 Mon 23:57]
       lineIndex: 4,
       path: ["a", "c"],
     });
-    expect(parsed.nodes.get("2-1-1")).toEqual({
+    expect(parsed.get("2-1-1")).toEqual({
       id: "2-1-1",
       depth: 4,
       title: "d",
@@ -316,7 +309,7 @@ CLOSED: [2026-03-02 Mon 23:57]
       lineIndex: 5,
       path: ["a", "c", "d"],
     });
-    expect(parsed.nodes.get("2-2")).toEqual({
+    expect(parsed.get("2-2")).toEqual({
       id: "2-2",
       depth: 2,
       title: "b",
@@ -357,7 +350,7 @@ CLOSED: [2026-03-02 Mon 23:57]
 *** DONE 具体的にどう実装するか
 `.trim();
 
-    const parsed = parseDocument(originalTestData);
+    const parsed = parseNodes(originalTestData);
     const printed = printDocument(parsed);
     expect(printed).toEqual(cleanedTestData);
   });

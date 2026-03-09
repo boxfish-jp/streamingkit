@@ -1,8 +1,5 @@
-import type {
-  ParsedDocument,
-  ParsedTaskNode,
-} from "../types/parsed_document.js";
-import { type TaskStatus, taskStatusList } from "../types/status.js";
+import { type TaskStatus, taskStatusList } from "../status.js";
+import type { ParsedNode, ParsedNodesMap } from "./parsed_node.js";
 
 interface TaskLine {
   depth: number;
@@ -50,11 +47,11 @@ const parseEachLine = (stringLines: string): TaskLine[] => {
   return taskLines;
 };
 
-export const parseDocument = (document: string): ParsedDocument => {
+export const parseNodes = (document: string): ParsedNodesMap => {
   const taskLines = parseEachLine(document);
-  const stack: ParsedTaskNode[] = [];
-  const nodes = new Map<string, ParsedTaskNode>();
-  const rootNode: ParsedTaskNode = {
+  const stack: ParsedNode[] = [];
+  const nodes = new Map<string, ParsedNode>();
+  const rootNode: ParsedNode = {
     id: "0",
     depth: 0,
     title: "root",
@@ -67,7 +64,6 @@ export const parseDocument = (document: string): ParsedDocument => {
   };
   stack.push(rootNode);
   nodes.set(rootNode.id, rootNode);
-  const rootIds: string[] = [];
 
   for (let i = 0; i < taskLines.length; i++) {
     while (taskLines[i].depth <= stack[0].depth) {
@@ -84,7 +80,7 @@ export const parseDocument = (document: string): ParsedDocument => {
     parentNode.childrenIds.push(id);
     const path = parentNode.path.concat(taskLines[i].title);
     const depth = taskLines[i].depth;
-    const newNode: ParsedTaskNode = {
+    const newNode: ParsedNode = {
       id,
       depth: depth,
       title: taskLines[i].title,
@@ -97,13 +93,7 @@ export const parseDocument = (document: string): ParsedDocument => {
     };
     nodes.set(id, newNode);
     stack.unshift(newNode);
-    if (depth === 1) {
-      rootIds.push(id);
-    }
   }
   nodes.delete(rootNode.id);
-  return {
-    rootIds,
-    nodes,
-  };
+  return nodes;
 };

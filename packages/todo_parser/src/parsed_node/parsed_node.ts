@@ -1,11 +1,8 @@
 import type { TaskStatus } from "./status.js";
 
-export interface ParsedDocument {
-  nodes: Map<string, ParsedTaskNode>; // ID → Node の高速ルックアップ
-  rootIds: string[]; // ルートノード（depth=1）のIDリスト
-}
+export type ParsedNodesMap = Map<string, ParsedNode>;
 
-export interface ParsedTaskNode {
+export interface ParsedNode {
   id: string; // 安定的な識別子（例: "1-2-3"）
   depth: number; // '*' の数（階層レベル）
   title: string; // タスク名（ステータスタグを除く）
