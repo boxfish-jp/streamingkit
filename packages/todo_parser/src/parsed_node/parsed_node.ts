@@ -1,4 +1,4 @@
-import type { TaskStatus } from "./status.js";
+import type { TaskStatus } from "../status.js";
 
 export type ParsedNodesMap = Map<string, ParsedNode>;
 
@@ -15,5 +15,6 @@ export interface ParsedNode {
 
   // 位置情報（デバッグ・マッチング用）
   lineIndex: number; // 原文での行番号（0-based）
-  path: string[]; // ルートからのタイトルパス（例: ["プロジェクトA", "タスクC"]）
+  titlePath: string[]; // ルートからのタイトルパス（例: ["プロジェクトA", "タスクC"]）
+  idPath: string[]; // ルートからのIDパス（例: ["1", "2", "3"]）
 }

@@ -60,7 +60,8 @@ export const parseNodes = (document: string): ParsedNodesMap => {
     parentId: null,
     childrenIds: [],
     lineIndex: -1,
-    path: [],
+    titlePath: [],
+    idPath: [],
   };
   stack.push(rootNode);
   nodes.set(rootNode.id, rootNode);
@@ -78,7 +79,8 @@ export const parseNodes = (document: string): ParsedNodesMap => {
         ? `${parentNode.childrenIds.length + 1}`
         : `${parentNode.id}-${parentNode.childrenIds.length + 1}`;
     parentNode.childrenIds.push(id);
-    const path = parentNode.path.concat(taskLines[i].title);
+    const titlePath = parentNode.titlePath.concat(taskLines[i].title);
+    const idPath = parentNode.idPath.concat(id);
     const depth = taskLines[i].depth;
     const newNode: ParsedNode = {
       id,
@@ -89,7 +91,8 @@ export const parseNodes = (document: string): ParsedNodesMap => {
       status: taskLines[i].status || "TODO",
       childrenIds: [],
       lineIndex: i,
-      path,
+      titlePath,
+      idPath,
     };
     nodes.set(id, newNode);
     stack.unshift(newNode);

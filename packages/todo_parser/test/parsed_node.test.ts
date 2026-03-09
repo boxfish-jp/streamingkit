@@ -142,7 +142,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: [],
       lineIndex: 0,
-      path: ["a"],
+      titlePath: ["a"],
+      idPath: ["1"],
     });
   });
 
@@ -160,7 +161,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: [],
       lineIndex: 0,
-      path: ["a"],
+      titlePath: ["a"],
+      idPath: ["1"],
     });
   });
 
@@ -181,7 +183,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: [],
       lineIndex: 0,
-      path: ["a"],
+      titlePath: ["a"],
+      idPath: ["1"],
     });
 
     expect(parsed.get("2")).toEqual({
@@ -193,7 +196,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "THINKING",
       childrenIds: [],
       lineIndex: 1,
-      path: ["b"],
+      titlePath: ["b"],
+      idPath: ["2"],
     });
   });
 
@@ -214,7 +218,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: ["1-1"],
       lineIndex: 0,
-      path: ["a"],
+      titlePath: ["a"],
+      idPath: ["1"],
     });
 
     expect(parsed.get("1-1")).toEqual({
@@ -226,7 +231,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "THINKING",
       childrenIds: [],
       lineIndex: 1,
-      path: ["a", "b"],
+      titlePath: ["a", "b"],
+      idPath: ["1", "1-1"],
     });
   });
 
@@ -248,7 +254,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: ["1-1"],
       lineIndex: 0,
-      path: ["a"],
+      titlePath: ["a"],
+      idPath: ["1"],
     });
     expect(parsed.get("1-1")).toEqual({
       id: "1-1",
@@ -259,7 +266,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "THINKING",
       childrenIds: ["1-1-1"],
       lineIndex: 1,
-      path: ["a", "b"],
+      titlePath: ["a", "b"],
+      idPath: ["1", "1-1"],
     });
     expect(parsed.get("1-1-1")).toEqual({
       id: "1-1-1",
@@ -270,7 +278,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "DEVELOPING",
       childrenIds: [],
       lineIndex: 2,
-      path: ["a", "b", "b"],
+      titlePath: ["a", "b", "b"],
+      idPath: ["1", "1-1", "1-1-1"],
     });
   });
 
@@ -296,7 +305,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: ["2-1-1"],
       lineIndex: 4,
-      path: ["a", "c"],
+      titlePath: ["a", "c"],
+      idPath: ["2", "2-1"],
     });
     expect(parsed.get("2-1-1")).toEqual({
       id: "2-1-1",
@@ -307,7 +317,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: [],
       lineIndex: 5,
-      path: ["a", "c", "d"],
+      titlePath: ["a", "c", "d"],
+      idPath: ["2", "2-1", "2-1-1"],
     });
     expect(parsed.get("2-2")).toEqual({
       id: "2-2",
@@ -318,7 +329,8 @@ CLOSED: [2026-03-02 Mon 23:57]
       status: "TODO",
       childrenIds: [],
       lineIndex: 6,
-      path: ["a", "b"],
+      titlePath: ["a", "b"],
+      idPath: ["2", "2-2"],
     });
   });
 
