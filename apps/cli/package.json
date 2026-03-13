@@ -9,12 +9,16 @@
     "test": "vitest"
   },
   "dependencies": {
-    "chokidar": "^5.0.0",
+    "event_emitter": "workspace:*",
     "kit_models": "workspace:*",
-    "socket_client": "workspace:*"
+    "read_file": "workspace:*",
+    "socket_client": "workspace:*",
+    "watch_file": "workspace:*",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "@types/yargs": "^17.0.35",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

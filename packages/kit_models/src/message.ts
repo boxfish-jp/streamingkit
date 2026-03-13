@@ -11,6 +11,7 @@ import type { PingMessage } from "./ping.js";
 import type { SpotifyMessage } from "./spotify.js";
 import type { StreamInfoMessage } from "./stream_info.js";
 import type { SynthesizedMessage } from "./synthesized.js";
+import type { TodoChangedMessage } from "./todo.js";
 import type { VideoMessage } from "./video.js";
 
 export type Message =
@@ -25,7 +26,8 @@ export type Message =
   | RemoveEducationMessage
   | SpotifyMessage
   | PingMessage
-  | ConnectionMessage;
+  | ConnectionMessage
+  | TodoChangedMessage;
 
 export type OnMessage = (message: Message) => void;
 

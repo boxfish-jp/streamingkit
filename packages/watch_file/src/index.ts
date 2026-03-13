@@ -1,11 +1,18 @@
+import { join } from "node:path";
 import { watch } from "chokidar";
 
 type onChange = (event: "change" | "add" | "unlink", path: string) => void;
+
 export const watchFile = async (
   searchPath: string,
   extension: string,
-): Promise<{ on: (callback: onChange) => void; remove: () => void }> => {
+): Promise<{
+  files: string[];
+  on: (callback: onChange) => void;
+  remove: () => void;
+}> => {
   let on: onChange = () => {};
+  const watchingFiles: string[] = [];
   await new Promise<void>((resolve) => {
     const watcher = watch(searchPath, {
       ignored: (path, stats) =>
@@ -13,6 +20,12 @@ export const watchFile = async (
     });
 
     watcher.on("ready", () => {
+      const watched = watcher.getWatched();
+      for (const dir in watched) {
+        for (const file of watched[dir]) {
+          watchingFiles.push(join(dir, file));
+        }
+      }
       watcher.on("change", (path) => {
         on("change", path);
       });
@@ -29,6 +42,7 @@ export const watchFile = async (
   });
 
   return {
+    files: watchingFiles,
     on: (callback: onChange) => {
       on = callback;
     },
