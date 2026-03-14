@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "todo_viewer": "pnpm -C apps/todo_viewer",
     "hub": "pnpm -C apps/hub",
     "cli": "pnpm -C apps/cli",
     "orchest": "pnpm -C apps/stream_orchestrator",
