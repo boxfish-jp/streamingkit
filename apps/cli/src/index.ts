@@ -1,4 +1,4 @@
-import { SocketClient } from "packages/socket_client/dist/index.js";
+import { SocketClient } from "socket_client";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { WatchOrgFiles } from "./watch_file.js";

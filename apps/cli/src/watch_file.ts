@@ -1,6 +1,6 @@
-import { EventEmitter } from "packages/event_emitter/dist/index.js";
-import { readUtf8File } from "packages/read_file/dist/index.js";
-import { watchFile } from "packages/watch_file/dist/index.js";
+import { EventEmitter } from "event_emitter";
+import { readUtf8File } from "read_file";
+import { watchFile } from "watch_file";
 
 interface WatchOrgFilesEvent {
   onChange: [oldFile: string, newFile: string];
