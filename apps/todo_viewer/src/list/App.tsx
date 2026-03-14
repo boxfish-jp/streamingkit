@@ -17,22 +17,24 @@ export function App() {
     todo?.activeTasks[0]?.newStatus || todo?.doneTasks[0]?.newStatus || "",
   );
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>{parentTitle}</CardTitle>
-        <CardDescription></CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Card className="w-full max-w-sm gap-3">
-          <CardContent>
-            <Badge className={childStatus?.color}>{childStatus?.text}</Badge>
-          </CardContent>
-          <CardHeader>
-            <CardTitle>{childTitle}</CardTitle>
-          </CardHeader>
-        </Card>
-      </CardContent>
-    </Card>
+    !parentTitle || (
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>{parentTitle}</CardTitle>
+          <CardDescription></CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Card className="w-full max-w-sm gap-3">
+            <CardContent>
+              <Badge className={childStatus?.color}>{childStatus?.text}</Badge>
+            </CardContent>
+            <CardHeader>
+              <CardTitle>{childTitle}</CardTitle>
+            </CardHeader>
+          </Card>
+        </CardContent>
+      </Card>
+    )
   );
 }
 
