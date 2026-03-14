@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run build:title && npm run build:list && mv dist/title/title.html dist/title.html && mv dist/list/list.html dist/list.html && rm -r dist/title dist/list",
+    "build:title": "PAGE=title vite build",
+    "build:list": "PAGE=list vite build",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist node_modules .turbo",
     "test": "vitest",

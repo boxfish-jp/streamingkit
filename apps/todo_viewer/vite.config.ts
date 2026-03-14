@@ -4,7 +4,9 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 
-// https://vite.dev/config/
+// 環境変数 "PAGE" を取得（指定がなければ 'title' をデフォルトに）
+const page = process.env.PAGE || "title";
+
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteSingleFile()],
   resolve: {
@@ -13,11 +15,12 @@ export default defineConfig({
     },
   },
   build: {
+    // ページごとに上書きされないよう出力先フォルダを分ける
+    outDir: `dist/${page}`,
+    emptyOutDir: true,
     rollupOptions: {
-      input: {
-        title: resolve(__dirname, "title.html"),
-        list: resolve(__dirname, "list.html"),
-      },
+      // 複数を指定するのではなく、1つだけ指定する
+      input: resolve(__dirname, `${page}.html`),
     },
   },
 });
