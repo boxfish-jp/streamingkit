@@ -29,12 +29,15 @@ export class WatchOrgFiles extends EventEmitter<WatchOrgFilesEvent> {
     }
   };
 
-  private _onChange = (event: "change" | "add" | "unlink", path: string) => {
+  private _onChange = async (
+    event: "change" | "add" | "unlink",
+    path: string,
+  ) => {
     const oldData = this._files.get(path) ?? "";
     switch (event) {
       case "add":
       case "change":
-        this._setFile(path);
+        await this._setFile(path);
         break;
       case "unlink":
         this._files.delete(path);
