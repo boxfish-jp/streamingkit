@@ -13,7 +13,7 @@ import { useAudioDevices } from "./hooks/audio_devices_hook";
 import { useChannels } from "./hooks/channels_hook";
 import { SocketManager } from "./lib/socket";
 
-function App(): JSX.Element {
+function App() {
   const channels = useChannels();
   const audioDevices = useAudioDevices();
   const { register, handleSubmit } = useForm({
