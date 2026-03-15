@@ -47,7 +47,7 @@ export const getVideoCommands = async () => {
 
   const progressVideo = {
     isTarget: (message) =>
-      message.content.startsWith("進捗どうですか？") ||
+      message.content.startsWith("進捗どうですか?") ||
       message.content.startsWith("進捗どうですか？"),
     action: () => [
       {
@@ -56,16 +56,10 @@ export const getVideoCommands = async () => {
       },
       {
         type: "video",
-        name: "進捗どうですか?",
+        name: "進捗どうですか？",
       },
     ],
-    synthesize: (message) => {
-      return {
-        type: "instSynthesize",
-        content: normalizeLowerCase(message.content),
-        channel: 0,
-      };
-    },
+    synthesize: () => undefined,
   } as Command;
 
   const explosion = {
