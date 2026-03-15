@@ -3,3 +3,8 @@ export interface TodoChangedMessage {
   oldFile: string;
   newFile: string;
 }
+
+export interface TodoShowMessage {
+  type: "todoShow";
+  instruction: "show" | "hide";
+}

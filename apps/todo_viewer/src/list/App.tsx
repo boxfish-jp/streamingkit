@@ -2,36 +2,43 @@ import { Badge } from "@workspace/ui/components/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card";
+import { useDisplay } from "@/components/display";
 import { getTodo } from "@/components/get_todo";
 
 export function App() {
+  const [display] = useDisplay();
   const todo = getTodo();
-  const parentTitle = todo?.tree[0]?.children[0]?.title || "";
-  const childTitle =
-    todo?.activeTasks[0]?.title || todo?.doneTasks[0]?.title || "";
-  const childStatus = getStatusBadgeInfo(
-    todo?.activeTasks[0]?.newStatus || todo?.doneTasks[0]?.newStatus || "",
-  );
+  const parent = todo?.tree[0]?.children[0];
+  const children = (parent?.children || []).slice(-3);
   return (
-    !parentTitle || (
+    display &&
+    parent && (
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>{parentTitle}</CardTitle>
-          <CardDescription></CardDescription>
+          <CardTitle>{parent?.title || ""}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Card className="w-full max-w-sm gap-3">
-            <CardContent>
-              <Badge className={childStatus?.color}>{childStatus?.text}</Badge>
-            </CardContent>
-            <CardHeader>
-              <CardTitle>{childTitle}</CardTitle>
-            </CardHeader>
-          </Card>
+        <CardContent className="flex flex-col gap-3">
+          {children.length > 0 &&
+            children.map((child) => {
+              const childStatus = getStatusBadgeInfo(child.newStatus);
+              return (
+                childStatus && (
+                  <Card className="w-full max-w-sm gap-3">
+                    <CardContent>
+                      <Badge className={childStatus.color}>
+                        {childStatus.text}
+                      </Badge>
+                    </CardContent>
+                    <CardHeader>
+                      <CardTitle>{child.title}</CardTitle>
+                    </CardHeader>
+                  </Card>
+                )
+              );
+            })}
         </CardContent>
       </Card>
     )
