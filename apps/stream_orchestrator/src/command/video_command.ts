@@ -46,9 +46,10 @@ export const getVideoCommands = async () => {
   }
 
   const progressVideo = {
-    isTarget: (message) =>
-      message.content.startsWith("進捗どうですか?") ||
-      message.content.startsWith("進捗どうですか？"),
+    isTarget: (comment) =>
+      ["進捗どうですか？", "進捗どうですか?"].includes(
+        normalizeLowerCase(comment.content),
+      ),
     action: () => [
       {
         type: "todoShow",
@@ -87,6 +88,30 @@ export const getVideoCommands = async () => {
     },
   } as Command;
 
+  const a = {
+    isTarget: (comment) =>
+      ["あ", "あっ"].includes(normalizeLowerCase(comment.content)),
+    action: () => [
+      {
+        type: "video",
+        name: `あ(かぐや)`,
+      } as VideoMessage,
+    ],
+    synthesize: () => undefined,
+  } as Command;
+
+  const b = {
+    isTarget: (comment) => normalizeLowerCase(comment.content) === "b",
+    action: () => [
+      {
+        type: "video",
+        name: `b(かぐや)`,
+      } as VideoMessage,
+    ],
+    synthesize: () => undefined,
+  } as Command;
+
+  commands.push(makeWildCardVideoCommand("ナイス", "b(かぐや)"));
   commands.push(makeWildCardVideoCommand("?", "？"));
   commands.push(makeWildCardVideoCommand("8888", "８８８８"));
   commands.push(makeWildCardVideoCommand("５６す", "56す"));
@@ -139,8 +164,9 @@ export const getVideoCommands = async () => {
   commands.push(makeArrivalVideoCommand("ゲーム", "ゲームのカード"));
   commands.push(makeArrivalVideoCommand("エヴァンゲリオン", "バカ"));
   commands.push(makeArrivalVideoCommand("ウマ娘 プリティーダービー", "わこつ"));
+  commands.push(makeArrivalVideoCommand("超かぐや姫！", "がお"));
 
-  return [explosion, progressVideo, ...commands];
+  return [explosion, progressVideo, a, b, ...commands];
 };
 
 const makeWildCardVideoCommand = (wildcard: string, videoName: string) => {
