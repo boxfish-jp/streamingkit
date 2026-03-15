@@ -41,6 +41,12 @@ const main = async () => {
   listenComment.on("viewerCountUpdate", () => {
     onMessage({ type: "todoShow", instruction: "show" });
   });
+  setInterval(
+    () => {
+      onMessage({ type: "todoShow", instruction: "show" });
+    },
+    5 * 60 * 1000,
+  );
   const makeAudioRunner = new SynthesizeRunner();
   makeAudioRunner.on("synthesized", onMessage);
   makeAudioRunner.on("error", onMessage);
