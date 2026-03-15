@@ -12,11 +12,13 @@ import type { CommentMessage, ErrorMessage } from "kit_models";
 
 interface ListenCommentEvents {
   comment: [message: CommentMessage];
+  viewerCountUpdate: [viewerCount: number];
   error: [error: ErrorMessage];
 }
 
 export class ListenComment extends EventEmitter<ListenCommentEvents> {
   private _stopListen: (() => void) | null = null;
+  private _viewers = 0;
 
   public start = async (lvid: string) => {
     try {
@@ -98,14 +100,18 @@ export class ListenComment extends EventEmitter<ListenCommentEvents> {
 
   private _onChangeState = (state: NicoliveState) => {
     const nusiCome = state.marquee?.display?.operatorComment?.content;
-    if (!nusiCome) {
-      return;
+    if (nusiCome) {
+      this.emit("comment", {
+        type: "comment",
+        label: "fuguo",
+        content: nusiCome,
+      } as CommentMessage);
     }
-    this.emit("comment", {
-      type: "comment",
-      label: "fuguo",
-      content: nusiCome,
-    } as CommentMessage);
+    const latestViewers = Number(state.statistics?.viewers);
+    if (!Number.isNaN(latestViewers) && this._viewers < latestViewers) {
+      this.emit("viewerCountUpdate", latestViewers);
+      this._viewers = latestViewers;
+    }
   };
 
   private _onGift = (gift: Gift) => {

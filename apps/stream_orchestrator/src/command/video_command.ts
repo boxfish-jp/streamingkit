@@ -45,6 +45,29 @@ export const getVideoCommands = async () => {
     });
   }
 
+  const progressVideo = {
+    isTarget: (message) =>
+      message.content.startsWith("進捗どうですか？") ||
+      message.content.startsWith("進捗どうですか？"),
+    action: () => [
+      {
+        type: "todoShow",
+        instruction: "show",
+      },
+      {
+        type: "video",
+        name: "進捗どうですか?",
+      },
+    ],
+    synthesize: (message) => {
+      return {
+        type: "instSynthesize",
+        content: normalizeLowerCase(message.content),
+        channel: 0,
+      };
+    },
+  } as Command;
+
   const explosion = {
     isTarget: (comment) =>
       normalizeLowerCase(comment.content).startsWith("エクスプロージョン"),
@@ -123,7 +146,7 @@ export const getVideoCommands = async () => {
   commands.push(makeArrivalVideoCommand("エヴァンゲリオン", "バカ"));
   commands.push(makeArrivalVideoCommand("ウマ娘 プリティーダービー", "わこつ"));
 
-  return [...commands, explosion];
+  return [...commands, explosion, progressVideo];
 };
 
 const makeWildCardVideoCommand = (wildcard: string, videoName: string) => {

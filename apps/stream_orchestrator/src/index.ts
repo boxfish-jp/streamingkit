@@ -38,6 +38,9 @@ const main = async () => {
   const listenComment = new ListenComment();
   listenComment.on("comment", onMessage);
   listenComment.on("error", onMessage);
+  listenComment.on("viewerCountUpdate", () => {
+    onMessage({ type: "todoShow", instruction: "show" });
+  });
   const makeAudioRunner = new SynthesizeRunner();
   makeAudioRunner.on("synthesized", onMessage);
   makeAudioRunner.on("error", onMessage);
