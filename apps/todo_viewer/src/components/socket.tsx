@@ -16,8 +16,7 @@ export const useSocket = () => {
   }, []);
 
   useEffect(() => {
-    //const url = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
-    const url = "http://0.0.0.0:8888";
+    const url = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
     socketRef.current.setServerUrl(url);
 
     socketRef.current.on("connect", () => {
