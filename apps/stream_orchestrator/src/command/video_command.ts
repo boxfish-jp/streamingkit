@@ -140,7 +140,7 @@ export const getVideoCommands = async () => {
   commands.push(makeArrivalVideoCommand("エヴァンゲリオン", "バカ"));
   commands.push(makeArrivalVideoCommand("ウマ娘 プリティーダービー", "わこつ"));
 
-  return [...commands, explosion, progressVideo];
+  return [explosion, progressVideo, ...commands];
 };
 
 const makeWildCardVideoCommand = (wildcard: string, videoName: string) => {
