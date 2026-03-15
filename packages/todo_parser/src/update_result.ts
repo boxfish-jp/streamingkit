@@ -84,7 +84,12 @@ export class UpdateResult {
       if (!parentTask) {
         continue;
       }
-      relatedIds = new Set([...relatedIds, ...parentTask.idPath]);
+      const siblingIds = parentTask.childrenIds.filter((id) => id !== node.id);
+      relatedIds = new Set([
+        ...relatedIds,
+        ...parentTask.idPath,
+        ...siblingIds,
+      ]);
     }
     const relatedRootIds = [...relatedIds].filter((id) =>
       this._rootIds.has(id),
