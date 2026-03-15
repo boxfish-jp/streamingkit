@@ -101,7 +101,9 @@ export const getVideoCommands = async () => {
   } as Command;
 
   const b = {
-    isTarget: (comment) => normalizeLowerCase(comment.content) === "b",
+    isTarget: (comment) =>
+      ["b", "ｂ"].includes(normalizeLowerCase(comment.content)),
+
     action: () => [
       {
         type: "video",
