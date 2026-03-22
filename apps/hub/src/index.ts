@@ -35,6 +35,7 @@ export const main = (name: string, port: number) => {
       origin: "*",
       methods: ["GET", "POST"],
     },
+    maxHttpBufferSize: 1e7,
     parser: customParser,
   });
 
