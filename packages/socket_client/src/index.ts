@@ -51,7 +51,6 @@ export class SocketClient extends EventEmitter<SocketClientEvent> {
     });
 
     this._socket.on("message", (message: Message) => {
-      console.log("Received message:", message);
       this.emit("message", message);
     });
 
