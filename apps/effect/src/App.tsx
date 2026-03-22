@@ -5,7 +5,7 @@ import customParser from "socket.io-msgpack-parser";
 
 export const App = () => {
   const socketRef = useRef<Socket>();
-  const [videoName, setVideoName] = useState<string>("");
+  const [videoPath, setVideoPath] = useState<string>("");
 
   useEffect(() => {
     const url = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
@@ -23,7 +23,7 @@ export const App = () => {
       if (message.type === "video") {
         const path = `${url}/video/${message.name}.mp4`;
         console.log(path);
-        setVideoName(path);
+        setVideoPath(path);
       }
     });
     return () => {
@@ -34,19 +34,18 @@ export const App = () => {
   }, []);
 
   const onEnded = () => {
-    setVideoName("");
+    setVideoPath("");
   };
 
   return (
     <>
-      <section className="h-36 flex justify-end w-full">
-        {videoName && (
+      <section className="max-w-md max-h-125 flex justify-end w-full">
+        {videoPath && (
           // biome-ignore lint/a11y/useMediaCaption: <explanation>
           <video
-            className="h-36"
             controls={false}
             onEnded={onEnded}
-            src={videoName}
+            src={videoPath}
             autoPlay={true}
           />
         )}
