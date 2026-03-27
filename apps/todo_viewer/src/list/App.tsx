@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@workspace/ui/components/card";
+import type { TaskNodeTree } from "todo_parser/dist/task_node";
 import { useDisplay } from "@/components/display";
 import { getTodo } from "@/components/get_todo";
 
@@ -12,7 +13,7 @@ export function App() {
   const [display] = useDisplay();
   const todo = getTodo();
   const parent = todo?.tree[0]?.children[0];
-  const children = (parent?.children || []).slice(-3);
+  const children = selectChildren(parent?.children);
   return (
     display &&
     parent && (
@@ -44,6 +45,22 @@ export function App() {
     )
   );
 }
+
+const selectChildren = (
+  children: TaskNodeTree[] | undefined,
+): TaskNodeTree[] => {
+  if (!children) {
+    return [];
+  }
+  const changedTaskIndex = children.findIndex((task) => task.isStatusChanged);
+  if (changedTaskIndex === -1 || changedTaskIndex === children.length - 1) {
+    return children.slice(-3);
+  }
+  if (changedTaskIndex === 0) {
+    return children.slice(0, 3);
+  }
+  return children.slice(changedTaskIndex - 1, changedTaskIndex + 2);
+};
 
 const getStatusBadgeInfo = (status: string) => {
   switch (status) {
