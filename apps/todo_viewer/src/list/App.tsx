@@ -17,7 +17,7 @@ export function App() {
   return (
     display &&
     parent && (
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-sm mt-auto">
         <CardHeader>
           <CardTitle>{parent?.title || ""}</CardTitle>
         </CardHeader>

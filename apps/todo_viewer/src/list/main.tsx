@@ -8,7 +8,9 @@ import { App } from "./App.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <main className="flex flex-col justify-items-end h-dvh">
+        <App />
+      </main>
     </ThemeProvider>
   </StrictMode>,
 );
