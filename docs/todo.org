@@ -130,3 +130,14 @@ CLOSED: [2026-03-02 Mon 23:57]
     CLOSED: [2026-03-27 Fri 18:11]
 *** DONE TODOタスク表示UIを常に下側を基準に表示するようにする
     CLOSED: [2026-03-27 Fri 18:20]
+
+* 配信ツールをYoutube Liveに対応させる
+** Youtube Liveの仕様を調べる
+*** DONE Youtube Liveでのコメントの取得方法を調べる
+    CLOSED: [2026-04-01 Wed 15:58]
+*** DONE Youtube APIのクォーター調べる
+    CLOSED: [2026-04-01 Wed 16:40]
+** コメント取得できるようにする
+*** DONE GCPのアカウントとかの環境構築
+    CLOSED: [2026-04-01 Wed 17:26]
+*** DEVELOPING OAuthのクライアントを作成する

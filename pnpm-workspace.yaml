@@ -6,3 +6,4 @@ onlyBuiltDependencies:
   - '@swc/core'
   - electron
   - esbuild
+  - msw
