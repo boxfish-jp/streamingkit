@@ -253,6 +253,9 @@ importers:
       kit_models:
         specifier: workspace:*
         version: link:../../packages/kit_models
+      oauth_client:
+        specifier: workspace:*
+        version: link:../../packages/oauth_client
       regexs:
         specifier: workspace:*
         version: link:../../packages/regexs
@@ -397,7 +400,7 @@ importers:
         version: 4.8.1
     devDependencies:
       '@types/node':
-        specifier: ^25.3.3
+        specifier: ^25.3.0
         version: 25.5.0
       typescript:
         specifier: ^5.9.3

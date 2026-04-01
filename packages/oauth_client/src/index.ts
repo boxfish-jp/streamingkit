@@ -16,7 +16,7 @@ export interface TokenRefreshConfig {
 
 export class OauthClient extends EventEmitter<OauthClientEvents> {
   private _config: TokenRefreshConfig;
-  private _accessToken: string | null = null;
+  protected _accessToken: string | null = null;
   private _refreshTimer: NodeJS.Timeout | null = null;
 
   constructor(config: TokenRefreshConfig) {
