@@ -8,7 +8,6 @@ export class SpotifyClient extends OauthClient {
 
     super({
       endpoint: "https://accounts.spotify.com/api/token",
-      method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${Buffer.from(
@@ -16,18 +15,6 @@ export class SpotifyClient extends OauthClient {
         ).toString("base64")}`,
       },
       body: body,
-      calcInterval: (responseJson: unknown) => {
-        if (
-          typeof responseJson === "object" &&
-          responseJson !== null &&
-          "expires_in" in responseJson &&
-          typeof responseJson.expires_in === "number" &&
-          Number(responseJson.expires_in)
-        ) {
-          return (responseJson.expires_in - 300) * 1000;
-        }
-        return 25 * 60 * 1000; // デフォルト25分
-      },
       errorStatus: "serverFailedToGetSpotifyToken",
     });
   }
@@ -45,9 +32,7 @@ export class SpotifyClient extends OauthClient {
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${this._accessToken}`,
-        },
+        headers: this.headers,
       });
 
       if (response.ok) {

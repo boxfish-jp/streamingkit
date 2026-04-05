@@ -7,10 +7,8 @@ interface OauthClientEvents {
 
 export interface TokenRefreshConfig {
   endpoint: string;
-  method: string;
   headers: HeadersInit;
   body: URLSearchParams;
-  calcInterval: (responseJson: unknown) => number;
   errorStatus: ErrorMessage["status"];
 }
 
@@ -24,6 +22,12 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
     this._config = config;
   }
 
+  get headers() {
+    return {
+      Authorization: `Bearer ${this._accessToken}`,
+    };
+  }
+
   async start(): Promise<void> {
     await this._tokenRefresh();
   }
@@ -31,24 +35,19 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
   private async _tokenRefresh(): Promise<void> {
     try {
       const response = await fetch(this._config.endpoint, {
-        method: this._config.method,
+        method: "POST",
         headers: this._config.headers,
         body: this._config.body,
       });
 
       if (!response.ok) {
         const text = await response.text();
-        this.emit("onMessage", {
-          type: "error",
-          status: this._config.errorStatus,
-          time: Date.now(),
-          message: `❌ トークン更新エラー (${response.status}): ${text}`,
-        });
+        throw new Error(`HTTP ${response.status}: ${text}`);
       }
 
       const data = await response.json();
-      this._accessToken = data.access_token;
-      const nextRefreshMs = this._config.calcInterval(data);
+      this._accessToken = this._getAccessToken(data);
+      const nextRefreshMs = this._calculateNextRefresh(data);
 
       if (this._refreshTimer) clearTimeout(this._refreshTimer);
       this._refreshTimer = setTimeout(
@@ -64,5 +63,30 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
       });
       setTimeout(() => this._tokenRefresh(), 60 * 1000);
     }
+  }
+
+  private _getAccessToken(responseJson: unknown) {
+    if (
+      typeof responseJson === "object" &&
+      responseJson !== null &&
+      "access_token" in responseJson &&
+      typeof responseJson.access_token === "string"
+    ) {
+      return responseJson.access_token;
+    }
+    throw new Error("Invalid token response format");
+  }
+
+  private _calculateNextRefresh(responseJson: unknown) {
+    if (
+      typeof responseJson === "object" &&
+      responseJson !== null &&
+      "expires_in" in responseJson &&
+      typeof responseJson.expires_in === "number" &&
+      responseJson.expires_in > 300
+    ) {
+      return (responseJson.expires_in - 300) * 1000;
+    }
+    return 25 * 60 * 1000;
   }
 }
