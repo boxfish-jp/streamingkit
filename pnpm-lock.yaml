@@ -504,6 +504,19 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/youtube_client:
+    dependencies:
+      oauth_client:
+        specifier: 'workspace: *'
+        version: link:../oauth_client
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.5.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
 packages:
 
   7zip-bin@5.2.0:

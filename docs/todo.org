@@ -140,4 +140,17 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** コメント取得できるようにする
 *** DONE GCPのアカウントとかの環境構築
     CLOSED: [2026-04-01 Wed 17:26]
-*** DEVELOPING OAuthのクライアントを作成する
+*** DONE OAuthのクライアントを作成する
+    CLOSED: [2026-04-02 Thu 00:12]
+*** DONE YoutubeのAuthを通すコードを書く
+    CLOSED: [2026-04-02 Thu 00:29]
+*** DONE Youtubeにチャットを取得するリクエストを送る
+    CLOSED: [2026-04-05 Sun 17:21]
+*** DONE 自作OAuthクライアントのコード改善
+    CLOSED: [2026-04-05 Sun 17:58]
+*** DONE Youtubeクライアントのコード整理
+    CLOSED: [2026-04-05 Sun 21:35]
+*** DONE liveID取得と役割を分ける
+    CLOSED: [2026-04-05 Sun 21:35]
+*** DONE YoutubeClientの調整
+    CLOSED: [2026-04-05 Sun 21:56]

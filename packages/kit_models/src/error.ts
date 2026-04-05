@@ -12,7 +12,10 @@ export interface ErrorMessage {
     | "serverWriteEducation"
     | "serverSpotifyTokenNotFound"
     | "serverFailedToGetSpotifyToken"
-    | "serverFailedToAddSpotifyQueue";
+    | "serverFailedToAddSpotifyQueue"
+    | "serverYoutubeTokenNotFound"
+    | "serverFailedToGetYoutubeToken"
+    | "serverFailedToGetYoutubeComment";
   time: number;
   message?: string;
 }
