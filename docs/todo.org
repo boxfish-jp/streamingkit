@@ -154,3 +154,8 @@ CLOSED: [2026-03-02 Mon 23:57]
     CLOSED: [2026-04-05 Sun 21:35]
 *** DONE YoutubeClientの調整
     CLOSED: [2026-04-05 Sun 21:56]
+** Youtubeのコメント取得コードを配信ツールに組み込む
+*** DONE ニコニコのコメント取得コードをYoutubeと共通化する
+    CLOSED: [2026-04-05 Sun 23:07]
+*** DONE ニコニコのクライアントのテストコードを書く
+    CLOSED: [2026-04-06 Mon 00:17]

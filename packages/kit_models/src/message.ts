@@ -13,6 +13,7 @@ import type { StreamInfoMessage } from "./stream_info.js";
 import type { SynthesizedMessage } from "./synthesized.js";
 import type { TodoChangedMessage, TodoShowMessage } from "./todo.js";
 import type { VideoMessage } from "./video.js";
+import type { viewerCountMessage } from "./viewer_count.js";
 
 export type Message =
   | CommentMessage
@@ -28,6 +29,7 @@ export type Message =
   | PingMessage
   | ConnectionMessage
   | TodoChangedMessage
-  | TodoShowMessage;
+  | TodoShowMessage
+  | viewerCountMessage;
 
 export type OnMessage = (message: Message) => void;
