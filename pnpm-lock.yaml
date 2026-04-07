@@ -247,12 +247,12 @@ importers:
 
   apps/stream_orchestrator:
     dependencies:
-      '@kikurage/nicolive-api':
-        specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
-        version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
       kit_models:
         specifier: workspace:*
         version: link:../../packages/kit_models
+      niconico_client:
+        specifier: workspace:*
+        version: link:../../packages/niconico_client
       oauth_client:
         specifier: workspace:*
         version: link:../../packages/oauth_client
@@ -265,6 +265,9 @@ importers:
       task_runner:
         specifier: workspace:*
         version: link:../../packages/task_runner
+      youtube_client:
+        specifier: workspace:*
+        version: link:../../packages/youtube_client
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
@@ -348,6 +351,25 @@ importers:
         version: 25.0.3
       typescript:
         specifier: ^5.0.0
+        version: 5.9.3
+
+  packages/niconico_client:
+    dependencies:
+      '@kikurage/nicolive-api':
+        specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
+        version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
+      event_emitter:
+        specifier: 'workspace: *'
+        version: link:../event_emitter
+      oauth_client:
+        specifier: 'workspace: *'
+        version: link:../oauth_client
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.5.0
+      typescript:
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/oauth_client:

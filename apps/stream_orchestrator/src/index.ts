@@ -1,6 +1,5 @@
 import { Bus, type Message } from "kit_models";
 import { SocketClient } from "socket_client";
-import { CheckStreamInfo } from "./check_stream_info.js";
 import { applyEducation, normalizeLowerCase } from "./clean.js";
 import { getCommands } from "./command/commands.js";
 import {
@@ -8,38 +7,38 @@ import {
   getEducationConfigs,
   removeEducationConfig,
 } from "./education.js";
-import { ListenComment } from "./listen_comment.js";
 import { SpotifyClient } from "./spotify.js";
+import { Streaming } from "./streaming.js";
 import { SynthesizeRunner } from "./synthesize.js";
 
-let isStreaming = false;
 const bus_evnet = new Bus();
 const cruseID = "70969122";
-const fuguoID = "98746932";
+const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
+const youtubeClientId = process.env.YOUTUBE_CLIENT_ID || "";
+const youtubeClientSecret = process.env.YOUTUBE_CLIENT_SECRET || "";
+const youtubeRefreshToken = process.env.YOUTUBE_REFRESH_TOKEN || "";
 
 const main = async () => {
-  const checkStreamInfo = new CheckStreamInfo(fuguoID);
+  const streaming = new Streaming(
+    niconicofuguoID,
+    youtubeClientId,
+    youtubeClientSecret,
+    youtubeRefreshToken,
+  );
   const onMessage = (message: Message) => {
     bus_evnet.emit(message);
   };
-  checkStreamInfo.on("streamInfo", onMessage);
-  checkStreamInfo.on("error", onMessage);
-  checkStreamInfo.startPooling();
+  streaming.on("onMessage", onMessage);
+  streaming.startPooling();
   const commands = await getCommands();
   const socketClient = new SocketClient();
   socketClient.setServerUrl("http://hub:8888");
   //socketClient.connect();
   socketClient.on("connect", () => {
     console.log("ハブと接続しました");
-  });
-  const listenComment = new ListenComment();
-  listenComment.on("comment", onMessage);
-  listenComment.on("error", onMessage);
-  listenComment.on("viewerCountUpdate", () => {
-    onMessage({ type: "todoShow", instruction: "show" });
   });
   setInterval(
     () => {
@@ -83,25 +82,56 @@ const main = async () => {
         });
         break;
       case "streaming_info":
-        if (message.isStreaming) {
-          if (message.streamId && !isStreaming) {
-            bus_evnet.emit({
-              type: "notify",
-              status: "startStreaming",
-            });
-            listenComment.start(`lv${message.streamId}`);
-            console.log("配信開始を検知しました。", message.streamId);
-          }
-          isStreaming = true;
-        } else {
-          if (isStreaming) {
-            bus_evnet.emit({
-              type: "notify",
-              status: "endStreaming",
-            });
-            listenComment.stop();
-          }
-          isStreaming = false;
+        switch (message.site) {
+          case "niconico":
+            if (message.isStreaming) {
+              if (message.streamId && !message.wasStreaming) {
+                bus_evnet.emit({
+                  type: "notify",
+                  status: "startNicoNicoStreaming",
+                });
+                streaming.startWatchNicoNicoComment(message.streamId);
+                console.log(
+                  "ニコニコの配信開始を検知しました。",
+                  message.streamId,
+                );
+              }
+              streaming.setWasNicoNicoStreaming(true);
+            } else {
+              if (message.wasStreaming) {
+                bus_evnet.emit({
+                  type: "notify",
+                  status: "endNicoNicoStreaming",
+                });
+                streaming.stopWatchNicoNicoComment();
+              }
+              streaming.setWasNicoNicoStreaming(false);
+            }
+            break;
+          case "youtube":
+            if (message.isStreaming) {
+              if (message.streamId && !message.wasStreaming) {
+                bus_evnet.emit({
+                  type: "notify",
+                  status: "startYoutubeStreaming",
+                });
+                streaming.startWatchYoutubeComment(message.streamId);
+                console.log(
+                  "youtubeの配信開始を検知しました。",
+                  message.streamId,
+                );
+              }
+              streaming.setWasYoutubeStreaming(true);
+            } else {
+              if (message.wasStreaming) {
+                bus_evnet.emit({
+                  type: "notify",
+                  status: "endNicoNicoStreaming",
+                });
+                streaming.stopWatchYoutubeComment();
+              }
+              streaming.setWasYoutubeStreaming(false);
+            }
         }
         break;
       case "synthesized":
@@ -128,6 +158,10 @@ const main = async () => {
           }
         }
         break;
+      case "viewerCountUpdate": {
+        onMessage({ type: "todoShow", instruction: "show" });
+        break;
+      }
       case "error":
         {
           console.log("Error:", message.message);

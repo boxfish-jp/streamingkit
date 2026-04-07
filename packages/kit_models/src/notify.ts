@@ -3,6 +3,8 @@ export interface NotifyMessage {
   status:
     | "clientSocketConnected"
     | "successfulAddSpotifyQueue"
-    | "startStreaming"
-    | "endStreaming";
+    | "startYoutubeStreaming"
+    | "startNicoNicoStreaming"
+    | "endYoutubeStreaming"
+    | "endNicoNicoStreaming";
 }
