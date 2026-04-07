@@ -70,11 +70,12 @@ export class YoutubeClient extends OauthClient {
       }
 
       const chatId = responseJson.items[0].snippet?.liveChatId;
+      const status = responseJson.items[0].status.lifeCycleStatus === "live";
 
       if (!chatId) {
         throw new Error("invalid item");
       }
-      return chatId;
+      return status ? chatId : null;
     } catch (error) {
       throw new Error(
         `failed to get youtube chat id: ${error instanceof Error ? error.message : error}`,

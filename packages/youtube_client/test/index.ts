@@ -5,7 +5,7 @@ const main = async () => {
   const youtubeClientSecret = process.env.YOUTUBE_CLIENT_SECRET || "";
   const youtubeRefreshToken = process.env.YOUTUBE_REFRESH_TOKEN || "";
 
-  const youtubeClient = new YoutubeClient(
+  const youtubeClient = YoutubeClient.getYoutubeClient(
     youtubeClientId,
     youtubeClientSecret,
     youtubeRefreshToken,
@@ -18,10 +18,13 @@ const main = async () => {
 
   const liveChatId = await youtubeClient.getLiveChatId();
 
+  console.log("Live Chat ID:", liveChatId);
+  /**
   if (!liveChatId) {
     return;
   }
   youtubeClient.startGetChat(liveChatId);
+  **/
 };
 
 main();
