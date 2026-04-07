@@ -17,7 +17,8 @@
   "dependencies": {
     "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz",
     "event_emitter": "workspace: *",
-    "oauth_client": "workspace: *"
+    "oauth_client": "workspace: *",
+    "kit_models": "workspace: *"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",

@@ -361,6 +361,9 @@ importers:
       event_emitter:
         specifier: 'workspace: *'
         version: link:../event_emitter
+      kit_models:
+        specifier: 'workspace: *'
+        version: link:../kit_models
       oauth_client:
         specifier: 'workspace: *'
         version: link:../oauth_client
