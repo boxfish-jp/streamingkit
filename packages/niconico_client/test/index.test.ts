@@ -19,16 +19,59 @@ describe("listenComment", () => {
     });
   });
 
+  describe("getStreamingId", () => {
+    test("配信しているときは生放送IDが返る", async () => {
+      const response = await fetch(
+        "https://live.nicovideo.jp/watch/user/70969122",
+      );
+      const id = response.headers.get("x-nicolive-content-id");
+      expect(id).toBeDefined();
+      const client = new NicoNicoClient("70969122");
+      const streamingId = await client.getStreamingId();
+      expect(streamingId).toBe(id);
+    });
+
+    test("配信していないときはnullが返る", async () => {
+      const client = new NicoNicoClient("51801260");
+      const streamingId = await client.getStreamingId();
+      expect(streamingId).toBe(null);
+    });
+
+    test("onError: Failed to fetch", async () => {
+      const streamInfo = new NicoNicoClient("");
+      try {
+        await streamInfo.getStreamingId();
+        throw new Error("Expected getStreamingId to throw an error");
+      } catch (error) {
+        expect(error instanceof Error ? error.message : error).toBe(
+          "failed to get niconico stream id: Failed to fetch: 400",
+        );
+      }
+    });
+
+    test("onError: no status", async () => {
+      const streamInfo = new NicoNicoClient("0");
+      try {
+        await streamInfo.getStreamingId();
+        throw new Error("Expected getStreamingId to throw an error");
+      } catch (error) {
+        expect(error instanceof Error ? error.message : error).toBe(
+          "failed to get niconico stream id: programsList is empty",
+        );
+      }
+    });
+  });
+
   describe("isStreaming:", () => {
     test("true", async () => {
       const streamInfo = new NicoNicoClient("70969122");
-      await streamInfo.checkStreaming();
+      await streamInfo.getStreamingId();
       expect(streamInfo.isStreaming).toBe(true);
     });
 
     test("false", async () => {
       const streamInfo = new NicoNicoClient("51801260");
-      await streamInfo.checkStreaming();
+      await streamInfo.getStreamingId();
       expect(streamInfo.isStreaming).toBe(false);
     });
   });
@@ -41,74 +84,12 @@ describe("listenComment", () => {
       const id = response.headers.get("x-nicolive-content-id");
       expect(id).toBeDefined();
       const streamInfo = new NicoNicoClient("70969122");
-      await streamInfo.checkStreaming();
+      await streamInfo.getStreamingId();
       expect(streamInfo.streamLv).toBe(id);
       expect(streamInfo.streamUrl).toBe(
         `https://live.nicovideo.jp/watch/${id}`,
       );
       expect(streamInfo.streamId).toBe(Number(`${id?.replace("lv", "")}`));
-    });
-  });
-
-  describe("callback:", () => {
-    test("streaming_info", async () => {
-      const response = await fetch(
-        "https://live.nicovideo.jp/watch/user/70969122",
-      );
-      const id = response.headers.get("x-nicolive-content-id");
-      expect(id).toBeDefined();
-      const streamInfo = new NicoNicoClient("70969122");
-      let callCount = 0;
-      const callback = (message: Message) => {
-        if (message.type !== "streaming_info") {
-          throw new Error("Expected a streaming_info message");
-        }
-        callCount++;
-        expect(message.isStreaming).toBe(true);
-        expect(message.streamId).toBe(Number(`${id?.replace("lv", "")}`));
-      };
-      streamInfo.on("message", callback);
-      await streamInfo.checkStreaming();
-      // 200ms待つ
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      expect(callCount).toBe(1);
-      //streamInfo.removeNotifyCallback(callback);
-    });
-
-    test("onError: Failed to fetch", async () => {
-      const streamInfo = new NicoNicoClient("");
-      const callback = (error: Message) => {
-        if (error.type === "streaming_info") {
-          return;
-        }
-        if (error.type !== "error") {
-          throw new Error("Expected an error message");
-        }
-        expect(error.message).toBe("Error: Failed to fetch: 400");
-      };
-      streamInfo.on("message", callback);
-      await streamInfo.checkStreaming();
-      // 200ms待つ
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    });
-
-    test("onError: no status", async () => {
-      const streamInfo = new NicoNicoClient("0");
-      const callback = (error: Message) => {
-        if (error.type === "streaming_info") {
-          return;
-        }
-        if (error.type !== "error") {
-          throw new Error("Expected an error message");
-        }
-        expect(error.message).toBe(
-          "Error: response does not contain programsList",
-        );
-      };
-      streamInfo.on("message", callback);
-      await streamInfo.checkStreaming();
-      // 200ms待つ
-      await new Promise((resolve) => setTimeout(resolve, 200));
     });
   });
 });

@@ -48,35 +48,38 @@ export class YoutubeClient extends OauthClient {
     const params = new URLSearchParams({
       mine: "true",
     });
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/liveBroadcasts?${params}`,
+        {
+          headers: this.headers,
+        },
+      );
 
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/liveBroadcasts?${params}`,
-      {
-        headers: this.headers,
-      },
-    );
+      const responseJson = await response.json();
 
-    const responseJson = await response.json();
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${JSON.stringify(responseJson)}`);
+      }
 
-    if (!response.ok) {
+      if (!this._isLiveBroadcastsResponse(responseJson)) {
+        throw new Error("Invalid response");
+      }
+      if (responseJson.items.length === 0) {
+        return null;
+      }
+
+      const chatId = responseJson.items[0].snippet?.liveChatId;
+
+      if (!chatId) {
+        throw new Error("invalid item");
+      }
+      return chatId;
+    } catch (error) {
       throw new Error(
-        `failed to get youtube chat id: ${response.status}: ${JSON.stringify(responseJson)}`,
+        `failed to get youtube chat id: ${error instanceof Error ? error.message : error}`,
       );
     }
-
-    if (!this._isLiveBroadcastsResponse(responseJson)) {
-      throw new Error("failed to get youtube chat id: Invalid response");
-    }
-    if (responseJson.items.length === 0) {
-      return null;
-    }
-
-    const chatId = responseJson.items[0].snippet?.liveChatId;
-
-    if (!chatId) {
-      throw new Error("failed to get youtube chat id: invalid item");
-    }
-    return chatId;
   }
 
   async startGetChat(liveChatId: string): Promise<void> {

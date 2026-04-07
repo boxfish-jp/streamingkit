@@ -64,7 +64,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     return `https://live.nicovideo.jp/front/api/v2/user-broadcast-history?providerId=${this.userId}&providerType=user&isIncludeNonPublic=false&offset=0&limit=2&withTotalCount=true`;
   }
 
-  async checkStreaming(): Promise<void> {
+  async getStreamingId(): Promise<string | null> {
     try {
       const response = await fetch(this.checkIsStreamingUrl);
       if (!response.ok) {
@@ -75,19 +75,11 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
       if (streamId) {
         this._setStreamId(streamId);
       }
+      return streamId;
     } catch (error) {
-      this.emit("message", {
-        type: "error",
-        status: "serverGetStreamInfo",
-        time: Date.now(),
-        message: String(error),
-      });
-    } finally {
-      this.emit("message", {
-        type: "streaming_info",
-        isStreaming: this.isStreaming,
-        streamId: this.streamId,
-      });
+      throw new Error(
+        `failed to get niconico stream id: ${error instanceof Error ? error.message : error}`,
+      );
     }
   }
 
@@ -234,7 +226,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
       throw new Error("Invalid response format");
     }
     if (responseJson.data.programsList.length === 0) {
-      return null;
+      throw new Error("programsList is empty");
     }
     for (const item of responseJson.data.programsList) {
       const status = item.program?.schedule?.status;
