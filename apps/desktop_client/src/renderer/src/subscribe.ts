@@ -1,8 +1,10 @@
 import { Bus, type PingMessage } from "kit_models";
 import clientSocketConnected from "./assets/client_socket_connected.wav";
-import endStreamingWav from "./assets/end_streaming.wav";
+import endNicoNicoStreaming from "./assets/end_niconico_streaming.wav";
+import endYoutubeStreaming from "./assets/end_youtube_streaming.wav";
 import spotfiyAddQueue from "./assets/spotify_add_queue.wav";
-import startStreamingWav from "./assets/start_streaming.wav";
+import startNicoNicoStreaming from "./assets/start_niconico_streaming.wav";
+import startYoutubeStreaming from "./assets/start_youtube_streaming.wav";
 import { ChannelsManager } from "./channels";
 import { ErrorHandler } from "./error";
 import type { AudioQueueItem } from "./lib/audio_queue";
@@ -97,8 +99,8 @@ export const startSubscribe = () => {
             });
             break;
           }
-          case "startStreaming": {
-            const response = await fetch(startStreamingWav);
+          case "startNicoNicoStreaming": {
+            const response = await fetch(startNicoNicoStreaming);
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
@@ -106,13 +108,32 @@ export const startSubscribe = () => {
             });
             break;
           }
-          case "endStreaming": {
-            const response = await fetch(endStreamingWav);
+          case "endNicoNicoStreaming": {
+            const response = await fetch(endNicoNicoStreaming);
             bus.emit({
               type: "synthesized",
               buffer: (await response.arrayBuffer()) as any,
               channel: 4,
             });
+            break;
+          }
+          case "startYoutubeStreaming": {
+            const response = await fetch(startYoutubeStreaming);
+            bus.emit({
+              type: "synthesized",
+              buffer: (await response.arrayBuffer()) as any,
+              channel: 4,
+            });
+            break;
+          }
+          case "endYoutubeStreaming": {
+            const response = await fetch(endYoutubeStreaming);
+            bus.emit({
+              type: "synthesized",
+              buffer: (await response.arrayBuffer()) as any,
+              channel: 4,
+            });
+            break;
           }
         }
     }

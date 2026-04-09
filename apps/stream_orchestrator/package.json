@@ -9,11 +9,13 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz",
     "kit_models": "workspace:*",
+    "oauth_client": "workspace:*",
     "regexs": "workspace:*",
     "socket_client": "workspace:*",
-    "task_runner": "workspace:*"
+    "task_runner": "workspace:*",
+    "youtube_client": "workspace:*",
+    "niconico_client": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",

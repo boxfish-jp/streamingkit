@@ -12,3 +12,4 @@ export * from "./stream_info.js";
 export * from "./synthesized.js";
 export * from "./todo.js";
 export * from "./video.js";
+export * from "./viewer_count.js";

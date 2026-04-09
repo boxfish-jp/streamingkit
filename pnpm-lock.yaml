@@ -20,7 +20,7 @@ importers:
         version: 2.7.2
       vitest:
         specifier: 4.0.13
-        version: 4.0.13(@types/debug@4.1.12)(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.10(@types/node@25.3.3)(typescript@5.9.3))(tsx@4.21.0)
+        version: 4.0.13(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.2))(tsx@4.21.0)
 
   apps/cli:
     dependencies:
@@ -247,12 +247,15 @@ importers:
 
   apps/stream_orchestrator:
     dependencies:
-      '@kikurage/nicolive-api':
-        specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
-        version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
       kit_models:
         specifier: workspace:*
         version: link:../../packages/kit_models
+      niconico_client:
+        specifier: workspace:*
+        version: link:../../packages/niconico_client
+      oauth_client:
+        specifier: workspace:*
+        version: link:../../packages/oauth_client
       regexs:
         specifier: workspace:*
         version: link:../../packages/regexs
@@ -262,6 +265,9 @@ importers:
       task_runner:
         specifier: workspace:*
         version: link:../../packages/task_runner
+      youtube_client:
+        specifier: workspace:*
+        version: link:../../packages/youtube_client
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
@@ -347,6 +353,44 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
+  packages/niconico_client:
+    dependencies:
+      '@kikurage/nicolive-api':
+        specifier: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
+        version: https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.8/nicolive-api.tar.gz
+      event_emitter:
+        specifier: 'workspace: *'
+        version: link:../event_emitter
+      kit_models:
+        specifier: 'workspace: *'
+        version: link:../kit_models
+      oauth_client:
+        specifier: 'workspace: *'
+        version: link:../oauth_client
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.5.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/oauth_client:
+    dependencies:
+      kit_models:
+        specifier: workspace:*
+        version: link:../kit_models
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.5.0
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/promise_with_resolvers:
     devDependencies:
       typescript:
@@ -382,7 +426,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^25.3.0
-        version: 25.3.0
+        version: 25.5.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -481,6 +525,19 @@ importers:
       promise_with_resolvers:
         specifier: workspace:*
         version: link:../promise_with_resolvers
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/youtube_client:
+    dependencies:
+      oauth_client:
+        specifier: 'workspace: *'
+        version: link:../oauth_client
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.5.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -2648,6 +2705,9 @@ packages:
 
   '@types/node@25.3.3':
     resolution: {integrity: sha512-DpzbrH7wIcBaJibpKo9nnSQL0MTRdnWttGyE5haGwK86xgMOkFLp7vEyfQPGLOJh5wNYiJ3V9PmUMDhV9u8kkQ==}
+
+  '@types/node@25.5.0':
+    resolution: {integrity: sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw==}
 
   '@types/plist@3.0.5':
     resolution: {integrity: sha512-E6OCaRmAe4WDmWNsL/9RMqdkkzDCY1etutkflWk4c+AcjDU07Pcz1fQwTX0TQz+Pxqn9i4L1TU3UFpjnrcDgxA==}
@@ -5343,6 +5403,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@6.0.2:
+    resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
@@ -6506,6 +6571,14 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.3.3
 
+  '@inquirer/confirm@5.1.21(@types/node@25.5.0)':
+    dependencies:
+      '@inquirer/core': 10.3.2(@types/node@25.5.0)
+      '@inquirer/type': 3.0.10(@types/node@25.5.0)
+    optionalDependencies:
+      '@types/node': 25.5.0
+    optional: true
+
   '@inquirer/core@10.3.2(@types/node@25.3.3)':
     dependencies:
       '@inquirer/ansi': 1.0.2
@@ -6518,6 +6591,20 @@ snapshots:
       yoctocolors-cjs: 2.1.3
     optionalDependencies:
       '@types/node': 25.3.3
+
+  '@inquirer/core@10.3.2(@types/node@25.5.0)':
+    dependencies:
+      '@inquirer/ansi': 1.0.2
+      '@inquirer/figures': 1.0.15
+      '@inquirer/type': 3.0.10(@types/node@25.5.0)
+      cli-width: 4.1.0
+      mute-stream: 2.0.0
+      signal-exit: 4.1.0
+      wrap-ansi: 6.2.0
+      yoctocolors-cjs: 2.1.3
+    optionalDependencies:
+      '@types/node': 25.5.0
+    optional: true
 
   '@inquirer/editor@4.2.23(@types/node@25.3.3)':
     dependencies:
@@ -6611,6 +6698,11 @@ snapshots:
   '@inquirer/type@3.0.10(@types/node@25.3.3)':
     optionalDependencies:
       '@types/node': 25.3.3
+
+  '@inquirer/type@3.0.10(@types/node@25.5.0)':
+    optionalDependencies:
+      '@types/node': 25.5.0
+    optional: true
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -7723,7 +7815,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.3':
@@ -7733,7 +7825,7 @@ snapshots:
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
 
   '@types/debug@4.1.12':
     dependencies:
@@ -7745,7 +7837,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
 
   '@types/http-cache-semantics@4.0.4': {}
 
@@ -7753,7 +7845,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
 
   '@types/ms@2.1.0': {}
 
@@ -7773,9 +7865,13 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
+  '@types/node@25.5.0':
+    dependencies:
+      undici-types: 7.18.2
+
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
       xmlbuilder: 15.1.1
     optional: true
 
@@ -7800,7 +7896,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
 
   '@types/statuses@2.0.6': {}
 
@@ -7817,7 +7913,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.3)':
@@ -7952,14 +8048,14 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.13(msw@2.12.10(@types/node@25.3.3)(typescript@5.9.3))(vite@7.2.4(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))':
+  '@vitest/mocker@4.0.13(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.2))(vite@7.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))':
     dependencies:
       '@vitest/spy': 4.0.13
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      msw: 2.12.10(@types/node@25.3.3)(typescript@5.9.3)
-      vite: 7.2.4(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)
+      msw: 2.12.10(@types/node@25.5.0)(typescript@6.0.2)
+      vite: 7.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)
 
   '@vitest/pretty-format@4.0.13':
     dependencies:
@@ -8753,7 +8849,7 @@ snapshots:
   engine.io@6.6.4:
     dependencies:
       '@types/cors': 2.8.19
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.7.2
@@ -9763,6 +9859,32 @@ snapshots:
       typescript: 5.9.3
     transitivePeerDependencies:
       - '@types/node'
+
+  msw@2.12.10(@types/node@25.5.0)(typescript@6.0.2):
+    dependencies:
+      '@inquirer/confirm': 5.1.21(@types/node@25.5.0)
+      '@mswjs/interceptors': 0.41.3
+      '@open-draft/deferred-promise': 2.2.0
+      '@types/statuses': 2.0.6
+      cookie: 1.1.1
+      graphql: 16.13.1
+      headers-polyfill: 4.0.3
+      is-node-process: 1.2.0
+      outvariant: 1.4.3
+      path-to-regexp: 6.3.0
+      picocolors: 1.1.1
+      rettime: 0.10.1
+      statuses: 2.0.2
+      strict-event-emitter: 0.5.1
+      tough-cookie: 6.0.1
+      type-fest: 5.4.4
+      until-async: 3.0.2
+      yargs: 17.7.2
+    optionalDependencies:
+      typescript: 6.0.2
+    transitivePeerDependencies:
+      - '@types/node'
+    optional: true
 
   mute-stream@2.0.0: {}
 
@@ -10807,6 +10929,9 @@ snapshots:
 
   typescript@5.9.3: {}
 
+  typescript@6.0.2:
+    optional: true
+
   undici-types@6.21.0: {}
 
   undici-types@7.16.0: {}
@@ -10921,10 +11046,25 @@ snapshots:
       lightningcss: 1.30.2
       tsx: 4.21.0
 
-  vitest@4.0.13(@types/debug@4.1.12)(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.10(@types/node@25.3.3)(typescript@5.9.3))(tsx@4.21.0):
+  vite@7.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0):
+    dependencies:
+      esbuild: 0.25.12
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.52.5
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 25.5.0
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.30.2
+      tsx: 4.21.0
+
+  vitest@4.0.13(@types/debug@4.1.12)(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.2))(tsx@4.21.0):
     dependencies:
       '@vitest/expect': 4.0.13
-      '@vitest/mocker': 4.0.13(msw@2.12.10(@types/node@25.3.3)(typescript@5.9.3))(vite@7.2.4(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))
+      '@vitest/mocker': 4.0.13(msw@2.12.10(@types/node@25.5.0)(typescript@6.0.2))(vite@7.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))
       '@vitest/pretty-format': 4.0.13
       '@vitest/runner': 4.0.13
       '@vitest/snapshot': 4.0.13
@@ -10941,11 +11081,11 @@ snapshots:
       tinyexec: 0.3.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.2.4(@types/node@25.3.3)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)
+      vite: 7.2.4(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/debug': 4.1.12
-      '@types/node': 25.3.3
+      '@types/node': 25.5.0
     transitivePeerDependencies:
       - jiti
       - less
