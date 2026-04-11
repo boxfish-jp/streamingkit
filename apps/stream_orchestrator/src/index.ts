@@ -17,16 +17,14 @@ const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
-const youtubeClientId = process.env.YOUTUBE_CLIENT_ID || "";
-const youtubeClientSecret = process.env.YOUTUBE_CLIENT_SECRET || "";
-const youtubeRefreshToken = process.env.YOUTUBE_REFRESH_TOKEN || "";
+const youtubeChannelId = "UCqm3BQLlJfvkTsX_hvm0UmA";
+const youtubeApiKey = process.env.YOUTUBE_KEY || "";
 
 const main = async () => {
   const streaming = new Streaming(
     niconicofuguoID,
-    youtubeClientId,
-    youtubeClientSecret,
-    youtubeRefreshToken,
+    youtubeChannelId,
+    youtubeApiKey,
   );
   const onMessage = (message: Message) => {
     bus_evnet.emit(message);

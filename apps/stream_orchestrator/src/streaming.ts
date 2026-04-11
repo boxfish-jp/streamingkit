@@ -15,22 +15,13 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   private _wasYoutubeStreaming = false;
   private _wasNicoNicoStreaming = false;
 
-  constructor(
-    nicoUserId: string,
-    youtubeClientId: string,
-    youtubeClientSecret: string,
-    youtubeRefreshToken: string,
-  ) {
+  constructor(nicoUserId: string, channelId: string, youtubeApiKey: string) {
     super();
     this._nicoNicoClient = new NicoNicoClient(nicoUserId);
     this._nicoNicoClient.on("message", (message) => {
       this.emit("onMessage", message);
     });
-    this._youtubeClient = YoutubeClient.getYoutubeClient(
-      youtubeClientId,
-      youtubeClientSecret,
-      youtubeRefreshToken,
-    );
+    this._youtubeClient = new YoutubeClient(youtubeApiKey, channelId);
 
     this._youtubeClient.on("onMessage", (message) => {
       this.emit("onMessage", message);
@@ -62,7 +53,6 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   }
 
   async startPooling() {
-    await this._youtubeClient.start();
     this._pollOnce();
     this._poolingId = setInterval(async () => {
       this._pollOnce();
