@@ -38,7 +38,6 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
         throw new Error(`${response.status}: ${JSON.stringify(responseJson)}`);
       }
 
-      console.log("Response JSON:", responseJson);
       return this._parseLiveChatId(responseJson);
     } catch (error) {
       throw new Error(
