@@ -1,16 +1,9 @@
 import { YoutubeClient } from "../src/index.js";
 
 const main = async () => {
-  const youtubeClientId = process.env.YOUTUBE_CLIENT_ID || "";
-  const youtubeClientSecret = process.env.YOUTUBE_CLIENT_SECRET || "";
-  const youtubeRefreshToken = process.env.YOUTUBE_REFRESH_TOKEN || "";
+  const apiKey = process.env.YOUTUBE_KEY || "";
 
-  const youtubeClient = YoutubeClient.getYoutubeClient(
-    youtubeClientId,
-    youtubeClientSecret,
-    youtubeRefreshToken,
-  );
-  youtubeClient.start();
+  const youtubeClient = new YoutubeClient(apiKey, "UC4e7rsaJW-M7vr55lsDMjYQ");
   youtubeClient.on("onMessage", (message) => {
     console.log("Received message:", message);
   });
@@ -19,12 +12,10 @@ const main = async () => {
   const liveChatId = await youtubeClient.getLiveChatId();
 
   console.log("Live Chat ID:", liveChatId);
-  /**
   if (!liveChatId) {
     return;
   }
   youtubeClient.startGetChat(liveChatId);
-  **/
 };
 
 main();

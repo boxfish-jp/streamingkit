@@ -163,4 +163,8 @@ CLOSED: [2026-03-02 Mon 23:57]
     CLOSED: [2026-04-07 Tue 23:33]
 *** DONE コメント取得のコードを組み込む
     CLOSED: [2026-04-07 Tue 23:48]
-*** DEVELOPING デスクトップクライアントの調整
+*** DONE デスクトップクライアントの調整
+    CLOSED: [2026-04-11 Sat 21:19]
+** Youtube APIのコード書き直し
+*** DONE 現在のYoutubeのクライアントをOAuthからAPIキーを使う方式に書き換える
+    CLOSED: [2026-04-12 Sun 00:54]

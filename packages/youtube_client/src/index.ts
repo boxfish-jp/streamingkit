@@ -1,59 +1,35 @@
-import { OauthClient } from "oauth_client";
-import type { LiveBroadcastsResponse, LiveChatResponse } from "./types.js";
+import { EventEmitter } from "event_emitter";
+import type { Message } from "kit_models";
+import Parser, { type Item } from "rss-parser";
+import type { LiveChatResponse, VideossResponse } from "./types.js";
 
-export class YoutubeClient extends OauthClient {
+interface YoutubeClientMessage {
+  onMessage: [message: Message];
+}
+
+export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
   private _nextPageToken: string | undefined = undefined;
   private _running = false;
-  private static _instance: YoutubeClient | null = null;
+  private _apiKey: string;
+  private _channelId: string;
 
-  static getYoutubeClient(
-    clientId: string,
-    clientSecret: string,
-    refreshToken: string,
-  ): YoutubeClient {
-    if (!YoutubeClient._instance) {
-      YoutubeClient._instance = new YoutubeClient(
-        clientId,
-        clientSecret,
-        refreshToken,
-      );
-    }
-    return YoutubeClient._instance;
-  }
-
-  private constructor(
-    clientId: string,
-    clientSecret: string,
-    refreshToken: string,
-  ) {
-    const body = new URLSearchParams();
-    body.append("grant_type", "refresh_token");
-    body.append("refresh_token", refreshToken);
-    body.append("client_id", clientId);
-    body.append("client_secret", clientSecret);
-    super({
-      endpoint: "https://oauth2.googleapis.com/token",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(
-          `${clientId}:${clientSecret}`,
-        ).toString("base64")}`,
-      },
-      body: body,
-      errorStatus: "serverFailedToGetYoutubeToken",
-    });
+  constructor(apiKey: string, channeld: string) {
+    super();
+    this._apiKey = apiKey;
+    this._channelId = channeld;
   }
 
   async getLiveChatId(): Promise<string | null> {
+    const videoIds = await this._getLastVideoId(this._channelId);
     const params = new URLSearchParams({
-      mine: "true",
+      part: "snippet,liveStreamingDetails",
+      id: videoIds.join(","),
+      key: this._apiKey,
     });
+
     try {
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/liveBroadcasts?${params}`,
-        {
-          headers: this.headers,
-        },
+        `https://www.googleapis.com/youtube/v3/videos?${params}`,
       );
 
       const responseJson = await response.json();
@@ -62,20 +38,8 @@ export class YoutubeClient extends OauthClient {
         throw new Error(`${response.status}: ${JSON.stringify(responseJson)}`);
       }
 
-      if (!this._isLiveBroadcastsResponse(responseJson)) {
-        throw new Error("Invalid response");
-      }
-      if (responseJson.items.length === 0) {
-        return null;
-      }
-
-      const chatId = responseJson.items[0].snippet?.liveChatId;
-      const status = responseJson.items[0].status.lifeCycleStatus === "live";
-
-      if (!chatId) {
-        throw new Error("invalid item");
-      }
-      return status ? chatId : null;
+      console.log("Response JSON:", responseJson);
+      return this._parseLiveChatId(responseJson);
     } catch (error) {
       throw new Error(
         `failed to get youtube chat id: ${error instanceof Error ? error.message : error}`,
@@ -116,15 +80,14 @@ export class YoutubeClient extends OauthClient {
       part: "snippet,authorDetails",
       liveChatId: liveChatId,
       maxResults: "100",
+      key: this._apiKey,
     });
     if (this._nextPageToken) {
       params.append("pageToken", this._nextPageToken);
     }
+
     const response = await fetch(
       `https://www.googleapis.com/youtube/v3/liveChat/messages?${params}`,
-      {
-        headers: this.headers,
-      },
     );
 
     const responseJson = await response.json();
@@ -160,14 +123,12 @@ export class YoutubeClient extends OauthClient {
     };
   }
 
-  private _isLiveBroadcastsResponse(
-    data: unknown,
-  ): data is LiveBroadcastsResponse {
+  private _isVideoResponse(data: unknown): data is VideossResponse {
     return (
       typeof data === "object" &&
       data !== null &&
       "items" in data &&
-      Array.isArray((data as LiveBroadcastsResponse).items)
+      Array.isArray((data as VideossResponse).items)
     );
   }
 
@@ -180,5 +141,55 @@ export class YoutubeClient extends OauthClient {
       "pollingIntervalMillis" in data &&
       typeof (data as LiveChatResponse).pollingIntervalMillis === "number"
     );
+  }
+
+  private _parseLiveChatId(responseJson: unknown): string | null {
+    if (!this._isVideoResponse(responseJson)) {
+      throw new Error("Invalid response format");
+    }
+
+    if (responseJson.items.length === 0) {
+      console.log("No videos found for the channel.");
+      return null;
+    }
+
+    for (const item of responseJson.items) {
+      console.log(item.snippet.title);
+      const liveStatus = item.snippet.liveBroadcastContent === "live";
+      if (liveStatus) {
+        const chatId = item.liveStreamingDetails.activeLiveChatId;
+        if (!chatId) {
+          throw new Error("chatId not found in response");
+        }
+        return chatId;
+      }
+    }
+    return null;
+  }
+
+  private async _getLastVideoId(channelId: string): Promise<string[]> {
+    const parser = new Parser();
+
+    const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+
+    try {
+      const feed = await parser.parseURL(feedUrl);
+
+      return feed.items
+        .map((item: Item) => {
+          if (!item.link) return null;
+
+          const urlObj = new URL(item.link);
+          const videoId = urlObj.searchParams.get("v") ?? "";
+
+          return videoId;
+        })
+        .filter((v): v is string => v !== null && v !== "");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "不明なエラーが発生しました";
+      console.error("❌ RSSの取得に失敗しました:", message);
+      throw error;
+    }
   }
 }
