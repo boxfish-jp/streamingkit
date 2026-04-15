@@ -168,3 +168,11 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** Youtube APIのコード書き直し
 *** DONE 現在のYoutubeのクライアントをOAuthからAPIキーを使う方式に書き換える
     CLOSED: [2026-04-12 Sun 00:54]
+
+** nightbotと配信ツールを連携する
+*** DONE oauth_clientの機能を拡張する
+    CLOSED: [2026-04-15 Wed 18:18]
+*** DONE night_botのトークン更新を自動化する
+    CLOSED: [2026-04-15 Wed 22:48]
+*** nightbot経由でYouTubeにコメントを投稿する 
+*** YouTubeライブの状況をnightbot経由で検知できるか検証する
