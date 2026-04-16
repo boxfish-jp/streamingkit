@@ -17,7 +17,7 @@ const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
-const youtubeChannelId = "UCqm3BQLlJfvkTsX_hvm0UmA";
+const youtubeChannelId = "UCqISdfvMMXfhgAJf-03pwXA";
 const youtubeApiKey = process.env.YOUTUBE_KEY || "";
 
 const main = async () => {
