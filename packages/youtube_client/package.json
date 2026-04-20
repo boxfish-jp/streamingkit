@@ -15,6 +15,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
+    "cheerio": "^1.2.0",
     "event_emitter": "workspace: *",
     "kit_models": "workspace: *",
     "rss-parser": "^3.13.0"

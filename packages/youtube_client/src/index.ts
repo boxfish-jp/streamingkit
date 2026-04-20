@@ -1,6 +1,6 @@
+import * as cheerio from "cheerio";
 import { EventEmitter } from "event_emitter";
 import type { Message } from "kit_models";
-import Parser, { type Item } from "rss-parser";
 import type { LiveChatResponse, VideossResponse } from "./types.js";
 
 interface YoutubeClientMessage {
@@ -11,19 +11,22 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
   private _nextPageToken: string | undefined = undefined;
   private _running = false;
   private _apiKey: string;
-  private _channelId: string;
+  private _channelHandler: string;
 
-  constructor(apiKey: string, channeld: string) {
+  constructor(apiKey: string, channelHandler: string) {
     super();
     this._apiKey = apiKey;
-    this._channelId = channeld;
+    this._channelHandler = channelHandler;
   }
 
   async getLiveChatId(): Promise<string | null> {
-    const videoIds = await this._getLastVideoId(this._channelId);
+    const liveId = await this._getliveId(this._channelHandler);
+    if (!liveId) {
+      return null;
+    }
     const params = new URLSearchParams({
       part: "snippet,liveStreamingDetails",
-      id: videoIds.join(","),
+      id: liveId,
       key: this._apiKey,
     });
 
@@ -38,7 +41,11 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
         throw new Error(`${response.status}: ${JSON.stringify(responseJson)}`);
       }
 
-      return this._parseLiveChatId(responseJson);
+      const chatId = this._parseLiveChatId(responseJson);
+      if (!chatId) {
+        throw new Error("Live chat ID not found in YouTube API response");
+      }
+      return chatId;
     } catch (error) {
       throw new Error(
         `failed to get youtube chat id: ${error instanceof Error ? error.message : error}`,
@@ -153,7 +160,6 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
     }
 
     for (const item of responseJson.items) {
-      console.log(item.snippet.title);
       const liveStatus = item.snippet.liveBroadcastContent === "live";
       if (liveStatus) {
         const chatId = item.liveStreamingDetails.activeLiveChatId;
@@ -166,28 +172,60 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
     return null;
   }
 
-  private async _getLastVideoId(channelId: string): Promise<string[]> {
-    const parser = new Parser();
-
-    const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
+  private async _getliveId(channelHandle: string): Promise<string | null> {
+    channelHandle = channelHandle.replace(/^@/, "");
+    const url = `https://www.youtube.com/@${channelHandle}/live`;
 
     try {
-      const feed = await parser.parseURL(feedUrl);
+      const response = await fetch(url, {
+        headers: { "User-Agent": "Mozilla/5.0" },
+      });
+      const html = await response.text();
+      const $ = cheerio.load(html);
 
-      return feed.items
-        .map((item: Item) => {
-          if (!item.link) return null;
+      const meta: Record<string, string> = {};
+      $("meta").each((_, elem) => {
+        const content = $(elem).attr("content");
+        if (!content) {
+          return;
+        }
+        const name = $(elem).attr("name");
+        if (name) meta[name] = content;
 
-          const urlObj = new URL(item.link);
-          const videoId = urlObj.searchParams.get("v") ?? "";
+        const property = $(elem).attr("property");
+        if (property) meta[property] = content;
 
-          return videoId;
-        })
-        .filter((v): v is string => v !== null && v !== "");
-    } catch (error: unknown) {
+        const itemprop = $(elem).attr("itemprop");
+        if (itemprop) meta[`itemprop:${itemprop}`] = content;
+      });
+
+      const canonUrl = meta["og:url"] ?? null;
+
+      if (
+        !meta["twitter:player"] ||
+        meta["itemprop:isLiveBroadcast"] !== "True" ||
+        !meta["itemprop:startDate"]
+      ) {
+        return null;
+      }
+      if (new Date() <= new Date(meta["itemprop:startDate"])) {
+        return null;
+      }
+      if (!canonUrl) {
+        throw new Error("Canonical URL not found in meta tags");
+      }
+      console.log(`Canonical URL: ${canonUrl}`);
+
+      const urlObj = new URL(canonUrl);
+      const vValue = urlObj.searchParams.get("v");
+      if (!vValue) {
+        throw new Error("Video ID (v) not found in URL");
+      }
+      return vValue;
+    } catch (error) {
       const message =
         error instanceof Error ? error.message : "不明なエラーが発生しました";
-      console.error("❌ RSSの取得に失敗しました:", message);
+      console.error(`YouTubeライブページのアクセスに失敗しました: ${message}`);
       throw error;
     }
   }
