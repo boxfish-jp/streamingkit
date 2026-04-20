@@ -17,13 +17,13 @@ const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
-const youtubeChannelId = "UCqISdfvMMXfhgAJf-03pwXA";
+const youtubeChannelHandler = "@boxfish_jp";
 const youtubeApiKey = process.env.YOUTUBE_KEY || "";
 
 const main = async () => {
   const streaming = new Streaming(
     niconicofuguoID,
-    youtubeChannelId,
+    youtubeChannelHandler,
     youtubeApiKey,
   );
   const onMessage = (message: Message) => {
