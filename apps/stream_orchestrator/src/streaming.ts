@@ -2,6 +2,7 @@ import { EventEmitter } from "node:events";
 import type { Message } from "kit_models";
 import { NicoNicoClient } from "niconico_client";
 import { YoutubeClient } from "youtube_client";
+import { NightbotClient } from "./nightbot.js";
 
 interface StreamingMessage {
   onMessage: [message: Message];
@@ -12,12 +13,26 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   private _checkIsStreamingIntervalMs = 30000; // 配信しているかをポーリングする時間間隔
   private _nicoNicoClient: NicoNicoClient;
   private _youtubeClient: YoutubeClient;
+  private _nightbotClient: NightbotClient;
   private _wasYoutubeStreaming = false;
   private _wasNicoNicoStreaming = false;
 
-  constructor(nicoUserId: string, channelId: string, youtubeApiKey: string) {
+  constructor(
+    nicoUserId: string,
+    channelId: string,
+    youtubeApiKey: string,
+    nightbotClientId: string,
+    nightbotClientSecret: string,
+    nightbotRefreshToken: string,
+  ) {
     super();
     this._nicoNicoClient = new NicoNicoClient(nicoUserId);
+    this._nightbotClient = new NightbotClient(
+      nightbotClientId,
+      nightbotClientSecret,
+      nightbotRefreshToken,
+    );
+    this._nightbotClient.start();
     this._nicoNicoClient.on("message", (message) => {
       this.emit("onMessage", message);
     });
@@ -63,6 +78,9 @@ export class Streaming extends EventEmitter<StreamingMessage> {
     switch (site) {
       case "niconico":
         this._nicoNicoClient.sendComment(content);
+        break;
+      case "youtube":
+        this._nightbotClient.sendComment(content);
     }
   }
 

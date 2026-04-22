@@ -17,6 +17,9 @@ const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
+const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
+const nightbotClientSecret = process.env.NIGHTBOT_CLIENT_SECRET || "";
+const nightbotRefreshToken = process.env.NIGHTBOT_REFRESH_TOKEN || "";
 const youtubeChannelHandler = "@boxfish_jp";
 const youtubeApiKey = process.env.YOUTUBE_KEY || "";
 
@@ -25,6 +28,9 @@ const main = async () => {
     niconicofuguoID,
     youtubeChannelHandler,
     youtubeApiKey,
+    nightbotClientId,
+    nightbotClientSecret,
+    nightbotRefreshToken,
   );
   const onMessage = (message: Message) => {
     bus_evnet.emit(message);

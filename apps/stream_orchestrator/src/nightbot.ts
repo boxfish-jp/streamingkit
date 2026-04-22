@@ -38,4 +38,30 @@ export class NightbotClient extends OauthClient {
   isTokenValid(): boolean {
     return this._accessToken !== null && this._refreshToken !== null;
   }
+
+  async sendComment(message: string) {
+    const url = `https://api.nightbot.tv/1/channel/send`;
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          ...this.headers,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ message }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        return;
+      } else {
+        const errorText = await response.text();
+        console.error(
+          `Failed to send YouTube Comment. Status: ${response.status}, Response: ${errorText}`,
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching Nightbot channel ID:", error);
+    }
+  }
 }
