@@ -160,6 +160,10 @@ const main = async () => {
         onMessage({ type: "todoShow", instruction: "show" });
         break;
       }
+      case "sendComment": {
+        streaming.sendComment(message.site, message.content);
+        break;
+      }
       case "error":
         {
           console.log("Error:", message.message);

@@ -59,6 +59,13 @@ export class Streaming extends EventEmitter<StreamingMessage> {
     }, this._checkIsStreamingIntervalMs);
   }
 
+  async sendComment(site: "niconico" | "youtube", content: string) {
+    switch (site) {
+      case "niconico":
+        this._nicoNicoClient.sendComment(content);
+    }
+  }
+
   private _pollOnce = async () => {
     try {
       const nicoStreamId = await this._nicoNicoClient.getStreamingId();
