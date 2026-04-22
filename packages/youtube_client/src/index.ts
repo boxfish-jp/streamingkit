@@ -215,7 +215,6 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
       if (!canonUrl) {
         throw new Error("Canonical URL not found in meta tags");
       }
-      console.log(`Canonical URL: ${canonUrl}`);
 
       const urlObj = new URL(canonUrl);
       const vValue = urlObj.searchParams.get("v");

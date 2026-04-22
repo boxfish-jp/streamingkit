@@ -180,7 +180,6 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
       }
       const text = await response.text();
       const data = JSON.parse(text);
-      console.log("Received response from headless browser:", data);
       if (
         !data.nicoWsurl ||
         !data.vposBaseTime ||
