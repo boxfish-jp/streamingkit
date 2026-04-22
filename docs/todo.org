@@ -163,4 +163,26 @@ CLOSED: [2026-03-02 Mon 23:57]
     CLOSED: [2026-04-07 Tue 23:33]
 *** DONE コメント取得のコードを組み込む
     CLOSED: [2026-04-07 Tue 23:48]
-*** DEVELOPING デスクトップクライアントの調整
+*** DONE デスクトップクライアントの調整
+    CLOSED: [2026-04-11 Sat 21:19]
+** Youtube APIのコード書き直し
+*** DONE 現在のYoutubeのクライアントをOAuthからAPIキーを使う方式に書き換える
+    CLOSED: [2026-04-12 Sun 00:54]
+
+** nightbotと配信ツールを連携する
+*** DONE oauth_clientの機能を拡張する
+    CLOSED: [2026-04-15 Wed 18:18]
+*** DONE night_botのトークン更新を自動化する
+    CLOSED: [2026-04-15 Wed 22:48]
+*** DONE YouTubeライブの状況をnightbot経由で検知できるか検証する
+    CLOSED: [2026-04-16 Thu 00:08]
+*** DONE (全然関係ないこと)obsのwebsocketのイベントを見てみる
+    CLOSED: [2026-04-22 Wed 21:48]
+*** DONE ニコニコのコメントを投稿するメソッドを生やす
+    CLOSED: [2026-04-22 Wed 22:50]
+*** DONE コメント投稿指示メッセージを作成する
+    CLOSED: [2026-04-22 Wed 23:06]
+*** DONE コメントと連携したbotアクションを作ってみる
+    CLOSED: [2026-04-22 Wed 23:21]
+*** DONE nightbot経由でYouTubeにコメントを投稿する 
+    CLOSED: [2026-04-23 Thu 00:09]

@@ -1,4 +1,4 @@
-import { Bus, type Message } from "kit_models";
+import { Bus, type Message, type SendCommentMessage } from "kit_models";
 import { SocketClient } from "socket_client";
 import { applyEducation, normalizeLowerCase } from "./clean.js";
 import { getCommands } from "./command/commands.js";
@@ -17,16 +17,20 @@ const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
-const youtubeClientId = process.env.YOUTUBE_CLIENT_ID || "";
-const youtubeClientSecret = process.env.YOUTUBE_CLIENT_SECRET || "";
-const youtubeRefreshToken = process.env.YOUTUBE_REFRESH_TOKEN || "";
+const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
+const nightbotClientSecret = process.env.NIGHTBOT_CLIENT_SECRET || "";
+const nightbotRefreshToken = process.env.NIGHTBOT_REFRESH_TOKEN || "";
+const youtubeChannelHandler = "@boxfish_jp";
+const youtubeApiKey = process.env.YOUTUBE_KEY || "";
 
 const main = async () => {
   const streaming = new Streaming(
     niconicofuguoID,
-    youtubeClientId,
-    youtubeClientSecret,
-    youtubeRefreshToken,
+    youtubeChannelHandler,
+    youtubeApiKey,
+    nightbotClientId,
+    nightbotClientSecret,
+    nightbotRefreshToken,
   );
   const onMessage = (message: Message) => {
     bus_evnet.emit(message);
@@ -64,6 +68,23 @@ const main = async () => {
     switch (message.type) {
       case "comment":
         console.log(message.content);
+        if (message.label === "viewer") {
+          switch (message.site) {
+            case "niconico":
+              bus_evnet.emit({
+                type: "sendComment",
+                site: "youtube",
+                content: `ニコニココメ「${message.content}」`,
+              } as SendCommentMessage);
+              break;
+            case "youtube":
+              bus_evnet.emit({
+                type: "sendComment",
+                site: "niconico",
+                content: `YouTubeコメ「${message.content}」`,
+              } as SendCommentMessage);
+          }
+        }
         for (const command of commands) {
           if (command.isTarget(message)) {
             const synthesizeMessage = command.synthesize(message);
@@ -160,6 +181,10 @@ const main = async () => {
         break;
       case "viewerCountUpdate": {
         onMessage({ type: "todoShow", instruction: "show" });
+        break;
+      }
+      case "sendComment": {
+        streaming.sendComment(message.site, message.content);
         break;
       }
       case "error":

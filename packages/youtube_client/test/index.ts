@@ -1,22 +1,21 @@
 import { YoutubeClient } from "../src/index.js";
 
 const main = async () => {
-  const youtubeClientId = process.env.YOUTUBE_CLIENT_ID || "";
-  const youtubeClientSecret = process.env.YOUTUBE_CLIENT_SECRET || "";
-  const youtubeRefreshToken = process.env.YOUTUBE_REFRESH_TOKEN || "";
+  const apiKey = process.env.YOUTUBE_KEY || "";
 
-  const youtubeClient = YoutubeClient.getYoutubeClient(
-    youtubeClientId,
-    youtubeClientSecret,
-    youtubeRefreshToken,
-  );
-  youtubeClient.start();
+  const valo = "@usadapekora";
+  const youtubeClient = new YoutubeClient(apiKey, valo);
   youtubeClient.on("onMessage", (message) => {
     console.log("Received message:", message);
   });
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const liveChatId = await youtubeClient.getLiveChatId();
+  if (liveChatId) {
+    console.log("ライブ配信中です。");
+  } else {
+    console.log("ライブ配信は行われていません。");
+  }
 
   console.log("Live Chat ID:", liveChatId);
   /**

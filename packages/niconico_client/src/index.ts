@@ -20,6 +20,9 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   private _poolingId: NodeJS.Timeout | undefined = undefined;
   private _stopListen: (() => void) | null = null;
   private _viewers = 0;
+  private _webSocket: WebSocket | null = null;
+  private _vposBaseTime: number | null = null;
+  private _wasStarted = false;
 
   constructor(userId: string) {
     super();
@@ -84,6 +87,8 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   }
 
   public start = async (lvid: string) => {
+    this._wasStarted = true;
+    this.initWebSocket();
     try {
       let client: NicoliveClient | null = new NicoliveClient({
         liveId: lvid,
@@ -120,8 +125,79 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   };
 
   public stop = () => {
+    this._wasStarted = false;
     this._stopListen?.();
   };
+
+  public sendComment = (message: string) => {
+    if (!this._webSocket || this._vposBaseTime === null) return;
+    const vpos = Math.round((Date.now() - this._vposBaseTime * 1000) / 10);
+    this._webSocket.send(
+      JSON.stringify({
+        type: "postComment",
+        data: {
+          text: message,
+          vpos: vpos,
+        },
+      }),
+    );
+  };
+
+  async initWebSocket() {
+    try {
+      const { url, vposBaseTime } = await this.getWebSocketInfo();
+      this._vposBaseTime = vposBaseTime;
+      this._webSocket = new WebSocket(url);
+      this._webSocket.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "ping") {
+          this._webSocket?.send(JSON.stringify({ type: "pong" }));
+        }
+      };
+      this._webSocket.onclose = () => {
+        console.log("WebSocket closed, reconnecting...");
+        if (!this._wasStarted) return;
+        this.initWebSocket();
+      };
+    } catch (error) {
+      this.emit("message", {
+        type: "error",
+        status: "serverWatchComment",
+        time: Date.now(),
+        message: `failed to init niconico websocket : ${error}`,
+      } as ErrorMessage);
+    }
+  }
+
+  async getWebSocketInfo(): Promise<{
+    url: string;
+    vposBaseTime: number;
+  }> {
+    try {
+      const response = await fetch("http://192.168.68.15:3000");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch headless browser: ${response.status}`);
+      }
+      const text = await response.text();
+      const data = JSON.parse(text);
+      if (
+        !data.nicoWsurl ||
+        !data.vposBaseTime ||
+        typeof data.nicoWsurl !== "string" ||
+        typeof data.vposBaseTime !== "number"
+      ) {
+        throw new Error("Invalid response format from headless browser");
+      }
+      return {
+        url: data.nicoWsurl,
+        vposBaseTime: data.vposBaseTime,
+      };
+    } catch (error) {
+      throw new Error(
+        `failed to get NicoNico WebSocketInfo: ${error instanceof Error ? error.message : error}`,
+      );
+    }
+  }
 
   private _onChat = (chat: Chat) => {
     if (chat.rawUserId === 98746932n) {
@@ -130,6 +206,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     this.emit("message", {
       type: "comment",
       label: "viewer",
+      site: "niconico",
       content: chat.content,
       username: chat.name,
       rawUserId: chat.rawUserId?.toString(),
@@ -144,6 +221,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     }
     this.emit("message", {
       type: "comment",
+      site: "niconico",
       label: "bot",
       content: content,
     } as CommentMessage);
@@ -156,6 +234,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     }
     this.emit("message", {
       type: "comment",
+      site: "niconico",
       label: "bot",
       content: content,
     } as CommentMessage);
@@ -166,6 +245,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     if (nusiCome) {
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "fuguo",
         content: nusiCome,
       } as CommentMessage);
@@ -188,6 +268,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
         : `ギフト貢献${gift.contributionRank}位`;
     this.emit("message", {
       type: "comment",
+      site: "niconico",
       label: "bot",
       content: `${rankingMessage} ${gift.advertiserName}さんがギフト「${gift.itemName} (${gift.point}pt)」を贈りました。「${gift.message}」`,
     } as CommentMessage);
@@ -203,18 +284,21 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
       const message = latest.message !== undefined ? latest.message : "";
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "bot",
         content: `${rankingMessage} ${latest.advertiser}さんが${latest.point}ポイントニコニ広告しました。「${message}」`,
       } as CommentMessage);
     } else if (nicoAd.versions.case === "v1") {
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "bot",
         content: nicoAd.versions.value.message,
       } as CommentMessage);
     } else {
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "bot",
         content: "ニコニ広告されました",
       } as CommentMessage);

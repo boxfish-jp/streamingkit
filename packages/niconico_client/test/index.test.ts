@@ -92,4 +92,13 @@ describe("listenComment", () => {
       expect(streamInfo.streamId).toBe(Number(`${id?.replace("lv", "")}`));
     });
   });
+
+  describe("getWebSocketInfo", () => {
+    test("配信しているときはurlとvposBaseTimeが返る", async () => {
+      const client = new NicoNicoClient("");
+      const info = await client.getWebSocketInfo();
+      expect(!!info.vposBaseTime).toBe(true);
+      expect(!!info.url).toBe(true);
+    });
+  });
 });

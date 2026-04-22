@@ -15,10 +15,14 @@
   "license": "ISC",
   "packageManager": "pnpm@10.29.3",
   "dependencies": {
-    "oauth_client": "workspace: *"
+    "cheerio": "^1.2.0",
+    "event_emitter": "workspace: *",
+    "kit_models": "workspace: *",
+    "rss-parser": "^3.13.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",
+    "@types/xml2js": "^0.4.14",
     "typescript": "^5.9.3"
   }
 }

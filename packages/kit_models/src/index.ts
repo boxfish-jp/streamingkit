@@ -7,6 +7,7 @@ export * from "./error.js";
 export * from "./inst_synthesize.js";
 export * from "./message.js";
 export * from "./ping.js";
+export * from "./send_comment.js";
 export * from "./spotify.js";
 export * from "./stream_info.js";
 export * from "./synthesized.js";

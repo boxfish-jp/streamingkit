@@ -14,6 +14,7 @@ export class SpotifyClient extends OauthClient {
           `${clientId}:${clientSecret}`,
         ).toString("base64")}`,
       },
+      initialRefreshToken: refreshToken,
       body: body,
       errorStatus: "serverFailedToGetSpotifyToken",
     });

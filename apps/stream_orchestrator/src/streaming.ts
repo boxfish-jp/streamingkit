@@ -2,6 +2,7 @@ import { EventEmitter } from "node:events";
 import type { Message } from "kit_models";
 import { NicoNicoClient } from "niconico_client";
 import { YoutubeClient } from "youtube_client";
+import { NightbotClient } from "./nightbot.js";
 
 interface StreamingMessage {
   onMessage: [message: Message];
@@ -12,25 +13,30 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   private _checkIsStreamingIntervalMs = 30000; // 配信しているかをポーリングする時間間隔
   private _nicoNicoClient: NicoNicoClient;
   private _youtubeClient: YoutubeClient;
+  private _nightbotClient: NightbotClient;
   private _wasYoutubeStreaming = false;
   private _wasNicoNicoStreaming = false;
 
   constructor(
     nicoUserId: string,
-    youtubeClientId: string,
-    youtubeClientSecret: string,
-    youtubeRefreshToken: string,
+    channelId: string,
+    youtubeApiKey: string,
+    nightbotClientId: string,
+    nightbotClientSecret: string,
+    nightbotRefreshToken: string,
   ) {
     super();
     this._nicoNicoClient = new NicoNicoClient(nicoUserId);
+    this._nightbotClient = new NightbotClient(
+      nightbotClientId,
+      nightbotClientSecret,
+      nightbotRefreshToken,
+    );
+    this._nightbotClient.start();
     this._nicoNicoClient.on("message", (message) => {
       this.emit("onMessage", message);
     });
-    this._youtubeClient = YoutubeClient.getYoutubeClient(
-      youtubeClientId,
-      youtubeClientSecret,
-      youtubeRefreshToken,
-    );
+    this._youtubeClient = new YoutubeClient(youtubeApiKey, channelId);
 
     this._youtubeClient.on("onMessage", (message) => {
       this.emit("onMessage", message);
@@ -62,11 +68,20 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   }
 
   async startPooling() {
-    await this._youtubeClient.start();
     this._pollOnce();
     this._poolingId = setInterval(async () => {
       this._pollOnce();
     }, this._checkIsStreamingIntervalMs);
+  }
+
+  async sendComment(site: "niconico" | "youtube", content: string) {
+    switch (site) {
+      case "niconico":
+        this._nicoNicoClient.sendComment(content);
+        break;
+      case "youtube":
+        this._nightbotClient.sendComment(content);
+    }
   }
 
   private _pollOnce = async () => {
