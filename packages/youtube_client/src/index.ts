@@ -57,10 +57,12 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
     if (this._running) return;
     this._running = true;
     this._nextPageToken = undefined;
+    let first = true;
 
     while (this._running) {
       try {
-        const { nextToken, interval } = await this._pollOnce(liveChatId);
+        const { nextToken, interval } = await this._pollOnce(liveChatId, first);
+        first = false;
         this._nextPageToken = nextToken;
         await new Promise((resolve) => setTimeout(resolve, interval));
       } catch (err) {
@@ -81,6 +83,7 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
 
   private async _pollOnce(
     liveChatId: string,
+    dryRun = false,
   ): Promise<{ nextToken?: string; interval: number }> {
     const params = new URLSearchParams({
       part: "snippet,authorDetails",
@@ -109,19 +112,21 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
       );
     }
 
-    for (const item of responseJson.items || []) {
-      const username = item.authorDetails.displayName;
-      const userId = item.authorDetails.channelId;
-      const content = item.snippet.displayMessage;
-      this.emit("onMessage", {
-        type: "comment",
-        label: "viewer",
-        site: "youtube",
-        username,
-        rawUserId: userId,
-        hashedUserId: userId,
-        content,
-      });
+    if (!dryRun) {
+      for (const item of responseJson.items || []) {
+        const username = item.authorDetails.displayName;
+        const userId = item.authorDetails.channelId;
+        const content = item.snippet.displayMessage;
+        this.emit("onMessage", {
+          type: "comment",
+          label: "viewer",
+          site: "youtube",
+          username,
+          rawUserId: userId,
+          hashedUserId: userId,
+          content,
+        });
+      }
     }
 
     return {
