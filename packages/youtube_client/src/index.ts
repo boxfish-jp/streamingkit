@@ -116,6 +116,7 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
       this.emit("onMessage", {
         type: "comment",
         label: "viewer",
+        site: "youtube",
         username,
         rawUserId: userId,
         hashedUserId: userId,

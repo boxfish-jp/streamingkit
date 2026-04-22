@@ -8,6 +8,7 @@ import type { ErrorMessage } from "./error.js";
 import type { InstSyntesizeMessage } from "./inst_synthesize.js";
 import type { NotifyMessage } from "./notify.js";
 import type { PingMessage } from "./ping.js";
+import type { SendCommentMessage } from "./send_comment.js";
 import type { SpotifyMessage } from "./spotify.js";
 import type { StreamInfoMessage } from "./stream_info.js";
 import type { SynthesizedMessage } from "./synthesized.js";
@@ -30,6 +31,7 @@ export type Message =
   | ConnectionMessage
   | TodoChangedMessage
   | TodoShowMessage
-  | viewerCountMessage;
+  | viewerCountMessage
+  | SendCommentMessage;
 
 export type OnMessage = (message: Message) => void;

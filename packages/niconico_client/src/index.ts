@@ -207,6 +207,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     this.emit("message", {
       type: "comment",
       label: "viewer",
+      site: "niconico",
       content: chat.content,
       username: chat.name,
       rawUserId: chat.rawUserId?.toString(),
@@ -221,6 +222,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     }
     this.emit("message", {
       type: "comment",
+      site: "niconico",
       label: "bot",
       content: content,
     } as CommentMessage);
@@ -233,6 +235,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     }
     this.emit("message", {
       type: "comment",
+      site: "niconico",
       label: "bot",
       content: content,
     } as CommentMessage);
@@ -243,6 +246,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     if (nusiCome) {
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "fuguo",
         content: nusiCome,
       } as CommentMessage);
@@ -265,6 +269,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
         : `ギフト貢献${gift.contributionRank}位`;
     this.emit("message", {
       type: "comment",
+      site: "niconico",
       label: "bot",
       content: `${rankingMessage} ${gift.advertiserName}さんがギフト「${gift.itemName} (${gift.point}pt)」を贈りました。「${gift.message}」`,
     } as CommentMessage);
@@ -280,18 +285,21 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
       const message = latest.message !== undefined ? latest.message : "";
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "bot",
         content: `${rankingMessage} ${latest.advertiser}さんが${latest.point}ポイントニコニ広告しました。「${message}」`,
       } as CommentMessage);
     } else if (nicoAd.versions.case === "v1") {
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "bot",
         content: nicoAd.versions.value.message,
       } as CommentMessage);
     } else {
       this.emit("message", {
         type: "comment",
+        site: "niconico",
         label: "bot",
         content: "ニコニ広告されました",
       } as CommentMessage);
