@@ -174,5 +174,12 @@ CLOSED: [2026-03-02 Mon 23:57]
     CLOSED: [2026-04-15 Wed 18:18]
 *** DONE night_botのトークン更新を自動化する
     CLOSED: [2026-04-15 Wed 22:48]
+*** DONE YouTubeライブの状況をnightbot経由で検知できるか検証する
+    CLOSED: [2026-04-16 Thu 00:08]
+*** DONE (全然関係ないこと)obsのwebsocketのイベントを見てみる
+    CLOSED: [2026-04-22 Wed 21:48]
+*** DONE ニコニコのコメントを投稿するメソッドを生やす
+    CLOSED: [2026-04-22 Wed 22:50]
+*** コメント投稿指示メッセージを作成する
+*** コメントと連携したbotアクションを作ってみる
 *** nightbot経由でYouTubeにコメントを投稿する 
-*** YouTubeライブの状況をnightbot経由で検知できるか検証する
