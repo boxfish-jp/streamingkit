@@ -1,4 +1,4 @@
-import { Bus, type Message } from "kit_models";
+import { Bus, type Message, type SendCommentMessage } from "kit_models";
 import { SocketClient } from "socket_client";
 import { applyEducation, normalizeLowerCase } from "./clean.js";
 import { getCommands } from "./command/commands.js";
@@ -68,6 +68,23 @@ const main = async () => {
     switch (message.type) {
       case "comment":
         console.log(message.content);
+        if (message.label === "viewer") {
+          switch (message.site) {
+            case "niconico":
+              bus_evnet.emit({
+                type: "sendComment",
+                site: "youtube",
+                content: `ニコニココメ「${message.content}」`,
+              } as SendCommentMessage);
+              break;
+            case "youtube":
+              bus_evnet.emit({
+                type: "sendComment",
+                site: "niconico",
+                content: `YouTubeコメ「${message.content}」`,
+              } as SendCommentMessage);
+          }
+        }
         for (const command of commands) {
           if (command.isTarget(message)) {
             const synthesizeMessage = command.synthesize(message);
