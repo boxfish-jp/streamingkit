@@ -117,9 +117,10 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
         const username = item.authorDetails.displayName;
         const userId = item.authorDetails.channelId;
         const content = item.snippet.displayMessage;
+        const label = userId === "UCSvjQBDgYDB5TGVmCZObcwA" ? "bot" : "viewer";
         this.emit("onMessage", {
           type: "comment",
-          label: "viewer",
+          label: label,
           site: "youtube",
           username,
           rawUserId: userId,
