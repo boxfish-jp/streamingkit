@@ -36,17 +36,25 @@ const progressCommand = {
 
 const nurupoCommand = {
   isTarget: (message) => message.content.startsWith("ぬるぽ"),
-  action: () => [
-    {
-      type: "sendComment",
-      site: "niconico",
-      content: "ガッ",
-    } as SendCommentMessage,
-    {
-      type: "sendComment",
-      site: "youtube",
-      content: "ガッ",
-    } as SendCommentMessage,
-  ],
+  action: (message) => {
+    switch (message.site) {
+      case "niconico":
+        return [
+          {
+            type: "sendComment",
+            site: "niconico",
+            content: "ガッ",
+          } as SendCommentMessage,
+        ];
+      case "youtube":
+        return [
+          {
+            type: "sendComment",
+            site: "youtube",
+            content: "ガッ",
+          } as SendCommentMessage,
+        ];
+    }
+  },
   synthesize: () => undefined,
 } as Command;
