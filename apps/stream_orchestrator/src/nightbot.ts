@@ -50,16 +50,13 @@ export class NightbotClient extends OauthClient {
         },
         body: new URLSearchParams({ message }),
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        return;
-      } else {
+      if (!response.ok) {
         const errorText = await response.text();
         console.error(
           `Failed to send YouTube Comment. Status: ${response.status}, Response: ${errorText}`,
         );
       }
+      return;
     } catch (error) {
       console.error("Error fetching Nightbot channel ID:", error);
     }
