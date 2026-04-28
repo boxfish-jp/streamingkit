@@ -64,7 +64,9 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
         const { nextToken, interval } = await this._pollOnce(liveChatId, first);
         first = false;
         this._nextPageToken = nextToken;
-        await new Promise((resolve) => setTimeout(resolve, interval));
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.max(interval, 1500)),
+        );
       } catch (err) {
         this.emit("onMessage", {
           type: "error",
