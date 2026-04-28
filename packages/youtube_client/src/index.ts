@@ -119,16 +119,17 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
         const username = item.authorDetails.displayName;
         const userId = item.authorDetails.channelId;
         const content = item.snippet.displayMessage;
-        const label = userId === "UCSvjQBDgYDB5TGVmCZObcwA" ? "bot" : "viewer";
-        this.emit("onMessage", {
-          type: "comment",
-          label: label,
-          site: "youtube",
-          username,
-          rawUserId: userId,
-          hashedUserId: userId,
-          content,
-        });
+        if (userId !== "UCSvjQBDgYDB5TGVmCZObcwA") {
+          this.emit("onMessage", {
+            type: "comment",
+            label: "viewer",
+            site: "youtube",
+            username,
+            rawUserId: userId,
+            hashedUserId: userId,
+            content,
+          });
+        }
       }
     }
 
