@@ -114,6 +114,7 @@ export const getVideoCommands = async () => {
   } as Command;
 
   commands.push(makeWildCardVideoCommand("ナイス", "b(かぐや)"));
+  commands.push(makeWildCardVideoCommand("何をしてんの", "なにをしてんの"));
   commands.push(makeWildCardVideoCommand("?", "？"));
   commands.push(makeWildCardVideoCommand("8888", "８８８８"));
   commands.push(makeWildCardVideoCommand("５６す", "56す"));
