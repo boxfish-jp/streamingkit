@@ -14,7 +14,7 @@ ENV NODE_ENV=development
 
 FROM base AS prepare
 WORKDIR /app
-RUN pnpm add -g turbo
+RUN npm add -g turbo
 COPY . .
 RUN turbo prune stream_orchestrator --docker
 
