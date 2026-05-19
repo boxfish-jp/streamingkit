@@ -21,13 +21,11 @@ const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
 const nightbotClientSecret = process.env.NIGHTBOT_CLIENT_SECRET || "";
 const nightbotRefreshToken = process.env.NIGHTBOT_REFRESH_TOKEN || "";
 const youtubeChannelHandler = "@boxfish_jp";
-const youtubeApiKey = process.env.YOUTUBE_KEY || "";
 
 const main = async () => {
   const streaming = new Streaming(
     niconicofuguoID,
     youtubeChannelHandler,
-    youtubeApiKey,
     nightbotClientId,
     nightbotClientSecret,
     nightbotRefreshToken,

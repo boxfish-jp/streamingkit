@@ -1,21 +1,18 @@
 import * as cheerio from "cheerio";
 import { EventEmitter } from "event_emitter";
 import type { Message } from "kit_models";
-import type { LiveChatResponse, VideossResponse } from "./types.js";
+import Innertube, { UniversalCache, YTNodes } from "youtubei.js";
 
 interface YoutubeClientMessage {
   onMessage: [message: Message];
 }
 
 export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
-  private _nextPageToken: string | undefined = undefined;
   private _running = false;
-  private _apiKey: string;
   private _channelHandler: string;
 
-  constructor(apiKey: string, channelHandler: string) {
+  constructor(channelHandler: string) {
     super();
-    this._apiKey = apiKey;
     this._channelHandler = channelHandler;
   }
 
@@ -24,162 +21,68 @@ export class YoutubeClient extends EventEmitter<YoutubeClientMessage> {
     if (!liveId) {
       return null;
     }
-    const params = new URLSearchParams({
-      part: "snippet,liveStreamingDetails",
-      id: liveId,
-      key: this._apiKey,
-    });
-
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?${params}`,
-      );
-
-      const responseJson = await response.json();
-
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${JSON.stringify(responseJson)}`);
-      }
-
-      const chatId = this._parseLiveChatId(responseJson);
-      if (!chatId) {
-        throw new Error("Live chat ID not found in YouTube API response");
-      }
-      return chatId;
-    } catch (error) {
-      throw new Error(
-        `failed to get youtube chat id: ${error instanceof Error ? error.message : error}`,
-      );
-    }
+    return liveId;
   }
 
-  async startGetChat(liveChatId: string): Promise<void> {
+  async startGetChat(liveId: string): Promise<void> {
     if (this._running) return;
     this._running = true;
-    this._nextPageToken = undefined;
-    let first = true;
 
-    while (this._running) {
-      try {
-        const { nextToken, interval } = await this._pollOnce(liveChatId, first);
-        first = false;
-        this._nextPageToken = nextToken;
-        await new Promise((resolve) =>
-          setTimeout(resolve, Math.max(interval, 1500)),
-        );
-      } catch (err) {
-        this.emit("onMessage", {
-          type: "error",
-          status: "serverFailedToGetYoutubeComment",
-          time: Date.now(),
-          message: `Youtube API Error :${err instanceof Error ? err.message : err}`,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+    const innertube = await Innertube.create({
+      cache: new UniversalCache(false),
+    });
+    const videoInfo = await innertube.getInfo(liveId);
+    const livechat = videoInfo.getLiveChat();
+    livechat.on("start", (initial) =>
+      console.log("youtube livechat started", initial),
+    );
+    livechat.on("chat-update", (action) => {
+      if (!action.is(YTNodes.AddChatItemAction)) {
+        return;
       }
-    }
+      const item = action.as(YTNodes.AddChatItemAction).item;
+      if (!item) {
+        return;
+      }
+
+      switch (item.type) {
+        case "LiveChatTextMessage":
+        case "LiveChatPaidMessage": {
+          const message = item.as(YTNodes.LiveChatTextMessage);
+          const userId = message.author.id;
+          const userName = message.author.name;
+          const content = message.message.text;
+          if (userId !== "UCSvjQBDgYDB5TGVmCZObcwA" && content) {
+            this.emit("onMessage", {
+              type: "comment",
+              label: "viewer",
+              site: "youtube",
+              username: userName,
+              rawUserId: userId,
+              hashedUserId: userId,
+              content,
+            });
+            console.log(`[YouTube] ${userName} (${userId}): ${content}`);
+            break;
+          }
+        }
+      }
+    });
+    livechat.on("error", (err: unknown) => {
+      this.emit("onMessage", {
+        type: "error",
+        status: "serverFailedToGetYoutubeComment",
+        time: Date.now(),
+        message: `Youtube API Error :${err instanceof Error ? err.message : err}`,
+      });
+    });
+    livechat.on("end", () => console.log("livechat end"));
+
+    livechat.start();
   }
 
   stopGetChat(): void {
     this._running = false;
-  }
-
-  private async _pollOnce(
-    liveChatId: string,
-    dryRun = false,
-  ): Promise<{ nextToken?: string; interval: number }> {
-    const params = new URLSearchParams({
-      part: "snippet,authorDetails",
-      liveChatId: liveChatId,
-      maxResults: "100",
-      key: this._apiKey,
-    });
-    if (this._nextPageToken) {
-      params.append("pageToken", this._nextPageToken);
-    }
-
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/liveChat/messages?${params}`,
-    );
-
-    const responseJson = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        `failed to get chat: ${response.status}: ${JSON.stringify(responseJson)}`,
-      );
-    }
-    if (!this._isLiveChatResponse(responseJson)) {
-      throw new Error(
-        `invalid response format: ${JSON.stringify(responseJson)}`,
-      );
-    }
-
-    if (!dryRun) {
-      for (const item of responseJson.items || []) {
-        const username = item.authorDetails.displayName;
-        const userId = item.authorDetails.channelId;
-        const content = item.snippet.displayMessage;
-        if (userId !== "UCSvjQBDgYDB5TGVmCZObcwA") {
-          this.emit("onMessage", {
-            type: "comment",
-            label: "viewer",
-            site: "youtube",
-            username,
-            rawUserId: userId,
-            hashedUserId: userId,
-            content,
-          });
-        }
-      }
-    }
-
-    return {
-      nextToken: responseJson.nextPageToken,
-      interval: responseJson.pollingIntervalMillis || 2000,
-    };
-  }
-
-  private _isVideoResponse(data: unknown): data is VideossResponse {
-    return (
-      typeof data === "object" &&
-      data !== null &&
-      "items" in data &&
-      Array.isArray((data as VideossResponse).items)
-    );
-  }
-
-  private _isLiveChatResponse(data: unknown): data is LiveChatResponse {
-    return (
-      typeof data === "object" &&
-      data !== null &&
-      "items" in data &&
-      Array.isArray((data as LiveChatResponse).items) &&
-      "pollingIntervalMillis" in data &&
-      typeof (data as LiveChatResponse).pollingIntervalMillis === "number"
-    );
-  }
-
-  private _parseLiveChatId(responseJson: unknown): string | null {
-    if (!this._isVideoResponse(responseJson)) {
-      throw new Error("Invalid response format");
-    }
-
-    if (responseJson.items.length === 0) {
-      console.log("No videos found for the channel.");
-      return null;
-    }
-
-    for (const item of responseJson.items) {
-      const liveStatus = item.snippet.liveBroadcastContent === "live";
-      if (liveStatus) {
-        const chatId = item.liveStreamingDetails.activeLiveChatId;
-        if (!chatId) {
-          throw new Error("chatId not found in response");
-        }
-        return chatId;
-      }
-    }
-    return null;
   }
 
   private async _getliveId(channelHandle: string): Promise<string | null> {

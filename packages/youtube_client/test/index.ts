@@ -1,12 +1,10 @@
 import { YoutubeClient } from "../src/index.js";
 
 const main = async () => {
-  const apiKey = process.env.YOUTUBE_KEY || "";
-
-  const valo = "@usadapekora";
-  const youtubeClient = new YoutubeClient(apiKey, valo);
+  const valo = "@eikogo3822";
+  const youtubeClient = new YoutubeClient(valo);
   youtubeClient.on("onMessage", (message) => {
-    console.log("Received message:", message);
+    //console.log("Received message:", message);
   });
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -18,12 +16,10 @@ const main = async () => {
   }
 
   console.log("Live Chat ID:", liveChatId);
-  /**
   if (!liveChatId) {
     return;
   }
   youtubeClient.startGetChat(liveChatId);
-  **/
 };
 
 main();

@@ -20,7 +20,6 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   constructor(
     nicoUserId: string,
     channelId: string,
-    youtubeApiKey: string,
     nightbotClientId: string,
     nightbotClientSecret: string,
     nightbotRefreshToken: string,
@@ -36,7 +35,7 @@ export class Streaming extends EventEmitter<StreamingMessage> {
     this._nicoNicoClient.on("message", (message) => {
       this.emit("onMessage", message);
     });
-    this._youtubeClient = new YoutubeClient(youtubeApiKey, channelId);
+    this._youtubeClient = new YoutubeClient(channelId);
 
     this._youtubeClient.on("onMessage", (message) => {
       this.emit("onMessage", message);
