@@ -130,6 +130,17 @@ CLOSED: [2026-03-02 Mon 23:57]
     CLOSED: [2026-03-27 Fri 18:11]
 *** DONE TODOタスク表示UIを常に下側を基準に表示するようにする
     CLOSED: [2026-03-27 Fri 18:20]
+** node.js製CLIをnixでパッケージ化しよう
+*** DONE nix言語の基礎
+    CLOSED: [2026-05-19 火 01:59]
+*** DONE はじめてのnixパッケージ化
+    CLOSED: [2026-05-19 火 02:02]
+*** DONE GitHubのソースを読み込むように
+    CLOSED: [2026-05-20 水 01:43]
+*** home-managerに登録
+** その他
+*** DONE NightBotのコメントが読み上げられてしまう不具合を治す
+    CLOSED: [2026-04-28 Thu 22:43]
 
 * 配信ツールをYoutube Liveに対応させる
 ** Youtube Liveの仕様を調べる
