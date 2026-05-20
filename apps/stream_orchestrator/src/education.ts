@@ -33,7 +33,9 @@ export const addEducationConfig = (
       JSON.stringify(configs, null, 2),
       "utf-8",
     );
-    sendCommentBothSites("bot: ありがとう、また一つ邪神ちゃんは賢くなりました");
+    sendCommentBothSites(
+      "bot: ありがとう、また一つ邪神ちゃんは賢くなりました",
+    ).forEach((message) => onMessage(message));
   } catch (error) {
     onMessage({
       type: "error",
