@@ -1,10 +1,11 @@
 import type { Command, InstSyntesizeMessage } from "kit_models";
+import { sendCommentBothSites } from "./utils.js";
 
 export const getSpotifyCommand = (): Command => {
   return {
     isTarget: (comment) =>
       comment.content.startsWith("https://open.spotify.com/"),
-    synthesize: (comment) => undefined,
+    synthesize: () => undefined,
     action: (comment) => {
       const urlobj = new URL(comment.content);
       const splitedPath = urlobj.pathname.split("/");
@@ -38,6 +39,7 @@ export const getSpotifyCommand = (): Command => {
             uri: trackUri,
           },
         },
+        ...sendCommentBothSites("bot: キューに追加しました"),
       ];
     },
   } as Command;

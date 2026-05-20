@@ -141,6 +141,9 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** その他
 *** DONE NightBotのコメントが読み上げられてしまう不具合を治す
     CLOSED: [2026-04-28 Thu 22:43]
+** bot機能の充実化
+*** DONE 曲追加時にbotが反応するようにする
+    CLOSED: [2026-05-21 木 00:48]
 
 * 配信ツールをYoutube Liveに対応させる
 ** Youtube Liveの仕様を調べる

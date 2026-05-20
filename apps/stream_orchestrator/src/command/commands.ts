@@ -1,7 +1,8 @@
-import type { Command, SendCommentMessage } from "kit_models";
+import type { Command } from "kit_models";
 import { normalizeLowerCase } from "../clean.js";
 import { getEducationCommands } from "./education.js";
 import { getSpotifyCommand } from "./spotify_command.js";
+import { sendCommentBothSites } from "./utils.js";
 import { getVideoCommands } from "./video_command.js";
 
 export const getCommands = async () => {
@@ -36,25 +37,6 @@ const progressCommand = {
 
 const nurupoCommand = {
   isTarget: (message) => message.content.startsWith("ぬるぽ"),
-  action: (message) => {
-    switch (message.site) {
-      case "niconico":
-        return [
-          {
-            type: "sendComment",
-            site: "niconico",
-            content: "ガッ",
-          } as SendCommentMessage,
-        ];
-      case "youtube":
-        return [
-          {
-            type: "sendComment",
-            site: "youtube",
-            content: "ガッ",
-          } as SendCommentMessage,
-        ];
-    }
-  },
+  action: () => sendCommentBothSites("bot: ガッ"),
   synthesize: () => undefined,
 } as Command;
