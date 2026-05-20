@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import type { EducationConfig, OnMessage } from "kit_models";
+import { sendCommentBothSites } from "./utils.js";
 
 export const getEducationConfigs = (
   onMessage: OnMessage,
@@ -32,6 +33,7 @@ export const addEducationConfig = (
       JSON.stringify(configs, null, 2),
       "utf-8",
     );
+    sendCommentBothSites("bot: ありがとう、また一つ邪神ちゃんは賢くなりました");
   } catch (error) {
     onMessage({
       type: "error",
