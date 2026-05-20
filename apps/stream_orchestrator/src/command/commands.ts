@@ -1,8 +1,8 @@
 import type { Command } from "kit_models";
 import { normalizeLowerCase } from "../clean.js";
+import { sendCommentBothSites } from "../utils.js";
 import { getEducationCommands } from "./education.js";
 import { getSpotifyCommand } from "./spotify_command.js";
-import { sendCommentBothSites } from "./utils.js";
 import { getVideoCommands } from "./video_command.js";
 
 export const getCommands = async () => {

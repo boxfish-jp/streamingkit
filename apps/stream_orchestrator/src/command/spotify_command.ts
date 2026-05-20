@@ -1,5 +1,4 @@
 import type { Command, InstSyntesizeMessage } from "kit_models";
-import { sendCommentBothSites } from "./utils.js";
 
 export const getSpotifyCommand = (): Command => {
   return {
@@ -39,7 +38,6 @@ export const getSpotifyCommand = (): Command => {
             uri: trackUri,
           },
         },
-        ...sendCommentBothSites("bot: キューに追加しました"),
       ];
     },
   } as Command;

@@ -10,6 +10,7 @@ import {
 import { SpotifyClient } from "./spotify.js";
 import { Streaming } from "./streaming.js";
 import { SynthesizeRunner } from "./synthesize.js";
+import { sendCommentBothSites } from "./utils.js";
 
 const bus_evnet = new Bus();
 const cruseID = "70969122";
@@ -185,6 +186,15 @@ const main = async () => {
         streaming.sendComment(message.site, message.content);
         break;
       }
+      case "notify":
+        {
+          if (message.status === "successfulAddSpotifyQueue") {
+            sendCommentBothSites("bot: キューに追加しました").forEach(
+              (message) => bus_evnet.emit(message),
+            );
+          }
+        }
+        break;
       case "error":
         {
           console.log("Error:", message.message);
