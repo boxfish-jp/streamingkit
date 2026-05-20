@@ -26,7 +26,7 @@
           version = "1.0.1";
           src = cli-src;
           nativeBuildInputs = [
-            pkgs.nodejs_20
+            pkgs.nodejs_24
             pkgs.pnpm_9
             pkgs.pnpmConfigHook
             pkgs.turbo
@@ -55,7 +55,7 @@
             cp -a . $out/lib/$pname
             mkdir -p $out/bin
 
-            NODE_BIN="${pkgs.nodejs_20}/bin/node"
+            NODE_BIN="${pkgs.nodejs_24}/bin/node"
 
             cat > $out/bin/$pname <<EOF
             #!/usr/bin/env bash
