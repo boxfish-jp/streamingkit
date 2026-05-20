@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    cli-src = {
+    streaming-kit-cli-src = {
       url = "github:boxfish-jp/streamingkit?ref=v1.0.1";
       flake = false;
     };
@@ -15,7 +15,7 @@
       self,
       nixpkgs,
       flake-utils,
-      cli-src,
+      streaming-kit-cli-src,
       ...
     }:
     let
@@ -24,7 +24,7 @@
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "streaming-kit-cli";
           version = "1.0.1";
-          src = cli-src;
+          src = streaming-kit-cli-src;
           nativeBuildInputs = [
             pkgs.nodejs_24
             pkgs.pnpm_9
