@@ -1,13 +1,9 @@
 {
-  description = "配信ツールのCLI";
+  description = "配信ツール";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    streaming-kit-cli-src = {
-      url = "github:boxfish-jp/streamingkit?ref=v1.0.1";
-      flake = false;
-    };
   };
 
   outputs =
@@ -15,16 +11,25 @@
       self,
       nixpkgs,
       flake-utils,
-      streaming-kit-cli-src,
       ...
     }:
     let
-      mkPackage =
+      desktopSrc = builtins.fetchTarball {
+        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.1/app-ubuntu-latest.tar.gz";
+        sha256 = "sha256-UPgVP/gFD1Bbqd55zEXhqlyRCM+07ZeO2lgM8f/L08M=";
+      };
+      cli =
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
-          pname = "streaming-kit-cli";
+          pname = "cli";
           version = "1.0.1";
-          src = streaming-kit-cli-src;
+
+          src = pkgs.fetchFromGitHub {
+            owner = "boxfish-jp";
+            repo = "streamingkit";
+            rev = "v1.0.1";
+            hash = "sha256-fpNKfAn9sTNWQL8tYDaWj9E68+OeFVSnFdhv+Vyyems=";
+          };
           nativeBuildInputs = [
             pkgs.nodejs_24
             pkgs.pnpm_9
@@ -71,12 +76,41 @@
             license = pkgs.lib.licenses.mit;
           };
         });
+
+      desktop =
+        pkgs:
+        pkgs.stdenv.mkDerivation (finalAttrs: {
+          pname = "desktop";
+          version = "1.0.1";
+          src = desktopSrc;
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/lib/$pname
+            cp -a . $out/lib/$pname
+            mkdir -p $out/bin
+
+            cat > $out/bin/$pname <<EOF
+            #!/usr/bin/env bash
+            set -euo pipefail
+            exec "${pkgs.lib.getExe pkgs.appimage-run}" "${desktopSrc}/desktop_client-1.0.0.AppImage" "\$@"
+
+            EOF
+            chmod +x $out/bin/$pname
+            runHook postInstall
+          '';
+          meta = {
+            description = "配信ツールのデスクトップアプリ";
+            license = pkgs.lib.licenses.mit;
+          };
+        });
     in
     flake-utils.lib.eachDefaultSystem (system: {
-      packages.default = mkPackage nixpkgs.legacyPackages.${system};
+      packages.default = cli nixpkgs.legacyPackages.${system};
+      packages.cli = cli nixpkgs.legacyPackages.${system};
+      packages.desktop = desktop nixpkgs.legacyPackages.${system};
     })
     // {
-      homeManagerModules.default =
+      homeManagerModules.streaming-kit-cli =
         {
           config,
           pkgs,
@@ -85,8 +119,8 @@
         }:
         let
           cfg = config.programs.streaming-kit-cli;
-          cliPkg = self.packages.${pkgs.system}.default;
-          cliBin = "${lib.getBin cfg.package}/bin/streaming-kit-cli";
+          cliPkg = self.packages.${pkgs.system}.cli;
+          cliBin = "${lib.getBin cfg.package}/bin/cli";
 
           systemdExec =
             let
@@ -97,7 +131,7 @@
         in
         {
           options.programs.streaming-kit-cli = {
-            enable = lib.mkEnableOption "streaming-kit-cli";
+            enable = lib.mkEnableOption "cli";
 
             package = lib.mkOption {
               type = lib.types.package;
@@ -138,6 +172,63 @@
             systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
               Unit = {
                 Description = "Streaming Kit CLI Service";
+                After = [ "network.target" ];
+                Wants = [ "network-online.target" ];
+              };
+              Service = {
+                Type = "simple";
+                ExecStart = systemdExec;
+                Restart = "on-failure";
+                RestartSec = "5s";
+                WorkingDirectory = "%h";
+              };
+              Install.WantedBy = [ "default.target" ];
+            };
+          };
+        };
+      homeManagerModules.streaming-kit-desktop =
+        {
+          config,
+          pkgs,
+          lib,
+          ...
+        }:
+        let
+          cfg = config.programs.streaming-kit-desktop;
+          desktopPkg = self.packages.${pkgs.system}.desktop;
+          desktopBin = "${lib.getBin cfg.package}/bin/desktop";
+
+          systemdExec = desktopBin;
+        in
+        {
+          options.programs.streaming-kit-desktop = {
+            enable = lib.mkEnableOption "desktop";
+
+            package = lib.mkOption {
+              type = lib.types.package;
+              default = desktopPkg;
+              description = "使用する streaming-kit-desktop パッケージ。";
+            };
+
+            systemd.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "systemd ユーザーサービスとして自動起動する。";
+            };
+
+            systemd.serviceName = lib.mkOption {
+              type = lib.types.str;
+              default = "streaming-kit-desktop";
+              description = "systemd サービス名。";
+            };
+          };
+
+          config = lib.mkIf cfg.enable {
+            home.packages = [ cfg.package ];
+
+            systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
+              Unit = {
+                Description = "Streaming Kit Desktop App Service";
                 After = [ "network.target" ];
                 Wants = [ "network-online.target" ];
               };

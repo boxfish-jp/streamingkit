@@ -20,11 +20,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1778869304,
-        "narHash": "sha256-30sZNZoA1cqF5JNO9fVX+wgiQYjB7HJqqJ4ztCDeBZE=",
+        "lastModified": 1779560665,
+        "narHash": "sha256-tpyBcxPpcQb8ukyNF7DoCwfSY3VPsxHoYwj00Cayv5o=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d233902339c02a9c334e7e593de68855ad26c4cb",
+        "rev": "64c08a7ca051951c8eae34e3e3cb1e202fe36786",
         "type": "github"
       },
       "original": {
@@ -37,25 +37,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs",
-        "streaming-kit-cli-src": "streaming-kit-cli-src"
-      }
-    },
-    "streaming-kit-cli-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777385341,
-        "narHash": "sha256-fpNKfAn9sTNWQL8tYDaWj9E68+OeFVSnFdhv+Vyyems=",
-        "owner": "boxfish-jp",
-        "repo": "streamingkit",
-        "rev": "9798d1a995fe1e87cb90181a2a7e3b8661db9dba",
-        "type": "github"
-      },
-      "original": {
-        "owner": "boxfish-jp",
-        "ref": "v1.0.1",
-        "repo": "streamingkit",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     },
     "systems": {
