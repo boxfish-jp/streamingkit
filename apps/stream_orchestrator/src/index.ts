@@ -146,7 +146,7 @@ const main = async () => {
               if (message.wasStreaming) {
                 bus_evnet.emit({
                   type: "notify",
-                  status: "endNicoNicoStreaming",
+                  status: "endYoutubeStreaming"
                 });
                 streaming.stopWatchYoutubeComment();
               }
