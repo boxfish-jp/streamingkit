@@ -65,8 +65,8 @@
             cat > $out/bin/$pname <<EOF
             #!/usr/bin/env bash
             set -euo pipefail
-            export NODE_PATH="${placeholder "out"}/lib/streaming-kit-cli/node_modules"
-            exec "$NODE_BIN" "${placeholder "out"}/lib/streaming-kit-cli/apps/cli/dist/index.js" "\$@"
+            export NODE_PATH="${placeholder "out"}/lib/cli/node_modules"
+            exec "$NODE_BIN" "${placeholder "out"}/lib/cli/apps/cli/dist/index.js" "\$@"
             EOF
             chmod +x $out/bin/$pname
             runHook postInstall
