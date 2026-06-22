@@ -39,3 +39,16 @@ services:
       - "8888:8888"
     shm_size: "1gb"
     #restart: unless-stopped
+  voicevox_connector:
+    build:
+      context: .
+      dockerfile: apps/voicevox_connector/Dockerfile
+    container_name: voicevox_connector
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Tokyo
+    ports:
+      - "50020:50020"
+    shm_size: "1gb"
+    #restart: unless-stopped

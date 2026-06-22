@@ -104,28 +104,39 @@
           };
         });
     in
-    flake-utils.lib.eachDefaultSystem (system:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs { inherit system; };
       in
       {
+        formatter = pkgs.nixfmt-tree;
         packages.default = cli pkgs;
         packages.cli = cli pkgs;
         packages.desktop = desktop pkgs;
 
-        devShells.default = let
-          fhs = pkgs.buildFHSEnv {
-            name = "dev";
-            targetPkgs = pkgs: with pkgs; [ nodejs_24 pnpm_9 turbo ];
-            runScript = "bash";
+        devShells.default =
+          let
+            fhs = pkgs.buildFHSEnv {
+              name = "dev";
+              targetPkgs =
+                pkgs: with pkgs; [
+                  nodejs_24
+                  pnpm_9
+                  turbo
+                  typescript-language-server
+                ];
+              runScript = "bash";
+            };
+          in
+          pkgs.mkShell {
+            packages = [ fhs ];
+            shellHook = ''
+              exec ${fhs}/bin/dev
+            '';
           };
-        in pkgs.mkShell {
-          packages = [ fhs ];
-          shellHook = ''
-            exec ${fhs}/bin/dev
-          '';
-        };
-      })
+      }
+    )
     // {
       homeManagerModules.streaming-kit-cli =
         {

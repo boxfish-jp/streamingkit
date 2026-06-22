@@ -10,6 +10,7 @@
     "orchest": "pnpm -C apps/stream_orchestrator",
     "desktop": "pnpm -C apps/desktop_client",
     "effect": "pnpm -C apps/effect",
+    "voicevox": "pnpm -C apps/voicevox_connector",
     "build": "turbo build",
     "dev": "turbo dev",
     "clean": "turbo clean && rm -rf node_modules .turbo",
