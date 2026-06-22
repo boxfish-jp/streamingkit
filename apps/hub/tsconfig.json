@@ -1,6 +1,3 @@
 {
-  "extends": [
-    "./tsconfig.build.json",
-    "../../tsconfig.develop.json"
-  ]
+  "extends": ["./tsconfig.build.json", "../../tsconfig.develop.json"]
 }
