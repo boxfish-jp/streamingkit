@@ -15,20 +15,20 @@
     }:
     let
       desktopSrc = builtins.fetchTarball {
-        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.1/app-ubuntu-latest.tar.gz";
-        sha256 = "sha256-UPgVP/gFD1Bbqd55zEXhqlyRCM+07ZeO2lgM8f/L08M=";
+        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.2/app-ubuntu-latest.tar.gz";
+        sha256 = "049wkkb2smwa2nhf7m1x88q8p8cl4rra091lwddfcqvm6l72mi3k";
       };
       cli =
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "cli";
-          version = "1.0.1";
+          version = "1.0.2";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.1";
-            hash = "sha256-fpNKfAn9sTNWQL8tYDaWj9E68+OeFVSnFdhv+Vyyems=";
+            rev = "v1.0.2";
+            hash = "sha256-egD3Xh6RBhboQSEpKCpiUezJi48OX+lf6zfvh1seAko=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -39,7 +39,7 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-HVPjujAtCyYjSDcOICyvac3oDWqbNCVcvg3IdUsPg5o=";
+            hash = "sha256-1fdaNDP1cxYrWS0mq/NtmIljrhGj1kd+cwEi3CpHrSc=";
             pnpm = pkgs.pnpm_9;
           };
           buildPhase = ''
@@ -81,7 +81,7 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "desktop";
-          version = "1.0.1";
+          version = "1.0.2";
           src = desktopSrc;
           installPhase = ''
             runHook preInstall
@@ -108,13 +108,13 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "hub";
-          version = "1.0.1";
+          version = "1.0.2";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.1";
-            hash = "sha256-fpNKfAn9sTNWQL8tYDaWj9E68+OeFVSnFdhv+Vyyems=";
+            rev = "v1.0.2";
+            hash = "sha256-egD3Xh6RBhboQSEpKCpiUezJi48OX+lf6zfvh1seAko=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -125,7 +125,7 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-HVPjujAtCyYjSDcOICyvac3oDWqbNCVcvg3IdUsPg5o=";
+            hash = "sha256-1fdaNDP1cxYrWS0mq/NtmIljrhGj1kd+cwEi3CpHrSc=";
             pnpm = pkgs.pnpm_9;
           };
           buildPhase = ''
@@ -158,6 +158,62 @@
             license = pkgs.lib.licenses.mit;
           };
         });
+
+      voicevox_connector =
+        pkgs:
+        pkgs.stdenv.mkDerivation (finalAttrs: {
+          pname = "voicevox_connector";
+          version = "1.0.2";
+
+          src = pkgs.fetchFromGitHub {
+            owner = "boxfish-jp";
+            repo = "streamingkit";
+            rev = "v1.0.2";
+            hash = "sha256-egD3Xh6RBhboQSEpKCpiUezJi48OX+lf6zfvh1seAko=";
+          };
+          nativeBuildInputs = [
+            pkgs.nodejs_24
+            pkgs.pnpm_9
+            pkgs.pnpmConfigHook
+            pkgs.turbo
+          ];
+          buildInputs = [
+            pkgs.alsa-lib
+          ];
+          pnpmDeps = pkgs.fetchPnpmDeps {
+            inherit (finalAttrs) pname version src;
+            fetcherVersion = 3;
+            hash = "sha256-1fdaNDP1cxYrWS0mq/NtmIljrhGj1kd+cwEi3CpHrSc=";
+            pnpm = pkgs.pnpm_9;
+          };
+          buildPhase = ''
+            runHook preBuild
+            turbo build
+            runHook postBuild
+          '';
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/lib/$pname
+            cp -a . $out/lib/$pname
+            mkdir -p $out/bin
+
+            NODE_BIN="${pkgs.nodejs_24}/bin/node"
+
+            cat > $out/bin/$pname <<EOF
+            #!/usr/bin/env bash
+            set -euo pipefail
+            export NODE_PATH="${placeholder "out"}/lib/voicevox_connector/node_modules"
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.alsa-lib ]}"
+            exec "$NODE_BIN" "${placeholder "out"}/lib/voicevox_connector/apps/voicevox_connector/dist/index.js" "\$@"
+            EOF
+            chmod +x $out/bin/$pname
+            runHook postInstall
+          '';
+          meta = {
+            description = "配信ツールのVOICEVOX TTSコネクタ";
+            license = pkgs.lib.licenses.mit;
+          };
+        });
     in
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -170,6 +226,7 @@
         packages.cli = cli pkgs;
         packages.desktop = desktop pkgs;
         packages.hub = hub pkgs;
+        packages.voicevox_connector = voicevox_connector pkgs;
 
         devShells.default =
           let
@@ -194,193 +251,6 @@
       }
     )
     // {
-      homeManagerModules.streaming-kit-cli =
-        {
-          config,
-          pkgs,
-          lib,
-          ...
-        }:
-        let
-          cfg = config.programs.streaming-kit-cli;
-          cliPkg = self.packages.${pkgs.system}.cli;
-          cliBin = "${lib.getBin cfg.package}/bin/cli";
-
-          systemdExec =
-            let
-              workDirExpanded =
-                if lib.hasPrefix "~" cfg.workDir then "%h${lib.removePrefix "~" cfg.workDir}" else cfg.workDir;
-            in
-            "${cliBin} run ${lib.escapeShellArg workDirExpanded} ${lib.escapeShellArg cfg.serverUrl}";
-        in
-        {
-          options.programs.streaming-kit-cli = {
-            enable = lib.mkEnableOption "cli";
-
-            package = lib.mkOption {
-              type = lib.types.package;
-              default = cliPkg;
-              description = "使用する streaming-kit-cli パッケージ。";
-            };
-
-            workDir = lib.mkOption {
-              type = lib.types.str;
-              default = "~/dev";
-              example = "/home/user/projects/streaming";
-              description = "作業ディレクトリ（systemd 実行時の第1引数）。";
-            };
-
-            serverUrl = lib.mkOption {
-              type = lib.types.str;
-              default = "http://192.168.68.11:8888";
-              example = "http://localhost:8080";
-              description = "サーバーのURL（systemd 実行時の第2引数）。";
-            };
-
-            systemd.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "systemd ユーザーサービスとして自動起動する。";
-            };
-
-            systemd.serviceName = lib.mkOption {
-              type = lib.types.str;
-              default = "streaming-kit-cli";
-              description = "systemd サービス名。";
-            };
-          };
-
-          config = lib.mkIf cfg.enable {
-            home.packages = [ cfg.package ];
-
-            systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
-              Unit = {
-                Description = "Streaming Kit CLI Service";
-                After = [ "network.target" ];
-                Wants = [ "network-online.target" ];
-              };
-              Service = {
-                Type = "simple";
-                ExecStart = systemdExec;
-                Restart = "on-failure";
-                RestartSec = "5s";
-                WorkingDirectory = "%h";
-              };
-              Install.WantedBy = [ "default.target" ];
-            };
-          };
-        };
-      homeManagerModules.streaming-kit-desktop =
-        {
-          config,
-          pkgs,
-          lib,
-          ...
-        }:
-        let
-          cfg = config.programs.streaming-kit-desktop;
-          desktopPkg = self.packages.${pkgs.system}.desktop;
-          desktopBin = "${lib.getBin cfg.package}/bin/desktop";
-
-          systemdExec = desktopBin;
-        in
-        {
-          options.programs.streaming-kit-desktop = {
-            enable = lib.mkEnableOption "desktop";
-
-            package = lib.mkOption {
-              type = lib.types.package;
-              default = desktopPkg;
-              description = "使用する streaming-kit-desktop パッケージ。";
-            };
-
-            systemd.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "systemd ユーザーサービスとして自動起動する。";
-            };
-
-            systemd.serviceName = lib.mkOption {
-              type = lib.types.str;
-              default = "streaming-kit-desktop";
-              description = "systemd サービス名。";
-            };
-          };
-
-          config = lib.mkIf cfg.enable {
-            home.packages = [ cfg.package ];
-
-            systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
-              Unit = {
-                Description = "Streaming Kit Desktop App Service";
-                After = [ "network.target" ];
-                Wants = [ "network-online.target" ];
-              };
-              Service = {
-                Type = "simple";
-                ExecStart = systemdExec;
-                Restart = "on-failure";
-                RestartSec = "5s";
-                WorkingDirectory = "%h";
-              };
-              Install.WantedBy = [ "default.target" ];
-            };
-          };
-        };
-      homeManagerModules.streaming-kit-hub =
-        {
-          config,
-          pkgs,
-          lib,
-          ...
-        }:
-        let
-          cfg = config.programs.streaming-kit-hub;
-          hubPkg = self.packages.${pkgs.system}.hub;
-          hubBin = "${lib.getBin cfg.package}/bin/hub";
-        in
-        {
-          options.programs.streaming-kit-hub = {
-            enable = lib.mkEnableOption "hub";
-
-            package = lib.mkOption {
-              type = lib.types.package;
-              default = hubPkg;
-              description = "使用する streaming-kit-hub パッケージ。";
-            };
-
-            systemd.enable = lib.mkOption {
-              type = lib.types.bool;
-              default = false;
-              description = "systemd ユーザーサービスとして自動起動する。";
-            };
-
-            systemd.serviceName = lib.mkOption {
-              type = lib.types.str;
-              default = "streaming-kit-hub";
-              description = "systemd サービス名。";
-            };
-          };
-
-          config = lib.mkIf cfg.enable {
-            home.packages = [ cfg.package ];
-
-            systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
-              Unit = {
-                Description = "Streaming Kit Hub Server";
-                After = [ "network.target" ];
-                Wants = [ "network-online.target" ];
-              };
-              Service = {
-                Type = "simple";
-                ExecStart = hubBin;
-                Restart = "on-failure";
-                RestartSec = "5s";
-                WorkingDirectory = "%h";
-              };
-              Install.WantedBy = [ "default.target" ];
-            };
-          };
-        };
+      homeManagerModules = import ./nix/home-modules.nix { inherit self; };
     };
 }
