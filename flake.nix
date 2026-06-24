@@ -250,5 +250,7 @@
           };
       }
     )
-    // (import ./nix/home-modules.nix { inherit self; });
+    // {
+      homeManagerModules = import ./nix/home-modules.nix { inherit self; };
+    };
 }
