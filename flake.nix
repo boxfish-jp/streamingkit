@@ -103,6 +103,61 @@
             license = pkgs.lib.licenses.mit;
           };
         });
+
+      hub =
+        pkgs:
+        pkgs.stdenv.mkDerivation (finalAttrs: {
+          pname = "hub";
+          version = "1.0.1";
+
+          src = pkgs.fetchFromGitHub {
+            owner = "boxfish-jp";
+            repo = "streamingkit";
+            rev = "v1.0.1";
+            hash = "sha256-fpNKfAn9sTNWQL8tYDaWj9E68+OeFVSnFdhv+Vyyems=";
+          };
+          nativeBuildInputs = [
+            pkgs.nodejs_24
+            pkgs.pnpm_9
+            pkgs.pnpmConfigHook
+            pkgs.turbo
+          ];
+          pnpmDeps = pkgs.fetchPnpmDeps {
+            inherit (finalAttrs) pname version src;
+            fetcherVersion = 3;
+            hash = "sha256-HVPjujAtCyYjSDcOICyvac3oDWqbNCVcvg3IdUsPg5o=";
+            pnpm = pkgs.pnpm_9;
+          };
+          buildPhase = ''
+            runHook preBuild
+            turbo build
+            runHook postBuild
+          '';
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/lib/$pname
+            cp -a . $out/lib/$pname
+            mkdir -p $out/lib/$pname/apps/hub/static
+            cp -r apps/effect/dist/* $out/lib/$pname/apps/hub/static/
+            cp -r apps/todo_viewer/dist/* $out/lib/$pname/apps/hub/static/
+            mkdir -p $out/bin
+
+            NODE_BIN="${pkgs.nodejs_24}/bin/node"
+
+            cat > $out/bin/$pname <<EOF
+            #!/usr/bin/env bash
+            set -euo pipefail
+            export NODE_PATH="${placeholder "out"}/lib/hub/node_modules"
+            exec "$NODE_BIN" "${placeholder "out"}/lib/hub/apps/hub/dist/index.js" "\$@"
+            EOF
+            chmod +x $out/bin/$pname
+            runHook postInstall
+          '';
+          meta = {
+            description = "配信ツールのWebSocketハブサーバー";
+            license = pkgs.lib.licenses.mit;
+          };
+        });
     in
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -114,6 +169,7 @@
         packages.default = cli pkgs;
         packages.cli = cli pkgs;
         packages.desktop = desktop pkgs;
+        packages.hub = hub pkgs;
 
         devShells.default =
           let
@@ -263,6 +319,61 @@
               Service = {
                 Type = "simple";
                 ExecStart = systemdExec;
+                Restart = "on-failure";
+                RestartSec = "5s";
+                WorkingDirectory = "%h";
+              };
+              Install.WantedBy = [ "default.target" ];
+            };
+          };
+        };
+      homeManagerModules.streaming-kit-hub =
+        {
+          config,
+          pkgs,
+          lib,
+          ...
+        }:
+        let
+          cfg = config.programs.streaming-kit-hub;
+          hubPkg = self.packages.${pkgs.system}.hub;
+          hubBin = "${lib.getBin cfg.package}/bin/hub";
+        in
+        {
+          options.programs.streaming-kit-hub = {
+            enable = lib.mkEnableOption "hub";
+
+            package = lib.mkOption {
+              type = lib.types.package;
+              default = hubPkg;
+              description = "使用する streaming-kit-hub パッケージ。";
+            };
+
+            systemd.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "systemd ユーザーサービスとして自動起動する。";
+            };
+
+            systemd.serviceName = lib.mkOption {
+              type = lib.types.str;
+              default = "streaming-kit-hub";
+              description = "systemd サービス名。";
+            };
+          };
+
+          config = lib.mkIf cfg.enable {
+            home.packages = [ cfg.package ];
+
+            systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
+              Unit = {
+                Description = "Streaming Kit Hub Server";
+                After = [ "network.target" ];
+                Wants = [ "network-online.target" ];
+              };
+              Service = {
+                Type = "simple";
+                ExecStart = hubBin;
                 Restart = "on-failure";
                 RestartSec = "5s";
                 WorkingDirectory = "%h";
