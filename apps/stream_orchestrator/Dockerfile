@@ -35,4 +35,5 @@ WORKDIR /app/apps/stream_orchestrator
 #COPY --from=builder /app/ .
 #WORKDIR /app/apps/stream_orchestrator
 #COPY --from=builder --chown=nodejs:nodejs /app ./
-CMD ["node", "--env-file=../../.env", "dist/index.js"]
+ENTRYPOINT ["node", "--env-file=../../.env", "dist/index.js"]
+CMD []

@@ -13,6 +13,7 @@ services:
       context: .
       dockerfile: apps/stream_orchestrator/Dockerfile
     container_name: stream_orchestrator
+    command: ["http://192.168.68.16:8888"]
     environment:
       - PUID=1000
       - PGID=1000

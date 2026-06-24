@@ -38,7 +38,7 @@ const main = async () => {
   streaming.startPooling();
   const commands = await getCommands();
   const socketClient = new SocketClient();
-  socketClient.setServerUrl("http://hub:8888");
+  socketClient.setServerUrl(process.argv[2] ?? "http://hub:8888");
   //socketClient.connect();
   socketClient.on("connect", () => {
     console.log("ハブと接続しました");
