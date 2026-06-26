@@ -224,6 +224,18 @@
           default = "streaming-kit-voicevox-connector";
           description = "systemd サービス名。";
         };
+
+        voicevoxUrls = lib.mkOption {
+          type = lib.types.str;
+          default = "http://127.0.0.1:50021";
+          description = "VoiceVox サーバーのURL（カンマ区切り、前方優先）。";
+        };
+
+        pingIntervalMs = lib.mkOption {
+          type = lib.types.ints.positive;
+          default = 30000;
+          description = "ヘルスチェック ping の間隔（ミリ秒）。";
+        };
       };
 
       config = lib.mkIf cfg.enable {
@@ -238,6 +250,10 @@
           Service = {
             Type = "simple";
             ExecStart = voicevoxConnectorBin;
+            Environment = [
+              "VOICEVOX_URLS=${cfg.voicevoxUrls}"
+              "VOICEVOX_PING_INTERVAL_MS=${toString cfg.pingIntervalMs}"
+            ];
             Restart = "on-failure";
             RestartSec = "5s";
             WorkingDirectory = "%h";

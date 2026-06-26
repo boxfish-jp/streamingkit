@@ -49,6 +49,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Tokyo
+      # VOICEVOX_URLS=http://voicevox1:50021,http://voicevox2:50021
+      # VOICEVOX_PING_INTERVAL_MS=30000
     ports:
       - "50020:50020"
     shm_size: "1gb"

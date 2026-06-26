@@ -2,11 +2,30 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import type { SynthesizedMessage } from "kit_models";
 import { SocketClient } from "socket_client";
+import { ServerPool } from "./server_pool.js";
 
-const VOICEVOX_URL = "http://0.0.0.0:50021";
-const PORT = 50020;
+const VOICEVOX_URLS = (process.env.VOICEVOX_URLS || "http://0.0.0.0:50021")
+  .split(",")
+  .map((s) => s.trim());
+const PING_INTERVAL = Number(process.env.VOICEVOX_PING_INTERVAL_MS) || 30000;
+
+const pool = new ServerPool(VOICEVOX_URLS, PING_INTERVAL);
 
 const app = new Hono();
+const PORT = 50020;
+serve(
+  {
+    fetch: app.fetch,
+    hostname: "0.0.0.0",
+    port: PORT,
+  },
+  (info) => {
+    console.log(
+      `voicevox_connector running on http://${info.address}:${info.port}`,
+    );
+  },
+);
+
 const socket = SocketClient.instance();
 socket.connect();
 
@@ -22,52 +41,60 @@ app.post("/", async (c) => {
   const channel = Number(channelStr);
   const character = Number(characterStr);
 
-  const audioQueryUrl = new URL(`${VOICEVOX_URL}/audio_query`);
-  audioQueryUrl.searchParams.set("text", text);
-  audioQueryUrl.searchParams.set("speaker", String(character));
-
-  const audioQueryRes = await fetch(audioQueryUrl, { method: "POST" });
-  if (!audioQueryRes.ok) {
-    return c.text(`VoiceVox audio_query failed: ${audioQueryRes.status}`, 502);
-  }
-  const audioQuery = await audioQueryRes.json();
-
-  const synthesisUrl = new URL(`${VOICEVOX_URL}/synthesis`);
-  synthesisUrl.searchParams.set("speaker", String(character));
-
-  const synthesisRes = await fetch(synthesisUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(audioQuery),
-  });
-  if (!synthesisRes.ok) {
-    return c.text(`VoiceVox synthesis failed: ${synthesisRes.status}`, 502);
+  const aliveServers = pool.getAliveServers();
+  if (aliveServers.length === 0) {
+    return c.text("No alive VoiceVox servers available", 503);
   }
 
-  const arrayBuffer = await synthesisRes.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  for (const serverUrl of aliveServers) {
+    try {
+      const audioQueryUrl = new URL(`${serverUrl}/audio_query`);
+      audioQueryUrl.searchParams.set("text", text);
+      audioQueryUrl.searchParams.set("speaker", String(character));
 
-  const message: SynthesizedMessage = {
-    type: "synthesized",
-    buffer,
-    channel,
-  };
-  socket.emitMessage(message);
+      const audioQueryRes = await fetch(audioQueryUrl, { method: "POST" });
+      if (!audioQueryRes.ok) {
+        console.warn(
+          `[VoiceVox] audio_query failed on ${serverUrl}: ${audioQueryRes.status}`,
+        );
+        pool.markDead(serverUrl);
+        continue;
+      }
+      const audioQuery = await audioQueryRes.json();
 
-  return c.body(arrayBuffer, 200, {
-    "Content-Type": "audio/wav",
-  });
+      const synthesisUrl = new URL(`${serverUrl}/synthesis`);
+      synthesisUrl.searchParams.set("speaker", String(character));
+
+      const synthesisRes = await fetch(synthesisUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(audioQuery),
+      });
+
+      if (!synthesisRes.ok) {
+        console.warn(
+          `[VoiceVox] synthesis failed on ${serverUrl}: ${synthesisRes.status}`,
+        );
+        pool.markDead(serverUrl);
+        continue;
+      }
+
+      const arrayBuffer = await synthesisRes.arrayBuffer();
+
+      socket.emitMessage({
+        type: "synthesized",
+        buffer: Buffer.from(arrayBuffer),
+        channel,
+      } as SynthesizedMessage);
+
+      return c.body(arrayBuffer, 200, {
+        "Content-Type": "audio/wav",
+      });
+    } catch (err) {
+      console.error(`[VoiceVox] request error on ${serverUrl}:`, err);
+      pool.markDead(serverUrl);
+    }
+  }
+
+  return c.text("All VoiceVox servers failed", 502);
 });
-
-serve(
-  {
-    fetch: app.fetch,
-    hostname: "0.0.0.0",
-    port: PORT,
-  },
-  (info) => {
-    console.log(
-      `voicevox_connector running on http://${info.address}:${info.port}`,
-    );
-  },
-);
