@@ -15,20 +15,20 @@
     }:
     let
       desktopSrc = builtins.fetchTarball {
-        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.2/app-ubuntu-latest.tar.gz";
-        sha256 = "049wkkb2smwa2nhf7m1x88q8p8cl4rra091lwddfcqvm6l72mi3k";
+        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.3/app-ubuntu-latest.tar.gz";
+        sha256 = "1h1swx3yad3hjfphh5651bl6nba0hn7ignn2yjgcbj958pdbrd8r";
       };
       cli =
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "cli";
-          version = "1.0.2";
+          version = "1.0.3";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.2";
-            hash = "sha256-egD3Xh6RBhboQSEpKCpiUezJi48OX+lf6zfvh1seAko=";
+            rev = "v1.0.3";
+            hash = "sha256-4MZHE1g7Fh9r5hjqnHK0TP4I79A4hMlRJb3Km9qrPyk=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -81,7 +81,7 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "desktop";
-          version = "1.0.2";
+          version = "1.0.3";
           src = desktopSrc;
           installPhase = ''
             runHook preInstall
@@ -108,13 +108,13 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "hub";
-          version = "1.0.2";
+          version = "1.0.3";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.2";
-            hash = "sha256-egD3Xh6RBhboQSEpKCpiUezJi48OX+lf6zfvh1seAko=";
+            rev = "v1.0.3";
+            hash = "sha256-4MZHE1g7Fh9r5hjqnHK0TP4I79A4hMlRJb3Km9qrPyk=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -166,13 +166,13 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "voicevox_connector";
-          version = "1.0.2";
+          version = "1.0.3";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.2";
-            hash = "sha256-egD3Xh6RBhboQSEpKCpiUezJi48OX+lf6zfvh1seAko=";
+            rev = "v1.0.3";
+            hash = "sha256-4MZHE1g7Fh9r5hjqnHK0TP4I79A4hMlRJb3Km9qrPyk=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
