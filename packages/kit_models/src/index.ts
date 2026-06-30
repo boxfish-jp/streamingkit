@@ -1,3 +1,4 @@
+export * from "./anime_info.js";
 export * from "./bus.js";
 export * from "./command.js";
 export * from "./comment.js";

@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "todo_viewer": "pnpm -C apps/todo_viewer",
+    "anime_viewer": "pnpm -C apps/anime_viewer",
+    "anime_extension": "pnpm -C apps/anime_extension",
     "hub": "pnpm -C apps/hub",
     "cli": "pnpm -C apps/cli",
     "orchest": "pnpm -C apps/stream_orchestrator",

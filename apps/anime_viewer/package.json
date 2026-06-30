@@ -1,0 +1,29 @@
+{
+  "name": "anime_viewer",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:title && npm run build:progress && mv dist/title/anime-title.html dist/anime-title.html && mv dist/progress/anime-progress.html dist/anime-progress.html && rm -r dist/title dist/progress",
+    "build:title": "PAGE=title vite build",
+    "build:progress": "PAGE=progress vite build",
+    "typecheck": "tsc -b --noEmit",
+    "clean": "rm -rf dist node_modules .turbo"
+  },
+  "dependencies": {
+    "socket_client": "workspace:*",
+    "kit_models": "workspace:*",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.1.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}

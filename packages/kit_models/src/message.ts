@@ -1,3 +1,4 @@
+import type { AnimeInfoMessage } from "./anime_info.js";
 import type { CommentMessage } from "./comment.js";
 import type { ConnectionMessage } from "./connection.js";
 import type {
@@ -17,6 +18,7 @@ import type { VideoMessage } from "./video.js";
 import type { viewerCountMessage } from "./viewer_count.js";
 
 export type Message =
+  | AnimeInfoMessage
   | CommentMessage
   | StreamInfoMessage
   | SynthesizedMessage
