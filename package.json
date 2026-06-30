@@ -21,7 +21,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@11.8.0",
+  "packageManager": "pnpm@11.1.2",
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
     "turbo": "^2.7.2",
