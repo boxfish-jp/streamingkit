@@ -15,34 +15,34 @@
     }:
     let
       desktopSrc = builtins.fetchTarball {
-        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.6/app-ubuntu-latest.tar.gz";
-        sha256 = "04iivfmqcwf3q9k7bqcnf95l8rlk8qh8dyk8mmd3r0ga8rcb5m1f";
+        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.10/app-ubuntu-latest.tar.gz";
+        sha256 = "0lnks24r6z9xsyna0kwn9v3vwbh4pk00pd7b8jcfd178yqpfbynl";
       };
       cli =
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "cli";
-          version = "1.0.6";
+          version = "1.0.10";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.6";
-            hash = "sha256-mT15ISCmHEs1Xq5gSzSzHUXxvoexGfFi13tGjT235vY=";
+            rev = "v1.0.10";
+            hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm_10
+            pkgs.pnpm_11
             pkgs.pnpmConfigHook
             pkgs.turbo
           ];
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-Vh0cUaILvb/A4kBVqmY2ZPqQOhrqPA7pf6NNjGt2QJk=";
-            pnpm = pkgs.pnpm_10;
+            hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
+            pnpm = pkgs.pnpm_11;
           };
-          buildPhase = ''
+	  buildPhase = ''
             runHook preBuild
             turbo prune cli --docker
             mkdir pruned && cd pruned
@@ -81,7 +81,7 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "desktop";
-          version = "1.0.6";
+          version = "1.0.10";
           src = desktopSrc;
           installPhase = ''
             runHook preInstall
@@ -108,25 +108,25 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "hub";
-          version = "1.0.6";
+          version = "1.0.10";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.6";
-            hash = "sha256-mT15ISCmHEs1Xq5gSzSzHUXxvoexGfFi13tGjT235vY=";
+            rev = "v1.0.10";
+            hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm_10
+            pkgs.pnpm_11
             pkgs.pnpmConfigHook
             pkgs.turbo
           ];
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-Vh0cUaILvb/A4kBVqmY2ZPqQOhrqPA7pf6NNjGt2QJk=";
-            pnpm = pkgs.pnpm_10;
+            hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
+            pnpm = pkgs.pnpm_11;
           };
           buildPhase = ''
             runHook preBuild
@@ -167,17 +167,17 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "voicevox_connector";
-          version = "1.0.6";
+          version = "1.0.10";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.6";
-            hash = "sha256-mT15ISCmHEs1Xq5gSzSzHUXxvoexGfFi13tGjT235vY=";
+            rev = "v1.0.10";
+            hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm_10
+            pkgs.pnpm_11
             pkgs.pnpmConfigHook
             pkgs.turbo
           ];
@@ -187,8 +187,8 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-Vh0cUaILvb/A4kBVqmY2ZPqQOhrqPA7pf6NNjGt2QJk=";
-            pnpm = pkgs.pnpm_10;
+            hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
+            pnpm = pkgs.pnpm_11;
           };
           buildPhase = ''
             runHook preBuild
@@ -239,7 +239,7 @@
               targetPkgs =
                 pkgs: with pkgs; [
                   nodejs_24
-                  pnpm_10
+                  pnpm_11
                   turbo
                   typescript-language-server
                 ];
