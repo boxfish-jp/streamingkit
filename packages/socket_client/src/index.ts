@@ -43,6 +43,7 @@ export class SocketClient extends EventEmitter<SocketClientEvent> {
     this._socket = io(this._serverUrl, {
       path: "/ws",
       parser: customParser,
+      transports: ["websocket"],
     });
 
     this._socket.on("connect", () => {
