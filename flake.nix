@@ -32,15 +32,15 @@
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm_9
+            pkgs.pnpm_10
             pkgs.pnpmConfigHook
             pkgs.turbo
           ];
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-JgEv1tyc5gZm7IICHWFDbnrX+9rRjw6HTG+2Rj+qOn0=";
-            pnpm = pkgs.pnpm_9;
+            hash = "sha256-Vh0cUaILvb/A4kBVqmY2ZPqQOhrqPA7pf6NNjGt2QJk=";
+            pnpm = pkgs.pnpm_10;
           };
           buildPhase = ''
             runHook preBuild
@@ -118,15 +118,15 @@
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm_9
+            pkgs.pnpm_10
             pkgs.pnpmConfigHook
             pkgs.turbo
           ];
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-JgEv1tyc5gZm7IICHWFDbnrX+9rRjw6HTG+2Rj+qOn0=";
-            pnpm = pkgs.pnpm_9;
+            hash = "sha256-Vh0cUaILvb/A4kBVqmY2ZPqQOhrqPA7pf6NNjGt2QJk=";
+            pnpm = pkgs.pnpm_10;
           };
           buildPhase = ''
             runHook preBuild
@@ -177,7 +177,7 @@
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm_9
+            pkgs.pnpm_10
             pkgs.pnpmConfigHook
             pkgs.turbo
           ];
@@ -187,8 +187,8 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-JgEv1tyc5gZm7IICHWFDbnrX+9rRjw6HTG+2Rj+qOn0=";
-            pnpm = pkgs.pnpm_9;
+            hash = "sha256-Vh0cUaILvb/A4kBVqmY2ZPqQOhrqPA7pf6NNjGt2QJk=";
+            pnpm = pkgs.pnpm_10;
           };
           buildPhase = ''
             runHook preBuild
@@ -239,7 +239,7 @@
               targetPkgs =
                 pkgs: with pkgs; [
                   nodejs_24
-                  pnpm_9
+                  pnpm_10
                   turbo
                   typescript-language-server
                 ];
