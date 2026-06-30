@@ -2,6 +2,12 @@ packages:
   - apps/*
   - packages/*
 
+allowBuilds:
+  '@swc/core': true
+  electron: true
+  esbuild: true
+  spawn-sync: true
+
 onlyBuiltDependencies:
   - '@swc/core'
   - electron

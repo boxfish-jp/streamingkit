@@ -20,7 +20,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.29.3",
   "dependencies": {
     "@kikurage/nicolive-api": "https://github.com/boxfish-jp/Nicolive-API/releases/download/v2.0.9/nicolive-api.tar.gz",
     "event_emitter": "workspace: *",
