@@ -15,20 +15,20 @@
     }:
     let
       desktopSrc = builtins.fetchTarball {
-        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.3/app-ubuntu-latest.tar.gz";
-        sha256 = "1h1swx3yad3hjfphh5651bl6nba0hn7ignn2yjgcbj958pdbrd8r";
+        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.6/app-ubuntu-latest.tar.gz";
+        sha256 = "04iivfmqcwf3q9k7bqcnf95l8rlk8qh8dyk8mmd3r0ga8rcb5m1f";
       };
       cli =
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "cli";
-          version = "1.0.3";
+          version = "1.0.6";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.3";
-            hash = "sha256-4MZHE1g7Fh9r5hjqnHK0TP4I79A4hMlRJb3Km9qrPyk=";
+            rev = "v1.0.6";
+            hash = "sha256-mT15ISCmHEs1Xq5gSzSzHUXxvoexGfFi13tGjT235vY=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -39,7 +39,7 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-1fdaNDP1cxYrWS0mq/NtmIljrhGj1kd+cwEi3CpHrSc=";
+            hash = "sha256-JgEv1tyc5gZm7IICHWFDbnrX+9rRjw6HTG+2Rj+qOn0=";
             pnpm = pkgs.pnpm_9;
           };
           buildPhase = ''
@@ -81,7 +81,7 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "desktop";
-          version = "1.0.3";
+          version = "1.0.6";
           src = desktopSrc;
           installPhase = ''
             runHook preInstall
@@ -108,13 +108,13 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "hub";
-          version = "1.0.3";
+          version = "1.0.6";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.3";
-            hash = "sha256-4MZHE1g7Fh9r5hjqnHK0TP4I79A4hMlRJb3Km9qrPyk=";
+            rev = "v1.0.6";
+            hash = "sha256-mT15ISCmHEs1Xq5gSzSzHUXxvoexGfFi13tGjT235vY=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -125,7 +125,7 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-1fdaNDP1cxYrWS0mq/NtmIljrhGj1kd+cwEi3CpHrSc=";
+            hash = "sha256-JgEv1tyc5gZm7IICHWFDbnrX+9rRjw6HTG+2Rj+qOn0=";
             pnpm = pkgs.pnpm_9;
           };
           buildPhase = ''
@@ -167,13 +167,13 @@
         pkgs:
         pkgs.stdenv.mkDerivation (finalAttrs: {
           pname = "voicevox_connector";
-          version = "1.0.3";
+          version = "1.0.6";
 
           src = pkgs.fetchFromGitHub {
             owner = "boxfish-jp";
             repo = "streamingkit";
-            rev = "v1.0.3";
-            hash = "sha256-4MZHE1g7Fh9r5hjqnHK0TP4I79A4hMlRJb3Km9qrPyk=";
+            rev = "v1.0.6";
+            hash = "sha256-mT15ISCmHEs1Xq5gSzSzHUXxvoexGfFi13tGjT235vY=";
           };
           nativeBuildInputs = [
             pkgs.nodejs_24
@@ -187,7 +187,7 @@
           pnpmDeps = pkgs.fetchPnpmDeps {
             inherit (finalAttrs) pname version src;
             fetcherVersion = 3;
-            hash = "sha256-1fdaNDP1cxYrWS0mq/NtmIljrhGj1kd+cwEi3CpHrSc=";
+            hash = "sha256-JgEv1tyc5gZm7IICHWFDbnrX+9rRjw6HTG+2Rj+qOn0=";
             pnpm = pkgs.pnpm_9;
           };
           buildPhase = ''
