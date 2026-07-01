@@ -16,7 +16,6 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = pnpmDeps;
   buildPhase = ''
     runHook preBuild
-    pnpm install --frozen-lockfile
     turbo build --filter=voicevox_connector
     runHook postBuild
   '';

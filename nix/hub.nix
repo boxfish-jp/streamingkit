@@ -16,7 +16,6 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = pnpmDeps;
   buildPhase = ''
     runHook preBuild
-    pnpm install --frozen-lockfile
     turbo build --filter=hub --filter=effect --filter=todo_viewer --filter=anime_viewer
     runHook postBuild
   '';
