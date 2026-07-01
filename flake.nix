@@ -13,245 +13,76 @@
       flake-utils,
       ...
     }:
-    let
-      desktopSrc = builtins.fetchTarball {
-        url = "https://github.com/boxfish-jp/streamingkit/releases/download/v1.0.10/app-ubuntu-latest.tar.gz";
-        sha256 = "0lnks24r6z9xsyna0kwn9v3vwbh4pk00pd7b8jcfd178yqpfbynl";
-      };
-      cli =
-        pkgs:
-        pkgs.stdenv.mkDerivation (finalAttrs: {
-          pname = "cli";
-          version = "1.0.10";
-
-          src = pkgs.fetchFromGitHub {
-            owner = "boxfish-jp";
-            repo = "streamingkit";
-            rev = "v1.0.10";
-            hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
-          };
-          nativeBuildInputs = [
-            pkgs.nodejs_24
-            pkgs.pnpm_11
-            pkgs.pnpmConfigHook
-            pkgs.turbo
-          ];
-          pnpmDeps = pkgs.fetchPnpmDeps {
-            inherit (finalAttrs) pname version src;
-            fetcherVersion = 3;
-            hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
-            pnpm = pkgs.pnpm_11;
-          };
-	  buildPhase = ''
-            runHook preBuild
-            turbo prune cli --docker
-            mkdir pruned && cd pruned
-            cp -r ../out/json/. .
-            pnpm install --frozen-lockfile
-            cp -r ../out/full/. .
-            cp ../tsconfig.package-build.json ./
-            cp ../tsconfig.develop.json ./
-            turbo build
-            runHook postBuild
-          '';
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/lib/$pname
-            cp -a . $out/lib/$pname
-            mkdir -p $out/bin
-
-            NODE_BIN="${pkgs.nodejs_24}/bin/node"
-
-            cat > $out/bin/$pname <<EOF
-            #!/usr/bin/env bash
-            set -euo pipefail
-            export NODE_PATH="${placeholder "out"}/lib/cli/node_modules"
-            exec "$NODE_BIN" "${placeholder "out"}/lib/cli/apps/cli/dist/index.js" "\$@"
-            EOF
-            chmod +x $out/bin/$pname
-            runHook postInstall
-          '';
-          meta = {
-            description = "配信ツールのCLI";
-            license = pkgs.lib.licenses.mit;
-          };
-        });
-
-      desktop =
-        pkgs:
-        pkgs.stdenv.mkDerivation (finalAttrs: {
-          pname = "desktop";
-          version = "1.0.10";
-          src = desktopSrc;
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/lib/$pname
-            cp -a . $out/lib/$pname
-            mkdir -p $out/bin
-
-            cat > $out/bin/$pname <<EOF
-            #!/usr/bin/env bash
-            set -euo pipefail
-            exec "${pkgs.lib.getExe pkgs.appimage-run}" "${desktopSrc}/desktop_client-1.0.0.AppImage" "\$@"
-
-            EOF
-            chmod +x $out/bin/$pname
-            runHook postInstall
-          '';
-          meta = {
-            description = "配信ツールのデスクトップアプリ";
-            license = pkgs.lib.licenses.mit;
-          };
-        });
-
-      hub =
-        pkgs:
-        pkgs.stdenv.mkDerivation (finalAttrs: {
-          pname = "hub";
-          version = "1.0.10";
-
-          src = pkgs.fetchFromGitHub {
-            owner = "boxfish-jp";
-            repo = "streamingkit";
-            rev = "v1.0.10";
-            hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
-          };
-          nativeBuildInputs = [
-            pkgs.nodejs_24
-            pkgs.pnpm_11
-            pkgs.pnpmConfigHook
-            pkgs.turbo
-          ];
-          pnpmDeps = pkgs.fetchPnpmDeps {
-            inherit (finalAttrs) pname version src;
-            fetcherVersion = 3;
-            hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
-            pnpm = pkgs.pnpm_11;
-          };
-          buildPhase = ''
-            runHook preBuild
-            turbo build --filter=hub --filter=effect --filter=todo_viewer --filter=anime_viewer
-            runHook postBuild
-          '';
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/lib/$pname
-            cp -a . $out/lib/$pname
-            mkdir -p $out/lib/$pname/apps/hub/static
-            mkdir -p $out/lib/$pname/apps/hub/video
-            cp -r apps/effect/dist/* $out/lib/$pname/apps/hub/static/
-            cp -r apps/todo_viewer/dist/* $out/lib/$pname/apps/hub/static/
-            cp -r apps/anime_viewer/dist/* $out/lib/$pname/apps/hub/static/
-            cp -r $out/lib/hub/video/* $out/lib/$pname/apps/hub/video/
-            mkdir -p $out/bin
-
-            NODE_BIN="${pkgs.nodejs_24}/bin/node"
-
-            cat > $out/bin/$pname <<EOF
-            #!/usr/bin/env bash
-            set -euo pipefail
-            export NODE_PATH="${placeholder "out"}/lib/hub/node_modules"
-            cd "${placeholder "out"}/lib/hub/apps/hub/"
-            exec "$NODE_BIN" "./dist/index.js" "\$@"
-            EOF
-            chmod +x $out/bin/$pname
-            runHook postInstall
-          '';
-          meta = {
-            description = "配信ツールのWebSocketハブサーバー";
-            license = pkgs.lib.licenses.mit;
-          };
-        });
-
-      voicevox_connector =
-        pkgs:
-        pkgs.stdenv.mkDerivation (finalAttrs: {
-          pname = "voicevox_connector";
-          version = "1.0.10";
-
-          src = pkgs.fetchFromGitHub {
-            owner = "boxfish-jp";
-            repo = "streamingkit";
-            rev = "v1.0.10";
-            hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
-          };
-          nativeBuildInputs = [
-            pkgs.nodejs_24
-            pkgs.pnpm_11
-            pkgs.pnpmConfigHook
-            pkgs.turbo
-          ];
-          buildInputs = [
-            pkgs.alsa-lib
-          ];
-          pnpmDeps = pkgs.fetchPnpmDeps {
-            inherit (finalAttrs) pname version src;
-            fetcherVersion = 3;
-            hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
-            pnpm = pkgs.pnpm_11;
-          };
-          buildPhase = ''
-            runHook preBuild
-            turbo build
-            runHook postBuild
-          '';
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/lib/$pname
-            cp -a . $out/lib/$pname
-            mkdir -p $out/bin
-
-            NODE_BIN="${pkgs.nodejs_24}/bin/node"
-
-            cat > $out/bin/$pname <<EOF
-            #!/usr/bin/env bash
-            set -euo pipefail
-            export NODE_PATH="${placeholder "out"}/lib/voicevox_connector/node_modules"
-            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.alsa-lib ]}"
-            exec "$NODE_BIN" "${placeholder "out"}/lib/voicevox_connector/apps/voicevox_connector/dist/index.js" "\$@"
-            EOF
-            chmod +x $out/bin/$pname
-            runHook postInstall
-          '';
-          meta = {
-            description = "配信ツールのVOICEVOX TTSコネクタ";
-            license = pkgs.lib.licenses.mit;
-          };
-        });
-    in
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        pnpm = pkgs.pnpm_11;
+        node = pkgs.nodejs_24;
+        desktopSrc = fetchTarball {
+          url = "https://github.com/boxfish-jp/streamingkit/releases/download/${version}/app-ubuntu-latest.tar.gz";
+          sha256 = "0lnks24r6z9xsyna0kwn9v3vwbh4pk00pd7b8jcfd178yqpfbynl";
+        };
+        version = "1.0.10";
+        src = pkgs.fetchFromGitHub {
+          owner = "boxfish-jp";
+          repo = "streamingkit";
+          rev = "v1.0.10";
+          hash = "sha256-qEFmQZvRUa1bfxwNlh3HR9B5e/UhSKFqwmOOqvjQ3Ts=";
+        };
+        pnpmDeps = pkgs.fetchPnpmDeps {
+          pname = "streamingkit";
+          inherit version src pnpm;
+          fetcherVersion = 3;
+          hash = "sha256-5dBFlida3wtvn5iNckqmvCRdFOR+QaANBvDSRAHqlOg=";
+        };
+        nativeBuildInputs = [
+          pnpm
+          node
+          pkgs.pnpmConfigHook
+          pkgs.turbo
+        ];
       in
       {
+        packages.default = self.packages.${system}.cli;
         formatter = pkgs.nixfmt-tree;
-        packages.default = cli pkgs;
-        packages.cli = cli pkgs;
-        packages.desktop = desktop pkgs;
-        packages.hub = hub pkgs;
-        packages.voicevox_connector = voicevox_connector pkgs;
+        packages.cli = pkgs.callPackage ./nix/cli.nix {
+          inherit
+            node
+            version
+            src
+            pnpmDeps
+            nativeBuildInputs
+            ;
+        };
+        packages.desktop = pkgs.callPackage ./nix/desktop.nix {
+          inherit
+            version
+            desktopSrc
+            ;
+        };
+        packages.hub = pkgs.callPackage ./nix/hub.nix {
+          inherit
+            node
+            version
+            src
+            pnpmDeps
+            nativeBuildInputs
+            ;
+        };
 
-        devShells.default =
-          let
-            fhs = pkgs.buildFHSEnv {
-              name = "dev";
-              targetPkgs =
-                pkgs: with pkgs; [
-                  nodejs_24
-                  pnpm_11
-                  turbo
-                  typescript-language-server
-                ];
-              runScript = "bash";
-            };
-          in
-          pkgs.mkShell {
-            packages = [ fhs ];
-            shellHook = ''
-              exec ${fhs}/bin/dev
-            '';
-          };
+        packages.voicevox_connector = pkgs.callPackage ./nix/voicevox_connector.nix {
+          inherit
+            node
+            version
+            src
+            pnpmDeps
+            nativeBuildInputs
+            ;
+        };
+        devShells.default = pkgs.callPackage ./nix/devshell.nix {
+          inherit pnpm node;
+        };
       }
     )
     // {
