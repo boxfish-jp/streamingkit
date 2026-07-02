@@ -62,7 +62,7 @@ describe("education commands", () => {
     expect(commands[0].synthesize(message)).toStrictEqual({
       type: "instSynthesize",
       content: "教育コマンドの形式が間違っています",
-      tag: "comment",
+      channel: 0,
     });
     expect(commands[0].action(message)).toStrictEqual([]);
     expect(commands[1].isTarget(message)).toBe(false);
@@ -77,7 +77,7 @@ describe("education commands", () => {
     expect(commands[0].synthesize(message)).toStrictEqual({
       type: "instSynthesize",
       content: "教育コマンドの形式が間違っています",
-      tag: "comment",
+      channel: 0,
     });
     expect(commands[0].action(message)).toStrictEqual([]);
     expect(commands[1].isTarget(message)).toBe(false);
@@ -93,7 +93,7 @@ describe("education commands", () => {
     expect(commands[1].synthesize(message)).toStrictEqual({
       type: "instSynthesize",
       content: "忘却コマンドの形式が間違っています",
-      tag: "comment",
+      channel: 0,
     });
     expect(commands[1].action(message)).toStrictEqual([]);
   });
@@ -107,7 +107,7 @@ describe("education commands", () => {
     expect(commands[0].synthesize(message)).toStrictEqual({
       type: "instSynthesize",
       content: "ふぐおは天才と覚えました",
-      tag: "comment",
+      channel: 0,
     });
     expect(commands[0].action(message)).toStrictEqual([
       {
@@ -129,7 +129,7 @@ describe("education commands", () => {
     expect(commands[1].synthesize(message)).toStrictEqual({
       type: "instSynthesize",
       content: "ふぐおを忘れました",
-      tag: "comment",
+      channel: 0,
     });
     expect(commands[1].action(message)).toStrictEqual([
       {

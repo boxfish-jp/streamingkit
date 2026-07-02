@@ -53,7 +53,7 @@ describe("video commands", async () => {
         const synthesizeMessage = command.synthesize(message);
         expect(synthesizeMessage).toStrictEqual({
           type: "instSynthesize",
-          tag: "comment",
+          channel: 0,
           content: "野菜は美味しいから食べるの",
         });
         const commandMessages = command.action(message);

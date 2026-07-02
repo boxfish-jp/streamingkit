@@ -45,7 +45,7 @@ describe("spotify command", () => {
       {
         type: "instSynthesize",
         content: "urlが正しくないよ",
-        tag: "other",
+        channel: 4,
       } as InstSyntesizeMessage,
     ]);
   });
@@ -61,7 +61,7 @@ describe("spotify command", () => {
       {
         type: "instSynthesize",
         content: "urlが正しくないよ",
-        tag: "other",
+        channel: 4,
       } as InstSyntesizeMessage,
     ]);
   });
@@ -78,7 +78,7 @@ describe("spotify command", () => {
       {
         type: "instSynthesize",
         content: "urlが正しくないよ",
-        tag: "other",
+        channel: 4,
       } as InstSyntesizeMessage,
     ]);
   });
@@ -95,7 +95,7 @@ describe("spotify command", () => {
       {
         type: "instSynthesize",
         content: "playlistは未対応です",
-        tag: "other",
+        channel: 4,
       } as InstSyntesizeMessage,
     ]);
   });
@@ -111,7 +111,7 @@ describe("spotify command", () => {
       {
         type: "instSynthesize",
         content: "urlが正しくないよ",
-        tag: "other",
+        channel: 4,
       } as InstSyntesizeMessage,
     ]);
   });
