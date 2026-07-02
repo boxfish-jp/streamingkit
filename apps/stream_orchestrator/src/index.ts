@@ -10,6 +10,7 @@ import {
 import { SpotifyClient } from "./spotify.js";
 import { Streaming } from "./streaming.js";
 import { SynthesizeRunner } from "./synthesize.js";
+import { TimeSignal } from "./time_signal.js";
 import { sendCommentBothSites } from "./utils.js";
 
 const bus_evnet = new Bus();
@@ -36,6 +37,7 @@ const main = async () => {
   };
   streaming.on("onMessage", onMessage);
   streaming.startPooling();
+  new TimeSignal(() => streaming.isStreaming, onMessage);
   const commands = await getCommands();
   const socketClient = new SocketClient();
   socketClient.setServerUrl(process.argv[2] ?? "http://hub:8888");

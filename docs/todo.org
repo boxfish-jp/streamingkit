@@ -147,7 +147,15 @@ CLOSED: [2026-03-02 Mon 23:57]
 ** bot機能の充実化
 *** DONE 曲追加時にbotが反応するようにする
     CLOSED: [2026-05-21 木 00:48]
-
+** 時報の作成
+*** DONE AIと方針立て
+CLOSED: [2026-07-03 Fri 01:23]
+*** DONE 実装
+CLOSED: [2026-07-03 Fri 01:23]
+*** DONE テスト実装
+CLOSED: [2026-07-03 Fri 01:23]
+*** DONE レビュー
+CLOSED: [2026-07-03 Fri 01:23]
 * 配信ツールをYoutube Liveに対応させる
 ** Youtube Liveの仕様を調べる
 *** DONE Youtube Liveでのコメントの取得方法を調べる

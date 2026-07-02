@@ -17,6 +17,10 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   private _wasYoutubeStreaming = false;
   private _wasNicoNicoStreaming = false;
 
+  get isStreaming(): boolean {
+    return this._wasYoutubeStreaming || this._wasNicoNicoStreaming;
+  }
+
   constructor(
     nicoUserId: string,
     channelId: string,
