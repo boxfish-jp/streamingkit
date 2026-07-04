@@ -10,6 +10,18 @@ const DEFAULT_SCRIPT_SETTINGS: ScriptSetting[] = [
     enabled: false,
     defaultOff: true,
   },
+  {
+    name: "youtube",
+    site: "https://www.youtube.com/",
+    enabled: false,
+    defaultOff: true,
+  },
+  {
+    name: "nicovideo",
+    site: "https://www.nicovideo.jp/",
+    enabled: false,
+    defaultOff: true,
+  },
 ];
 
 function App() {
