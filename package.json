@@ -15,13 +15,14 @@
     "voicevox": "pnpm -C apps/voicevox_connector",
     "build": "turbo build",
     "dev": "turbo dev",
+    "postinstall": "turbo build --filter=./packages/socket_client",
     "clean": "turbo clean && rm -rf node_modules .turbo",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@11.1.2",
+  "packageManager": "pnpm@11.9.0",
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
     "turbo": "^2.7.2",
