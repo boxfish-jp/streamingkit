@@ -15,14 +15,7 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = pnpmDeps;
   buildPhase = ''
     runHook preBuild
-    turbo prune cli --docker
-    mkdir pruned && cd pruned
-    cp -r ../out/json/. .
-    pnpm install --frozen-lockfile
-    cp -r ../out/full/. .
-    cp ../tsconfig.package-build.json ./
-    cp ../tsconfig.develop.json ./
-    turbo build
+    turbo build --filter=cli
     runHook postBuild
   '';
   installPhase = ''
