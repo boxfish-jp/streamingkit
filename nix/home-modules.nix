@@ -62,17 +62,24 @@
         systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
           Unit = {
             Description = "Streaming Kit CLI Service";
-            After = [ "network.target" ];
-            Wants = [ "network-online.target" ];
+            After = [
+              "graphical-session.target"
+              "network.target"
+            ];
+            Wants = [
+              "graphical-session.target"
+              "network-online.target"
+            ];
           };
           Service = {
             Type = "simple";
             ExecStart = systemdExec;
+            TimeoutStartSec = "15s";
             Restart = "on-failure";
-            RestartSec = "5s";
+            RestartSec = "30s";
             WorkingDirectory = "%h";
           };
-          Install.WantedBy = [ "default.target" ];
+          Install.WantedBy = [ "graphical-session.target" ];
         };
       };
     };
@@ -120,17 +127,24 @@
         systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
           Unit = {
             Description = "Streaming Kit Desktop App Service";
-            After = [ "network.target" ];
-            Wants = [ "network-online.target" ];
+            After = [
+              "graphical-session.target"
+              "network.target"
+            ];
+            Wants = [
+              "graphical-session.target"
+              "network-online.target"
+            ];
           };
           Service = {
             Type = "simple";
             ExecStart = systemdExec;
+            TimeoutStartSec = "15s";
             Restart = "on-failure";
-            RestartSec = "5s";
+            RestartSec = "30s";
             WorkingDirectory = "%h";
           };
-          Install.WantedBy = [ "default.target" ];
+          Install.WantedBy = [ "graphical-session.target" ];
         };
       };
     };
@@ -176,17 +190,24 @@
         systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
           Unit = {
             Description = "Streaming Kit Hub Server";
-            After = [ "network.target" ];
-            Wants = [ "network-online.target" ];
+            After = [
+              "graphical-session.target"
+              "network.target"
+            ];
+            Wants = [
+              "graphical-session.target"
+              "network-online.target"
+            ];
           };
           Service = {
             Type = "simple";
             ExecStart = hubBin;
+            TimeoutStartSec = "15s";
             Restart = "on-failure";
-            RestartSec = "5s";
+            RestartSec = "30s";
             WorkingDirectory = "%h";
           };
-          Install.WantedBy = [ "default.target" ];
+          Install.WantedBy = [ "graphical-session.target" ];
         };
       };
     };
@@ -244,8 +265,14 @@
         systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
           Unit = {
             Description = "Streaming Kit VoiceVox Connector";
-            After = [ "network.target" ];
-            Wants = [ "network-online.target" ];
+            After = [
+              "graphical-session.target"
+              "network.target"
+            ];
+            Wants = [
+              "graphical-session.target"
+              "network-online.target"
+            ];
           };
           Service = {
             Type = "simple";
@@ -254,11 +281,12 @@
               "VOICEVOX_URLS=${cfg.voicevoxUrls}"
               "VOICEVOX_PING_INTERVAL_MS=${toString cfg.pingIntervalMs}"
             ];
+            TimeoutStartSec = "15s";
             Restart = "on-failure";
-            RestartSec = "5s";
+            RestartSec = "30s";
             WorkingDirectory = "%h";
           };
-          Install.WantedBy = [ "default.target" ];
+          Install.WantedBy = [ "graphical-session.target" ];
         };
       };
     };
