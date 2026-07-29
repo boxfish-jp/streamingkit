@@ -17,6 +17,7 @@ interface CheckStreamInfoMessages {
 export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   private _streamId: number | undefined = undefined; // 生放送IDのうち、lv以降の数字
   private _userId: string; // ニコニコのuserId
+  private _headlessBrowserUrl: string;
   private _poolingId: NodeJS.Timeout | undefined = undefined;
   private _stopListen: (() => void) | null = null;
   private _viewers = 0;
@@ -24,9 +25,10 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   private _vposBaseTime: number | null = null;
   private _wasStarted = false;
 
-  constructor(userId: string) {
+  constructor(userId: string, headlessBrowserUrl: string) {
     super();
     this._userId = userId;
+    this._headlessBrowserUrl = headlessBrowserUrl;
   }
 
   private _setStreamId(stringId: string) {
@@ -174,7 +176,7 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
     vposBaseTime: number;
   }> {
     try {
-      const response = await fetch("http://192.168.68.15:3000");
+      const response = await fetch(this._headlessBrowserUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch headless browser: ${response.status}`);
       }

@@ -25,10 +25,11 @@ export class Streaming extends EventEmitter<StreamingMessage> {
     nicoUserId: string,
     channelId: string,
     nightbotClient: NightbotClient,
+    headlessBrowserUrl: string,
   ) {
     super();
     this._nightbotClient = nightbotClient;
-    this._nicoNicoClient = new NicoNicoClient(nicoUserId);
+    this._nicoNicoClient = new NicoNicoClient(nicoUserId, headlessBrowserUrl);
     this._nicoNicoClient.on("message", (message) => {
       this.emit("onMessage", message);
     });

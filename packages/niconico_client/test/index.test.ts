@@ -2,10 +2,12 @@ import type { Message } from "kit_models";
 import { describe, expect, test } from "vitest";
 import { NicoNicoClient } from "../src/index.js";
 
+const HEADLESS_BROWSER_URL = "http://192.168.68.15:3000";
+
 describe("listenComment", () => {
   describe("start:", () => {
     test("無効な生放送IDを入れるとエラーが出る", async () => {
-      const listenComment = new NicoNicoClient("");
+      const listenComment = new NicoNicoClient("", HEADLESS_BROWSER_URL);
       const callback = (message: Message) => {
         if (message.type !== "error") {
           throw new Error("Expected an error message");
@@ -26,13 +28,13 @@ describe("listenComment", () => {
       );
       const id = response.headers.get("x-nicolive-content-id");
       expect(id).toBeDefined();
-      const client = new NicoNicoClient("70969122");
+      const client = new NicoNicoClient("70969122", HEADLESS_BROWSER_URL);
       const streamingId = await client.getStreamingId();
       expect(streamingId).toBe(id);
     });
 
     test("配信していないときはnullが返る", async () => {
-      const client = new NicoNicoClient("51801260");
+      const client = new NicoNicoClient("51801260", HEADLESS_BROWSER_URL);
       const streamingId = await client.getStreamingId();
       expect(streamingId).toBe(null);
     });
@@ -50,7 +52,7 @@ describe("listenComment", () => {
     });
 
     test("onError: no status", async () => {
-      const streamInfo = new NicoNicoClient("0");
+      const streamInfo = new NicoNicoClient("0", HEADLESS_BROWSER_URL);
       try {
         await streamInfo.getStreamingId();
         throw new Error("Expected getStreamingId to throw an error");
@@ -64,13 +66,13 @@ describe("listenComment", () => {
 
   describe("isStreaming:", () => {
     test("true", async () => {
-      const streamInfo = new NicoNicoClient("70969122");
+      const streamInfo = new NicoNicoClient("70969122", HEADLESS_BROWSER_URL);
       await streamInfo.getStreamingId();
       expect(streamInfo.isStreaming).toBe(true);
     });
 
     test("false", async () => {
-      const streamInfo = new NicoNicoClient("51801260");
+      const streamInfo = new NicoNicoClient("51801260", HEADLESS_BROWSER_URL);
       await streamInfo.getStreamingId();
       expect(streamInfo.isStreaming).toBe(false);
     });
@@ -83,7 +85,7 @@ describe("listenComment", () => {
       );
       const id = response.headers.get("x-nicolive-content-id");
       expect(id).toBeDefined();
-      const streamInfo = new NicoNicoClient("70969122");
+      const streamInfo = new NicoNicoClient("70969122", HEADLESS_BROWSER_URL);
       await streamInfo.getStreamingId();
       expect(streamInfo.streamLv).toBe(id);
       expect(streamInfo.streamUrl).toBe(
@@ -95,7 +97,7 @@ describe("listenComment", () => {
 
   describe("getWebSocketInfo", () => {
     test("配信しているときはurlとvposBaseTimeが返る", async () => {
-      const client = new NicoNicoClient("");
+      const client = new NicoNicoClient("", HEADLESS_BROWSER_URL);
       const info = await client.getWebSocketInfo();
       expect(!!info.vposBaseTime).toBe(true);
       expect(!!info.url).toBe(true);

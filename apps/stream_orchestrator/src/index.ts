@@ -22,6 +22,9 @@ const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
 const nightbotClientSecret = process.env.NIGHTBOT_CLIENT_SECRET || "";
+const tokenDbPath = process.env.TOKEN_DB_PATH || "./data/tokens.db";
+const headlessBrowserUrl =
+  process.env.NICONICO_HEADLESS_BROWSER_URL || "http://192.168.68.15:3000";
 const youtubeChannelHandler = "@boxfish_jp";
 
 const main = async () => {
@@ -29,7 +32,7 @@ const main = async () => {
     bus_evnet.emit(message);
   };
 
-  const tokenStore = new SqliteTokenStore("./data/tokens.db");
+  const tokenStore = new SqliteTokenStore(tokenDbPath);
   const spotifyClient = new SpotifyClient(
     spotifyClientId,
     spotifyClientSecret,
@@ -48,6 +51,7 @@ const main = async () => {
     niconicofuguoID,
     youtubeChannelHandler,
     nightbotClient,
+    headlessBrowserUrl,
   );
   streaming.on("onMessage", onMessage);
   streaming.startPooling();
