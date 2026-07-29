@@ -22,13 +22,13 @@
         version = "v1.0.12";
         desktopSrc = fetchTarball {
           url = "https://github.com/boxfish-jp/streamingkit/releases/download/${version}/app-ubuntu-latest.tar.gz";
-          sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+          sha256 = "sha256:0agkg1614vx6nyppwqzdvpr8x5428s3s52zx7z5j22q36ff2xh2x";
         };
         src = pkgs.fetchFromGitHub {
           owner = "boxfish-jp";
           repo = "streamingkit";
           rev = version;
-          hash = "sha256-BFfIoAdPciXAan4moLBIzm11Cx5mYcQUBUEsOfa40U0=";
+          hash = "sha256-3cAQWfrAP6Zp9EzF1LyKyCtmI1Oc0ajHX7NgEXLIWwg=";
         };
         pnpmDeps = pkgs.fetchPnpmDeps {
           pname = "streamingkit";
