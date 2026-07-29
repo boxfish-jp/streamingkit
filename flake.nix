@@ -80,6 +80,16 @@
             nativeBuildInputs
             ;
         };
+
+        packages.stream_orchestrator = pkgs.callPackage ./nix/stream_orchestrator.nix {
+          inherit
+            node
+            version
+            src
+            pnpmDeps
+            nativeBuildInputs
+            ;
+        };
         devShells.default = pkgs.callPackage ./nix/devshell.nix {
           inherit pnpm node;
         };

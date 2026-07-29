@@ -290,4 +290,105 @@
         };
       };
     };
+
+  streaming-kit-stream-orchestrator =
+    {
+      config,
+      pkgs,
+      lib,
+      ...
+    }:
+    let
+      cfg = config.programs.streaming-kit-stream-orchestrator;
+      streamOrchestratorPkg = self.packages.${pkgs.system}.stream_orchestrator;
+      streamOrchestratorBin = "${lib.getBin cfg.package}/bin/stream_orchestrator";
+
+      systemdExec = "${streamOrchestratorBin} ${lib.escapeShellArg cfg.hubUrl}";
+
+      voicepeakWrapper = pkgs.writeShellScriptBin "voicepeak" ''
+        exec ${pkgs.steam-run-free}/bin/steam-run ${cfg.voicepeakPath} "$@"
+      '';
+    in
+    {
+      options.programs.streaming-kit-stream-orchestrator = {
+        enable = lib.mkEnableOption "stream_orchestrator";
+
+        package = lib.mkOption {
+          type = lib.types.package;
+          default = streamOrchestratorPkg;
+          description = "使用する streaming-kit-stream-orchestrator パッケージ。";
+        };
+
+        hubUrl = lib.mkOption {
+          type = lib.types.str;
+          default = "http://hub:8888";
+          example = "http://localhost:8888";
+          description = "ハブサーバーのURL（CLI引数）。";
+        };
+
+        tokenDbPath = lib.mkOption {
+          type = lib.types.str;
+          default = "/var/lib/streamingkit/tokens.db";
+          example = "/var/lib/streamingkit/tokens.db";
+          description = "トークンDBのパス。";
+        };
+
+        headlessBrowserUrl = lib.mkOption {
+          type = lib.types.str;
+          default = "http://192.168.68.15:3000";
+          description = "ニコニコヘッドレスブラウザのURL。";
+        };
+
+        voicepeakPath = lib.mkOption {
+          type = lib.types.str;
+          default = "/var/lib/streamingkit/voicepeak";
+          description = "Voicepeak 実行ファイルのパス。";
+        };
+
+        systemd.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "systemd ユーザーサービスとして自動起動する。";
+        };
+
+        systemd.serviceName = lib.mkOption {
+          type = lib.types.str;
+          default = "streaming-kit-stream-orchestrator";
+          description = "systemd サービス名。";
+        };
+      };
+
+      config = lib.mkIf cfg.enable {
+        home.packages = [ cfg.package ];
+
+        systemd.user.services.${cfg.systemd.serviceName} = lib.mkIf cfg.systemd.enable {
+          Unit = {
+            Description = "Streaming Kit Stream Orchestrator";
+            After = [
+              "graphical-session.target"
+              "network.target"
+            ];
+            Wants = [
+              "graphical-session.target"
+              "network-online.target"
+            ];
+          };
+          Service = {
+            Type = "simple";
+            ExecStart = systemdExec;
+            Environment = [
+              "TOKEN_DB_PATH=${cfg.tokenDbPath}"
+              "NICONICO_HEADLESS_BROWSER_URL=${cfg.headlessBrowserUrl}"
+              "VOICEPEAK_PATH=${voicepeakWrapper}/bin/voicepeak"
+            ];
+            EnvironmentFile = "%h/.config/streaming-kit/.env";
+            TimeoutStartSec = "15s";
+            Restart = "on-failure";
+            RestartSec = "30s";
+            WorkingDirectory = "%h";
+          };
+          Install.WantedBy = [ "graphical-session.target" ];
+        };
+      };
+    };
 }

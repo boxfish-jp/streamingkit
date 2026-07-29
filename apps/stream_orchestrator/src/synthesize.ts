@@ -9,6 +9,9 @@ interface SynthesizeRunnerMessages {
   error: [message: ErrorMessage];
 }
 
+const voicepeakPath =
+  process.env.VOICEPEAK_PATH || "/mountspace/Voicepeak/voicepeak";
+
 export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
   private _taskRunner = new TaskRunner();
 
@@ -26,7 +29,7 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
       const fileName = `${Date.now()}.wav`;
       try {
         const result = spawn(
-          "/mountspace/Voicepeak/voicepeak",
+          voicepeakPath,
           ["-s", text, "-o", fileName],
           {
             stdio: ["pipe", "pipe", "inherit"],
