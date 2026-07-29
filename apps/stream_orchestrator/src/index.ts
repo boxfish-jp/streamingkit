@@ -1,5 +1,6 @@
 import { Bus, type Message, type SendCommentMessage } from "kit_models";
 import { SocketClient } from "socket_client";
+import { SqliteTokenStore } from "token_store";
 import { applyEducation, normalizeLowerCase } from "./clean.js";
 import { getCommands } from "./command/commands.js";
 import {
@@ -7,6 +8,7 @@ import {
   getEducationConfigs,
   removeEducationConfig,
 } from "./education.js";
+import { NightbotClient } from "./nightbot.js";
 import { SpotifyClient } from "./spotify.js";
 import { Streaming } from "./streaming.js";
 import { SynthesizeRunner } from "./synthesize.js";
@@ -18,23 +20,35 @@ const cruseID = "70969122";
 const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
-const spotifyRefreshToken = process.env.SPOTIFY_REFRESH_TOKEN || "";
 const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
 const nightbotClientSecret = process.env.NIGHTBOT_CLIENT_SECRET || "";
-const nightbotRefreshToken = process.env.NIGHTBOT_REFRESH_TOKEN || "";
 const youtubeChannelHandler = "@boxfish_jp";
 
 const main = async () => {
-  const streaming = new Streaming(
-    niconicofuguoID,
-    youtubeChannelHandler,
-    nightbotClientId,
-    nightbotClientSecret,
-    nightbotRefreshToken,
-  );
   const onMessage = (message: Message) => {
     bus_evnet.emit(message);
   };
+
+  const tokenStore = new SqliteTokenStore("./data/tokens.db");
+  const spotifyClient = new SpotifyClient(
+    spotifyClientId,
+    spotifyClientSecret,
+    tokenStore,
+  );
+  spotifyClient.start();
+  spotifyClient.on("onMessage", onMessage);
+  const nightbotClient = new NightbotClient(
+    nightbotClientId,
+    nightbotClientSecret,
+    tokenStore,
+  );
+  nightbotClient.on("onMessage", onMessage);
+  nightbotClient.start();
+  const streaming = new Streaming(
+    niconicofuguoID,
+    youtubeChannelHandler,
+    nightbotClient,
+  );
   streaming.on("onMessage", onMessage);
   streaming.startPooling();
   new TimeSignal(() => streaming.isStreaming, onMessage);
@@ -54,13 +68,6 @@ const main = async () => {
   const makeAudioRunner = new SynthesizeRunner();
   makeAudioRunner.on("synthesized", onMessage);
   makeAudioRunner.on("error", onMessage);
-  const spotifyClient = new SpotifyClient(
-    spotifyClientId,
-    spotifyClientSecret,
-    spotifyRefreshToken,
-  );
-  spotifyClient.start();
-  spotifyClient.on("onMessage", onMessage);
   setInterval(() => {
     bus_evnet.emit({ type: "ping", who: "orchestrator" });
   }, 30000);
@@ -194,6 +201,9 @@ const main = async () => {
             sendCommentBothSites("bot: キューに追加しました").forEach(
               (message) => bus_evnet.emit(message),
             );
+          }
+          if (message.status === "serverNeedAuthorization" && message.message) {
+            makeAudioRunner.addQueue(message.message, 0);
           }
         }
         break;

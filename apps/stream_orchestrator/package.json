@@ -15,6 +15,7 @@
     "socket_client": "workspace:*",
     "task_runner": "workspace:*",
     "youtube_client": "workspace:*",
+    "token_store": "workspace:*",
     "niconico_client": "workspace:*"
   },
   "devDependencies": {

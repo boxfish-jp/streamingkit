@@ -2,7 +2,7 @@ import { EventEmitter } from "node:events";
 import type { Message } from "kit_models";
 import { NicoNicoClient } from "niconico_client";
 import { YoutubeClient } from "youtube_client";
-import { NightbotClient } from "./nightbot.js";
+import type { NightbotClient } from "./nightbot.js";
 
 interface StreamingMessage {
   onMessage: [message: Message];
@@ -10,7 +10,7 @@ interface StreamingMessage {
 
 export class Streaming extends EventEmitter<StreamingMessage> {
   private _poolingId: NodeJS.Timeout | undefined = undefined;
-  private _checkIsStreamingIntervalMs = 30000; // 配信しているかをポーリングする時間間隔
+  private _checkIsStreamingIntervalMs = 30000;
   private _nicoNicoClient: NicoNicoClient;
   private _youtubeClient: YoutubeClient;
   private _nightbotClient: NightbotClient;
@@ -24,23 +24,15 @@ export class Streaming extends EventEmitter<StreamingMessage> {
   constructor(
     nicoUserId: string,
     channelId: string,
-    nightbotClientId: string,
-    nightbotClientSecret: string,
-    nightbotRefreshToken: string,
+    nightbotClient: NightbotClient,
   ) {
     super();
+    this._nightbotClient = nightbotClient;
     this._nicoNicoClient = new NicoNicoClient(nicoUserId);
-    this._nightbotClient = new NightbotClient(
-      nightbotClientId,
-      nightbotClientSecret,
-      nightbotRefreshToken,
-    );
-    this._nightbotClient.start();
     this._nicoNicoClient.on("message", (message) => {
       this.emit("onMessage", message);
     });
     this._youtubeClient = new YoutubeClient(channelId);
-
     this._youtubeClient.on("onMessage", (message) => {
       this.emit("onMessage", message);
     });
@@ -115,5 +107,3 @@ export class Streaming extends EventEmitter<StreamingMessage> {
     }
   };
 }
-
-//export const streamInfo = new StreamInfo("98746932");

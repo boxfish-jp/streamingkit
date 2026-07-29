@@ -1,42 +1,21 @@
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
 import { OauthClient } from "oauth_client";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import type { TokenStore } from "token_store";
 
 export class NightbotClient extends OauthClient {
-  constructor(clientId: string, clientSecret: string, refreshToken: string) {
-    const body = new URLSearchParams();
-    body.append("grant_type", "refresh_token");
-    body.append("refresh_token", refreshToken);
-    const envFilePath = join(__dirname, "../../../.env");
-    console.log(`Loading environment variables from: ${envFilePath}`);
-
+  constructor(clientId: string, clientSecret: string, tokenStore: TokenStore) {
     super({
-      endpoint: "https://api.nightbot.tv/oauth2/token",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(
-          `${clientId}:${clientSecret}`,
-        ).toString("base64")}`,
+      tokenStore,
+      provider: "nightbot",
+      authConfig: {
+        authorizeEndpoint: "https://api.nightbot.tv/oauth2/authorize",
+        tokenEndpoint: "https://api.nightbot.tv/oauth2/token",
+        scopes: ["channel_send"],
+        callbackPort: 5000,
       },
-      saveSetting: {
-        prefix: "NIGHTBOT",
-        envFilePath: envFilePath,
-      },
-      initialRefreshToken: refreshToken,
-      body,
-      errorStatus: "serverFailedToGetSpotifyToken",
+      clientId,
+      clientSecret,
+      errorStatus: "serverFailedToGetNightbotToken",
     });
-  }
-
-  getAccessToken(): string | null {
-    return this._accessToken;
-  }
-
-  isTokenValid(): boolean {
-    return this._accessToken !== null && this._refreshToken !== null;
   }
 
   async sendComment(message: string) {

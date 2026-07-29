@@ -7,6 +7,7 @@
   typescript-language-server,
   nixd,
   nixfmt,
+  python3,
 }:
 
 let
@@ -19,6 +20,7 @@ let
       typescript-language-server
       nixd
       nixfmt
+      python3
     ];
     runScript = "bash";
   };

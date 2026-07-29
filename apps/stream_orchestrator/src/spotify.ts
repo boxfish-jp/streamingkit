@@ -1,24 +1,23 @@
 import { OauthClient } from "oauth_client";
+import type { TokenStore } from "token_store";
 
 export class SpotifyClient extends OauthClient {
-  constructor(clientId: string, clientSecret: string, refreshToken: string) {
-    const body = new URLSearchParams();
-    body.append("grant_type", "refresh_token");
-    body.append("refresh_token", refreshToken);
-
+  constructor(clientId: string, clientSecret: string, tokenStore: TokenStore) {
     super({
-      endpoint: "https://accounts.spotify.com/api/token",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(
-          `${clientId}:${clientSecret}`,
-        ).toString("base64")}`,
+      tokenStore,
+      provider: "spotify",
+      authConfig: {
+        authorizeEndpoint: "https://accounts.spotify.com/authorize",
+        tokenEndpoint: "https://accounts.spotify.com/api/token",
+        scopes: ["user-read-playback-state", "user-modify-playback-state"],
+        callbackPort: 5000,
       },
-      initialRefreshToken: refreshToken,
-      body: body,
+      clientId,
+      clientSecret,
       errorStatus: "serverFailedToGetSpotifyToken",
     });
   }
+
   async addQueue(trackUri: string): Promise<void> {
     if (!this._accessToken) {
       this.emit("onMessage", {
@@ -46,7 +45,6 @@ export class SpotifyClient extends OauthClient {
 
       const errorText = await response.text();
 
-      // よくあるエラー: デバイスが見つからない場合
       if (response.status === 404) {
         this.emit("onMessage", {
           type: "error",

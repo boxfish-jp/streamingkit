@@ -1,5 +1,5 @@
 {
-  "name": "oauth_client",
+  "name": "token_store",
   "type": "module",
   "version": "1.0.0",
   "description": "",
@@ -20,12 +20,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "kit_models": "workspace:*",
-    "token_store": "workspace:*"
+    "better-sqlite3": "^11.0.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
     "@types/node": "^25.3.3",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

@@ -15,7 +15,8 @@ export interface ErrorMessage {
     | "serverFailedToAddSpotifyQueue"
     | "serverYoutubeTokenNotFound"
     | "serverFailedToGetYoutubeToken"
-    | "serverFailedToGetYoutubeComment";
+    | "serverFailedToGetYoutubeComment"
+    | "serverFailedToGetNightbotToken";
   time: number;
   message?: string;
 }

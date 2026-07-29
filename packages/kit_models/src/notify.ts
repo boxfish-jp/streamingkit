@@ -6,5 +6,8 @@ export interface NotifyMessage {
     | "startYoutubeStreaming"
     | "startNicoNicoStreaming"
     | "endYoutubeStreaming"
-    | "endNicoNicoStreaming";
+    | "endNicoNicoStreaming"
+    | "serverNeedAuthorization";
+  time?: number;
+  message?: string;
 }
