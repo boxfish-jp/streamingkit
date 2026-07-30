@@ -4,6 +4,8 @@
   pnpmDeps,
   nativeBuildInputs,
   node,
+  node-gyp,
+  python3,
   stdenv,
   lib,
 }:
@@ -12,10 +14,19 @@ stdenv.mkDerivation (finalAttrs: {
   version = version;
 
   src = src;
-  nativeBuildInputs = nativeBuildInputs;
+  nativeBuildInputs = nativeBuildInputs ++ [
+    node-gyp
+    python3
+  ];
   pnpmDeps = pnpmDeps;
   buildPhase = ''
     runHook preBuild
+    for sqliteDir in node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3; do
+      (
+        cd "$sqliteDir"
+        node-gyp rebuild --release --nodedir=${node}
+      )
+    done
     turbo build --filter=stream_orchestrator
     runHook postBuild
   '';
@@ -31,7 +42,8 @@ stdenv.mkDerivation (finalAttrs: {
     #!/usr/bin/env bash
     set -euo pipefail
     export NODE_PATH="${placeholder "out"}/lib/stream_orchestrator/node_modules"
-    exec "$NODE_BIN" "${placeholder "out"}/lib/stream_orchestrator/apps/stream_orchestrator/dist/index.js" "\$@"
+    cd "${placeholder "out"}/lib/stream_orchestrator/apps/stream_orchestrator"
+    exec "$NODE_BIN" "./dist/index.js" "\$@"
     EOF
     chmod +x $out/bin/$pname
     runHook postInstall
