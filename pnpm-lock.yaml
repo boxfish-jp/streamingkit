@@ -321,6 +321,9 @@ importers:
 
   apps/stream_orchestrator:
     dependencies:
+      education_store:
+        specifier: workspace:*
+        version: link:../../packages/education_store
       kit_models:
         specifier: workspace:*
         version: link:../../packages/kit_models
@@ -434,6 +437,25 @@ importers:
         version: 4.22.4
       typescript:
         specifier: ^5.8.3
+        version: 5.9.3
+
+  packages/education_store:
+    dependencies:
+      better-sqlite3:
+        specifier: ^11.0.0
+        version: 11.10.0
+      kit_models:
+        specifier: workspace:*
+        version: link:../kit_models
+    devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.0
+        version: 7.6.13
+      '@types/node':
+        specifier: ^25.3.3
+        version: 25.9.4
+      typescript:
+        specifier: ^5.9.3
         version: 5.9.3
 
   packages/event_emitter:

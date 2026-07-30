@@ -333,6 +333,13 @@
           description = "トークンDBのパス。";
         };
 
+        educationDbPath = lib.mkOption {
+          type = lib.types.str;
+          default = "/var/lib/streamingkit/education.db";
+          example = "/var/lib/streamingkit/education.db";
+          description = "教育DBのパス。";
+        };
+
         headlessBrowserUrl = lib.mkOption {
           type = lib.types.str;
           default = "http://192.168.68.15:3000";
@@ -378,6 +385,7 @@
             ExecStart = systemdExec;
             Environment = [
               "TOKEN_DB_PATH=${cfg.tokenDbPath}"
+              "EDUCATION_DB_PATH=${cfg.educationDbPath}"
               "NICONICO_HEADLESS_BROWSER_URL=${cfg.headlessBrowserUrl}"
               "VOICEPEAK_PATH=${voicepeakWrapper}/bin/voicepeak"
             ];

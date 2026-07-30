@@ -19,7 +19,7 @@ services:
       - PGID=1000
       - TZ=Asia/Tokyo
     volumes:
-      - ./education.json:/app/education.json
+      - ./data/:/app/data/
       - ./.env:/app/.env
       - ./voicepeak/mountspace/:/mountspace/
       - ./video/:/app/video/

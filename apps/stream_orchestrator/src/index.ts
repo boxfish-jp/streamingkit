@@ -1,3 +1,4 @@
+import { SqliteEducationStore } from "education_store";
 import { Bus, type Message, type SendCommentMessage } from "kit_models";
 import { SocketClient } from "socket_client";
 import { SqliteTokenStore } from "token_store";
@@ -23,6 +24,7 @@ const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
 const nightbotClientSecret = process.env.NIGHTBOT_CLIENT_SECRET || "";
 const tokenDbPath = process.env.TOKEN_DB_PATH || "./data/tokens.db";
+const educationDbPath = process.env.EDUCATION_DB_PATH || "./data/education.db";
 const headlessBrowserUrl =
   process.env.NICONICO_HEADLESS_BROWSER_URL || "http://192.168.68.15:3000";
 const youtubeChannelHandler = "@boxfish_jp";
@@ -33,6 +35,7 @@ const main = async () => {
   };
 
   const tokenStore = new SqliteTokenStore(tokenDbPath);
+  const educationStore = new SqliteEducationStore(educationDbPath);
   const spotifyClient = new SpotifyClient(
     spotifyClientId,
     spotifyClientSecret,
@@ -170,18 +173,18 @@ const main = async () => {
       case "synthesized":
         break;
       case "instSynthesize": {
-        const educationConfigs = getEducationConfigs(onMessage);
+        const educationConfigs = getEducationConfigs(educationStore);
         const cleanText = applyEducation(message.content, educationConfigs);
         makeAudioRunner.addQueue(cleanText, message.channel);
         break;
       }
       case "addEducation": {
         const config = { key: message.key, value: message.value };
-        addEducationConfig(config, onMessage);
+        addEducationConfig(educationStore, config, onMessage);
         break;
       }
       case "removeEducation": {
-        removeEducationConfig(message.key, onMessage);
+        removeEducationConfig(educationStore, message.key);
         break;
       }
       case "spotify":

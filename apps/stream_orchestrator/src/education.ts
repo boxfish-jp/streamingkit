@@ -1,70 +1,27 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import type { SqliteEducationStore } from "education_store";
 import type { EducationConfig, OnMessage } from "kit_models";
 import { sendCommentBothSites } from "./utils.js";
 
 export const getEducationConfigs = (
-  onMessage: OnMessage,
-): EducationConfig[] => {
-  try {
-    return JSON.parse(
-      readFileSync("../../education.json", "utf-8"),
-    ) as EducationConfig[];
-  } catch (error) {
-    console.log(error);
-    onMessage({
-      type: "error",
-      status: "serverReadEducation",
-      time: Date.now(),
-      message: `Failed to read education config: ${error}`,
-    });
-    return [];
-  }
-};
+  store: SqliteEducationStore,
+): EducationConfig[] => store.getAll();
 
 export const addEducationConfig = (
+  store: SqliteEducationStore,
   config: EducationConfig,
   onMessage: OnMessage,
 ) => {
-  const configs = getEducationConfigs(onMessage);
-  configs.push(config);
-  try {
-    writeFileSync(
-      "../../education.json",
-      JSON.stringify(configs, null, 2),
-      "utf-8",
-    );
-    sendCommentBothSites(
-      "bot: ありがとう、また一つ邪神ちゃんは賢くなりました",
-    ).forEach((message) => onMessage(message));
-  } catch (error) {
-    onMessage({
-      type: "error",
-      status: "serverWriteEducation",
-      time: Date.now(),
-      message: `Failed to read education config: ${error}`,
-    });
+  store.add(config);
+  for (const message of sendCommentBothSites(
+    "bot: ありがとう、また一つ邪神ちゃんは賢くなりました",
+  )) {
+    onMessage(message);
   }
 };
 
 export const removeEducationConfig = (
+  store: SqliteEducationStore,
   keyword: string,
-  onMessage: OnMessage,
 ) => {
-  const configs = getEducationConfigs(onMessage).filter(
-    (config) => config.key !== keyword,
-  );
-  try {
-    writeFileSync(
-      "../../education.json",
-      JSON.stringify(configs, null, 2),
-      "utf-8",
-    );
-  } catch (error) {
-    onMessage({
-      type: "error",
-      status: "serverWriteEducation",
-      time: Date.now(),
-      message: `Failed to read education config: ${error}`,
-    });
-  }
+  store.remove(keyword);
 };

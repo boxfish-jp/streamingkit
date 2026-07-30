@@ -9,6 +9,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "education_store": "workspace:*",
     "kit_models": "workspace:*",
     "oauth_client": "workspace:*",
     "regexs": "workspace:*",
