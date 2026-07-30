@@ -3,7 +3,7 @@ import { YoutubeClient } from "../src/index.js";
 const main = async () => {
   const valo = "@eikogo3822";
   const youtubeClient = new YoutubeClient(valo);
-  youtubeClient.on("onMessage", (message) => {
+  youtubeClient.on("onMessage", () => {
     //console.log("Received message:", message);
   });
   await new Promise((resolve) => setTimeout(resolve, 2000));

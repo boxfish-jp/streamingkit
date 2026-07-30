@@ -41,7 +41,7 @@ const onAudio = async (
       default:
         throw new Error("Invalid channel number");
     }
-  } catch (e) {
+  } catch {
     window.api.onFinish(audioId, "Invalid channel number");
   }
 };
@@ -84,7 +84,7 @@ export const startSubscribe = () => {
             const response = await fetch(clientSocketConnected);
             bus.emit({
               type: "synthesized",
-              buffer: (await response.arrayBuffer()) as any,
+              buffer: (await response.arrayBuffer()) as unknown as Buffer,
               channel: 4,
             });
             break;
@@ -94,7 +94,7 @@ export const startSubscribe = () => {
             const response = await fetch(spotfiyAddQueue);
             bus.emit({
               type: "synthesized",
-              buffer: (await response.arrayBuffer()) as any,
+              buffer: (await response.arrayBuffer()) as unknown as Buffer,
               channel: 4,
             });
             break;
@@ -103,7 +103,7 @@ export const startSubscribe = () => {
             const response = await fetch(startNicoNicoStreaming);
             bus.emit({
               type: "synthesized",
-              buffer: (await response.arrayBuffer()) as any,
+              buffer: (await response.arrayBuffer()) as unknown as Buffer,
               channel: 4,
             });
             break;
@@ -112,7 +112,7 @@ export const startSubscribe = () => {
             const response = await fetch(endNicoNicoStreaming);
             bus.emit({
               type: "synthesized",
-              buffer: (await response.arrayBuffer()) as any,
+              buffer: (await response.arrayBuffer()) as unknown as Buffer,
               channel: 4,
             });
             break;
@@ -121,7 +121,7 @@ export const startSubscribe = () => {
             const response = await fetch(startYoutubeStreaming);
             bus.emit({
               type: "synthesized",
-              buffer: (await response.arrayBuffer()) as any,
+              buffer: (await response.arrayBuffer()) as unknown as Buffer,
               channel: 4,
             });
             break;
@@ -130,7 +130,7 @@ export const startSubscribe = () => {
             const response = await fetch(endYoutubeStreaming);
             bus.emit({
               type: "synthesized",
-              buffer: (await response.arrayBuffer()) as any,
+              buffer: (await response.arrayBuffer()) as unknown as Buffer,
               channel: 4,
             });
             break;

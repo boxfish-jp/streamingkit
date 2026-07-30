@@ -12,6 +12,8 @@ export class EventEmitter<T extends { [K in keyof T]: unknown[] }> {
   };
 
   public emit = <K extends keyof T>(event: K, ...args: T[K]) => {
-    this._listeners[event]?.forEach((listener) => listener(...args));
+    this._listeners[event]?.forEach((listener) => {
+      listener(...args);
+    });
   };
 }

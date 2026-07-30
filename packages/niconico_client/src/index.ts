@@ -18,7 +18,6 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   private _streamId: number | undefined = undefined; // 生放送IDのうち、lv以降の数字
   private _userId: string; // ニコニコのuserId
   private _headlessBrowserUrl: string;
-  private _poolingId: NodeJS.Timeout | undefined = undefined;
   private _stopListen: (() => void) | null = null;
   private _viewers = 0;
   private _webSocket: WebSocket | null = null;
@@ -330,13 +329,10 @@ export class NicoNicoClient extends EventEmitter<CheckStreamInfoMessages> {
   private _isProgramsListResponse(
     responseJson: unknown,
   ): responseJson is ProgramsListResponse {
-    return (
-      typeof responseJson === "object" &&
-      responseJson !== null &&
-      typeof (responseJson as any).data === "object" &&
-      (responseJson as any).data !== null &&
-      Array.isArray((responseJson as any).data.programsList)
-    );
+    if (typeof responseJson !== "object" || responseJson === null) return false;
+    const data = (responseJson as { data?: unknown }).data;
+    if (typeof data !== "object" || data === null) return false;
+    return Array.isArray((data as { programsList?: unknown }).programsList);
   }
 }
 

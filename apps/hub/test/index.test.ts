@@ -70,7 +70,7 @@ describe("hub:", () => {
         resolve();
       });
 
-      clientB.on("message", (message) => {
+      clientB.on("message", () => {
         clientB.emit("message", "hello from B");
       });
     });

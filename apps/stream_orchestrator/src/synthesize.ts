@@ -28,13 +28,9 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
     const task = async () => {
       const fileName = `${Date.now()}.wav`;
       try {
-        const result = spawn(
-          voicepeakPath,
-          ["-s", text, "-o", fileName],
-          {
-            stdio: ["pipe", "pipe", "inherit"],
-          },
-        );
+        const result = spawn(voicepeakPath, ["-s", text, "-o", fileName], {
+          stdio: ["pipe", "pipe", "inherit"],
+        });
 
         try {
           const timeout = setTimeout(() => {

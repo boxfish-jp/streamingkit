@@ -24,7 +24,9 @@ export const useSocket = () => {
     });
 
     socketRef.current.on("message", (message: Message) => {
-      callbacks.forEach((cb) => cb(message));
+      callbacks.forEach((cb) => {
+        cb(message);
+      });
     });
   }, [callbacks]);
 

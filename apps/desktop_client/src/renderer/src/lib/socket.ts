@@ -48,7 +48,9 @@ export class SocketManager {
   }
 
   private _emitMessage(message: Message) {
-    this._onMessageCallbacks.forEach((callback) => callback(message));
+    this._onMessageCallbacks.forEach((callback) => {
+      callback(message);
+    });
   }
 
   private _initEventListeners() {

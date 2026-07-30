@@ -17,7 +17,6 @@ import { TimeSignal } from "./time_signal.js";
 import { sendCommentBothSites } from "./utils.js";
 
 const bus_evnet = new Bus();
-const cruseID = "70969122";
 const niconicofuguoID = "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
@@ -206,7 +205,9 @@ const main = async () => {
         {
           if (message.status === "successfulAddSpotifyQueue") {
             sendCommentBothSites("bot: キューに追加しました").forEach(
-              (message) => bus_evnet.emit(message),
+              (message) => {
+                bus_evnet.emit(message);
+              },
             );
           }
           if (message.status === "serverNeedAuthorization" && message.message) {

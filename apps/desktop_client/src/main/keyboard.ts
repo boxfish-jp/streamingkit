@@ -48,7 +48,7 @@ export const addKeyboardEventListenner = () => {
           parseError,
       );
     }
-  } catch (loadFileErr) {
+  } catch {
     console.log("Configuration file not found. Keylogger will not start.");
   }
 };

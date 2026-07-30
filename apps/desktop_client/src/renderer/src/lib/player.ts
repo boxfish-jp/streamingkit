@@ -13,7 +13,7 @@ export class Player {
     const source = this._audioContext.createBufferSource();
     try {
       const audioBuffer = await this._audioContext.decodeAudioData(
-        item.audioData as any,
+        item.audioData as unknown as ArrayBuffer,
       );
       source.buffer = audioBuffer;
       this._gainNode.gain.setValueAtTime(
@@ -22,7 +22,7 @@ export class Player {
       );
 
       try {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // biome-ignore lint/suspicious/noExplicitAny: setSinkId is not yet in the AudioContext type definition
         await (this._audioContext as any).setSinkId(item.deviceId);
       } catch (error) {
         console.error(

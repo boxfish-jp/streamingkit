@@ -9,7 +9,6 @@ interface StreamingMessage {
 }
 
 export class Streaming extends EventEmitter<StreamingMessage> {
-  private _poolingId: NodeJS.Timeout | undefined = undefined;
   private _checkIsStreamingIntervalMs = 30000;
   private _nicoNicoClient: NicoNicoClient;
   private _youtubeClient: YoutubeClient;
@@ -65,7 +64,7 @@ export class Streaming extends EventEmitter<StreamingMessage> {
 
   async startPooling() {
     this._pollOnce();
-    this._poolingId = setInterval(async () => {
+    setInterval(async () => {
       this._pollOnce();
     }, this._checkIsStreamingIntervalMs);
   }

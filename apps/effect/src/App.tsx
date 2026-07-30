@@ -38,18 +38,16 @@ export const App = () => {
   };
 
   return (
-    <>
-      <section className="max-w-md max-h-125 flex justify-end w-full">
-        {videoPath && (
-          // biome-ignore lint/a11y/useMediaCaption: <explanation>
-          <video
-            controls={false}
-            onEnded={onEnded}
-            src={videoPath}
-            autoPlay={true}
-          />
-        )}
-      </section>
-    </>
+    <section className="max-w-md max-h-125 flex justify-end w-full">
+      {videoPath && (
+        // biome-ignore lint/a11y/useMediaCaption: this video is a visual effect and has no audio
+        <video
+          controls={false}
+          onEnded={onEnded}
+          src={videoPath}
+          autoPlay={true}
+        />
+      )}
+    </section>
   );
 };

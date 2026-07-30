@@ -2,6 +2,11 @@ import type { InstSyntesizeMessage } from "kit_models";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { TimeSignal } from "../src/time_signal.js";
 
+type TimeSignalInternal = {
+  _check(): void;
+  _lastSignalKey: string | null;
+};
+
 function setJstTime(hour: number, minute: number): void {
   const utcTimestamp = Date.UTC(2026, 0, 1, hour - 9, minute, 0, 0);
   vi.setSystemTime(new Date(utcTimestamp));
@@ -21,7 +26,7 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => false, onMessage);
 
     setJstTime(15, 0);
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
 
     expect(onMessage).not.toHaveBeenCalled();
   });
@@ -31,7 +36,7 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => true, onMessage);
 
     setJstTime(15, 0);
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
 
     expect(onMessage).toHaveBeenCalledTimes(1);
     expect(onMessage).toHaveBeenCalledWith({
@@ -46,7 +51,7 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => true, onMessage);
 
     setJstTime(15, 30);
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
 
     expect(onMessage).toHaveBeenCalledTimes(1);
     expect(onMessage).toHaveBeenCalledWith({
@@ -61,8 +66,8 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => true, onMessage);
 
     setJstTime(15, 0);
-    (ts as any)._check();
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
+    (ts as unknown as TimeSignalInternal)._check();
 
     expect(onMessage).toHaveBeenCalledTimes(1);
   });
@@ -72,12 +77,12 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => true, onMessage);
 
     setJstTime(15, 0);
-    (ts as any)._check();
-    expect((ts as any)._lastSignalKey).toBe("15:00");
+    (ts as unknown as TimeSignalInternal)._check();
+    expect((ts as unknown as TimeSignalInternal)._lastSignalKey).toBe("15:00");
 
     setJstTime(15, 1);
-    (ts as any)._check();
-    expect((ts as any)._lastSignalKey).toBeNull();
+    (ts as unknown as TimeSignalInternal)._check();
+    expect((ts as unknown as TimeSignalInternal)._lastSignalKey).toBeNull();
   });
 
   test("配信停止中は_lastSignalKeyをリセットしない", () => {
@@ -86,13 +91,13 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => isStreaming, onMessage);
 
     setJstTime(15, 0);
-    (ts as any)._check();
-    expect((ts as any)._lastSignalKey).toBe("15:00");
+    (ts as unknown as TimeSignalInternal)._check();
+    expect((ts as unknown as TimeSignalInternal)._lastSignalKey).toBe("15:00");
 
     isStreaming = false;
     setJstTime(15, 1);
-    (ts as any)._check();
-    expect((ts as any)._lastSignalKey).toBe("15:00");
+    (ts as unknown as TimeSignalInternal)._check();
+    expect((ts as unknown as TimeSignalInternal)._lastSignalKey).toBe("15:00");
   });
 
   test("配信停止→再開で次の時報が流れる", () => {
@@ -101,7 +106,7 @@ describe("TimeSignal", () => {
     const ts = new TimeSignal(() => isStreaming, onMessage);
 
     setJstTime(15, 0);
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
     expect(onMessage).toHaveBeenCalledWith({
       type: "instSynthesize",
       content: "15時になりました",
@@ -110,11 +115,11 @@ describe("TimeSignal", () => {
 
     isStreaming = false;
     setJstTime(15, 1);
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
 
     isStreaming = true;
     setJstTime(15, 30);
-    (ts as any)._check();
+    (ts as unknown as TimeSignalInternal)._check();
 
     expect(onMessage).toHaveBeenCalledTimes(2);
     expect(onMessage).toHaveBeenLastCalledWith({

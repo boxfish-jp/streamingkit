@@ -80,7 +80,7 @@ export class ErrorHandler {
     const response = await fetch(path);
     return {
       type: "synthesized",
-      buffer: (await response.arrayBuffer()) as any,
+      buffer: (await response.arrayBuffer()) as unknown as Buffer,
       channel: 4,
     } as SynthesizedMessage;
   };

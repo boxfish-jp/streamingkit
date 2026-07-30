@@ -22,10 +22,10 @@ function App() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: { url: string }) => {
     if (data.url) {
       const url = String(data.url);
-      if (url && url.startsWith("http")) {
+      if (url?.startsWith("http")) {
         const socketManager = SocketManager.instance();
         socketManager.setServerUrl(url);
       }
