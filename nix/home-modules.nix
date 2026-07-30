@@ -352,6 +352,13 @@
           description = "Voicepeak 実行ファイルのパス。";
         };
 
+        oauthCallbackBaseUrl = lib.mkOption {
+          type = lib.types.str;
+          default = "http://localhost:5000";
+          example = "https://example.com:8080";
+          description = "OAuth コールバックのベースURL（スキーム・ホスト・ポート）。";
+        };
+
         systemd.enable = lib.mkOption {
           type = lib.types.bool;
           default = false;
@@ -388,6 +395,7 @@
               "EDUCATION_DB_PATH=${cfg.educationDbPath}"
               "NICONICO_HEADLESS_BROWSER_URL=${cfg.headlessBrowserUrl}"
               "VOICEPEAK_PATH=${voicepeakWrapper}/bin/voicepeak"
+              "OAUTH_CALLBACK_BASE_URL=${cfg.oauthCallbackBaseUrl}"
             ];
             EnvironmentFile = "%h/.config/streaming-kit/.env";
             TimeoutStartSec = "15s";

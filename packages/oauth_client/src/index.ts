@@ -12,7 +12,6 @@ export interface AuthConfig {
   authorizeEndpoint: string;
   tokenEndpoint: string;
   scopes: string[];
-  callbackPort: number;
 }
 
 export interface OauthClientConfig {
@@ -34,6 +33,18 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
   constructor(config: OauthClientConfig) {
     super();
     this._config = config;
+  }
+
+  private get _callbackBaseUrl(): string {
+    return process.env.OAUTH_CALLBACK_BASE_URL || "http://localhost:5000";
+  }
+
+  private get _callbackPort(): number {
+    return Number(new URL(this._callbackBaseUrl).port) || 5000;
+  }
+
+  private get _redirectUri(): string {
+    return `${this._callbackBaseUrl}/callback`;
   }
 
   get headers(): HeadersInit {
@@ -65,7 +76,7 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
     const params = new URLSearchParams({
       client_id: this._config.clientId,
       response_type: "code",
-      redirect_uri: `http://localhost:${this._config.authConfig.callbackPort}/callback`,
+      redirect_uri: this._redirectUri,
       scope: this._config.authConfig.scopes.join(" "),
     });
     if (state) {
@@ -78,7 +89,7 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
     return new Promise((resolve, reject) => {
       const state = randomBytes(16).toString("hex");
       const authUrl = this._buildAuthorizationUrl(state);
-      const port = this._config.authConfig.callbackPort;
+      const port = this._callbackPort;
 
       const server = http.createServer(async (req, res) => {
         if (!req.url) return;
@@ -115,7 +126,7 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
         reject(err);
       });
 
-      server.listen(port, () => {
+      server.listen(port, "0.0.0.0", () => {
         console.log(`ブラウザで以下を開いて認証してください:\n${authUrl}\n`);
       });
     });
@@ -131,7 +142,7 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
       body: new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        redirect_uri: `http://localhost:${this._config.authConfig.callbackPort}/callback`,
+        redirect_uri: this._redirectUri,
       }),
     });
 
@@ -253,7 +264,7 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
 
   private _waitForReauthorization(): void {
     const state = randomBytes(16).toString("hex");
-    const port = this._config.authConfig.callbackPort;
+    const port = this._callbackPort;
 
     const server = http.createServer(async (req, res) => {
       if (!req.url) return;
@@ -292,7 +303,7 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
       }
     });
 
-    server.listen(port);
+    server.listen(port, "0.0.0.0");
   }
 
   private _getStringField(obj: unknown, key: string): string | null {

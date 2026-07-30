@@ -10,7 +10,6 @@ export class SpotifyClient extends OauthClient {
         authorizeEndpoint: "https://accounts.spotify.com/authorize",
         tokenEndpoint: "https://accounts.spotify.com/api/token",
         scopes: ["user-read-playback-state", "user-modify-playback-state"],
-        callbackPort: 5000,
       },
       clientId,
       clientSecret,

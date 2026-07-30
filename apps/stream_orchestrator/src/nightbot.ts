@@ -10,7 +10,6 @@ export class NightbotClient extends OauthClient {
         authorizeEndpoint: "https://api.nightbot.tv/oauth2/authorize",
         tokenEndpoint: "https://api.nightbot.tv/oauth2/token",
         scopes: ["channel_send"],
-        callbackPort: 5000,
       },
       clientId,
       clientSecret,
