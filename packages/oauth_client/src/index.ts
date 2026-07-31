@@ -1,4 +1,3 @@
-import { randomBytes } from "node:crypto";
 import EventEmitter from "node:events";
 import http from "node:http";
 import type { ErrorMessage, Message } from "kit_models";
@@ -72,23 +71,19 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
     }
   }
 
-  private _buildAuthorizationUrl(state?: string): string {
+  private _buildAuthorizationUrl(): string {
     const params = new URLSearchParams({
       client_id: this._config.clientId,
       response_type: "code",
       redirect_uri: this._redirectUri,
       scope: this._config.authConfig.scopes.join(" "),
     });
-    if (state) {
-      params.set("state", state);
-    }
     return `${this._config.authConfig.authorizeEndpoint}?${params.toString()}`;
   }
 
   private async _runAuthorizationFlow(): Promise<void> {
     return new Promise((resolve, reject) => {
-      const state = randomBytes(16).toString("hex");
-      const authUrl = this._buildAuthorizationUrl(state);
+      const authUrl = this._buildAuthorizationUrl();
       const port = this._callbackPort;
 
       const server = http.createServer(async (req, res) => {
@@ -97,9 +92,8 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
         if (url.pathname !== "/callback") return;
 
         const code = url.searchParams.get("code");
-        const returnedState = url.searchParams.get("state");
 
-        if (!code || returnedState !== state) {
+        if (!code) {
           res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
           res.end("認証に失敗しました");
           return;
@@ -263,7 +257,6 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
   }
 
   private _waitForReauthorization(): void {
-    const state = randomBytes(16).toString("hex");
     const port = this._callbackPort;
 
     const server = http.createServer(async (req, res) => {
@@ -272,9 +265,8 @@ export class OauthClient extends EventEmitter<OauthClientEvents> {
       if (url.pathname !== "/callback") return;
 
       const code = url.searchParams.get("code");
-      const returnedState = url.searchParams.get("state");
 
-      if (!code || returnedState !== state) {
+      if (!code) {
         res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
         res.end("認証に失敗しました");
         return;
