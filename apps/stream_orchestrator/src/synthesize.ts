@@ -1,7 +1,8 @@
 import { spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
 import { readFileSync, unlinkSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { ErrorMessage, SynthesizedMessage } from "kit_models";
 import { TaskRunner } from "task_runner";
 
@@ -12,7 +13,6 @@ interface SynthesizeRunnerMessages {
 
 const voicepeakPath =
   process.env.VOICEPEAK_PATH || "/mountspace/Voicepeak/voicepeak";
-const voicepeakDir = dirname(voicepeakPath);
 
 export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
   private _taskRunner = new TaskRunner();
@@ -28,12 +28,10 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
       return;
     }
     const task = async () => {
-      const fileName = `${Date.now()}.wav`;
-      const filePath = join(voicepeakDir, fileName);
+      const filePath = join(tmpdir(), `${Date.now()}.wav`);
       try {
-        const result = spawn(voicepeakPath, ["-s", text, "-o", fileName], {
+        const result = spawn(voicepeakPath, ["-s", text, "-o", filePath], {
           stdio: ["pipe", "pipe", "inherit"],
-          cwd: voicepeakDir,
         });
 
         try {
