@@ -306,7 +306,7 @@
       systemdExec = "${streamOrchestratorBin} ${lib.escapeShellArg cfg.hubUrl}";
 
       voicepeakWrapper = pkgs.writeShellScriptBin "voicepeak" ''
-        export LD_LIBRARY_PATH="${pkgs.alsa-lib}/lib:${pkgs.freetype}/lib:${pkgs.curl.lib}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+        export LD_LIBRARY_PATH="${pkgs.alsa-lib}/lib:${pkgs.freetype}/lib:${pkgs.curl.out}/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         cd ${dirOf cfg.voicepeakPath}
         exec ${cfg.voicepeakPath} "$@"
       '';
