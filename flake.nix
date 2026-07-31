@@ -19,16 +19,16 @@
         pkgs = import nixpkgs { inherit system; };
         pnpm = pkgs.pnpm_11;
         node = pkgs.nodejs_24;
-        version = "v1.0.12";
+        version = "v1.0.13";
         desktopSrc = fetchTarball {
           url = "https://github.com/boxfish-jp/streamingkit/releases/download/${version}/app-ubuntu-latest.tar.gz";
-          sha256 = "sha256:0hbv21327pd8q2mmg26czyzhlg2xp2rw8pdv58cn6zyzwwxm8dvg";
+          sha256 = "sha256:0pgp52m51z0ic649qymfzm3qamvly8w7raz791l8nyph9iccwp31";
         };
         src = pkgs.fetchFromGitHub {
           owner = "boxfish-jp";
           repo = "streamingkit";
           rev = version;
-          hash = "sha256-mf0cNmUr8aapZWpDbz+5DeDMYd9cKQe1T609m5MR7n0=";
+          hash = "sha256-54sWyT2EmSKwF8ksTL2N2b7AOC8jaXs3XkLlMiGGlpU=";
         };
         pnpmDeps = pkgs.fetchPnpmDeps {
           pname = "streamingkit";
