@@ -340,6 +340,18 @@
           description = "教育DBのパス。";
         };
 
+        niconicoUserId = lib.mkOption {
+          type = lib.types.str;
+          default = "98746932";
+          description = "ニコニコのユーザーID。";
+        };
+
+        youtubeChannelHandle = lib.mkOption {
+          type = lib.types.str;
+          default = "@boxfish_jp";
+          description = "YouTubeのチャンネルハンドル。";
+        };
+
         headlessBrowserUrl = lib.mkOption {
           type = lib.types.str;
           default = "http://192.168.68.15:3000";
@@ -391,6 +403,8 @@
             Type = "simple";
             ExecStart = systemdExec;
             Environment = [
+              "NICONICO_USER_ID=${cfg.niconicoUserId}"
+              "YOUTUBE_CHANNEL_HANDLE=${cfg.youtubeChannelHandle}"
               "TOKEN_DB_PATH=${cfg.tokenDbPath}"
               "EDUCATION_DB_PATH=${cfg.educationDbPath}"
               "NICONICO_HEADLESS_BROWSER_URL=${cfg.headlessBrowserUrl}"

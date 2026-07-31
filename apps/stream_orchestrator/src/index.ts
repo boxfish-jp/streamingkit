@@ -17,7 +17,7 @@ import { TimeSignal } from "./time_signal.js";
 import { sendCommentBothSites } from "./utils.js";
 
 const bus_evnet = new Bus();
-const niconicofuguoID = "98746932";
+const niconicofuguoID = process.env.NICONICO_USER_ID || "98746932";
 const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
 const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
 const nightbotClientId = process.env.NIGHTBOT_CLIENT_ID || "";
@@ -26,7 +26,8 @@ const tokenDbPath = process.env.TOKEN_DB_PATH || "./data/tokens.db";
 const educationDbPath = process.env.EDUCATION_DB_PATH || "./data/education.db";
 const headlessBrowserUrl =
   process.env.NICONICO_HEADLESS_BROWSER_URL || "http://192.168.68.15:3000";
-const youtubeChannelHandler = "@boxfish_jp";
+const youtubeChannelHandler =
+  process.env.YOUTUBE_CHANNEL_HANDLE || "@boxfish_jp";
 
 const main = async () => {
   const onMessage = (message: Message) => {
