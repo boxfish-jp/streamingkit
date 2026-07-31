@@ -1,4 +1,5 @@
 import { unlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 export class WavData {
@@ -12,10 +13,7 @@ export class WavData {
   constructor(data: Buffer) {
     this._data = data;
     const unixTime = Date.now();
-    this._filePath = join(process.cwd(), `${unixTime}.wav`).replaceAll(
-      "\\",
-      "/",
-    );
+    this._filePath = join(tmpdir(), `${unixTime}.wav`);
   }
 
   async saveFile() {

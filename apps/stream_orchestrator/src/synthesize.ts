@@ -1,6 +1,8 @@
 import { spawn } from "node:child_process";
 import { EventEmitter } from "node:events";
 import { readFileSync, unlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { ErrorMessage, SynthesizedMessage } from "kit_models";
 import { TaskRunner } from "task_runner";
 
@@ -26,9 +28,9 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
       return;
     }
     const task = async () => {
-      const fileName = `${Date.now()}.wav`;
+      const filePath = join(tmpdir(), `${Date.now()}.wav`);
       try {
-        const result = spawn(voicepeakPath, ["-s", text, "-o", fileName], {
+        const result = spawn(voicepeakPath, ["-s", text, "-o", filePath], {
           stdio: ["pipe", "pipe", "inherit"],
         });
 
@@ -42,7 +44,6 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
             });
           }, 30000);
 
-          // エラーイベントをPromiseで待つ
           const status = await new Promise<number>((resolve, reject) => {
             result.on("close", resolve);
             result.on("error", reject);
@@ -54,13 +55,12 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
             this.addQueue(text, channel, retryCount + 1);
             return;
           }
-          const data = readFileSync(fileName);
+          const data = readFileSync(filePath);
           this.emit("synthesized", {
             type: "synthesized",
             buffer: data,
             channel: channel,
           });
-          unlinkSync(fileName);
         } catch (error) {
           this.emit("error", {
             type: "error",
@@ -68,6 +68,10 @@ export class SynthesizeRunner extends EventEmitter<SynthesizeRunnerMessages> {
             time: Date.now(),
             message: String(error),
           });
+        } finally {
+          try {
+            unlinkSync(filePath);
+          } catch {}
         }
       } catch (error) {
         this.emit("error", {
