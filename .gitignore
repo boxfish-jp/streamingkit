@@ -7,3 +7,4 @@ education.json
 .turbo
 out
 dist
+.direnv

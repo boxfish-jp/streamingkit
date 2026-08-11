@@ -28,6 +28,8 @@ in
 mkShell {
   packages = [ fhs ];
   shellHook = ''
-    exec ${fhs}/bin/dev
+    if [[ -z $DIRENV_IN_ENVRC ]]; then
+      exec ${fhs}/bin/dev
+    fi
   '';
 }
