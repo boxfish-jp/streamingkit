@@ -1,10 +1,4 @@
-import { Badge } from "@workspace/ui/components/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@workspace/ui/components/card";
+import { cn } from "@workspace/ui/lib/utils";
 import type { TaskNodeTree } from "todo_parser/dist/task_node";
 import { useDisplay } from "@/components/display";
 import { getTodo } from "@/components/get_todo";
@@ -17,34 +11,57 @@ export function App() {
   return (
     display &&
     parent && (
-      <Card className="w-full max-w-sm mt-auto">
-        <CardHeader>
-          <CardTitle>{parent?.title || ""}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+      <div className="mt-auto mb-4 w-full max-w-sm self-center rounded-lg border border-white/10 bg-black/50 p-4 text-white">
+        <h2 className="mb-3 border-b border-lime-400/40 pb-2 text-base font-semibold text-lime-300">
+          {parent.title}
+        </h2>
+        <ul className="flex flex-col gap-1.5">
           {children.length > 0 &&
-            children.map((child) => {
-              const childStatus = getStatusBadgeInfo(child.newStatus);
-              return (
-                childStatus && (
-                  <Card className="w-full max-w-sm gap-3">
-                    <CardContent>
-                      <Badge className={childStatus.color}>
-                        {childStatus.text}
-                      </Badge>
-                    </CardContent>
-                    <CardHeader>
-                      <CardTitle>{child.title}</CardTitle>
-                    </CardHeader>
-                  </Card>
-                )
-              );
-            })}
-        </CardContent>
-      </Card>
+            children.map((child) => <TaskRow key={child.id} child={child} />)}
+        </ul>
+      </div>
     )
   );
 }
+
+const TaskRow = ({ child }: { child: TaskNodeTree }) => {
+  const isActive = child.isStatusChanged && !child.isClosed;
+  const isDone = child.newStatus === "DONE";
+  return (
+    <li
+      className={cn(
+        "flex items-center gap-2 rounded-md px-2 py-1",
+        isActive && "bg-white/10",
+      )}
+    >
+      <span
+        className={cn(
+          "h-2 w-2 shrink-0 rounded-full",
+          isActive
+            ? "bg-orange-400"
+            : child.isClosed
+              ? "bg-white/30"
+              : "bg-white/40",
+        )}
+      />
+      <span
+        className={cn(
+          "text-sm",
+          isActive
+            ? "font-semibold text-orange-300"
+            : child.isClosed
+              ? "text-white/40 line-through"
+              : "text-white/85",
+        )}
+      >
+        {child.title}
+      </span>
+      <span className="ml-auto text-xs text-white/50">
+        {child.isClosed ? (isDone ? "✓" : "✗") : getStatusLabel(child.newStatus)}
+      </span>
+    </li>
+  );
+};
 
 const selectChildren = (
   children: TaskNodeTree[] | undefined,
@@ -62,49 +79,23 @@ const selectChildren = (
   return children.slice(changedTaskIndex - 1, changedTaskIndex + 2);
 };
 
-const getStatusBadgeInfo = (status: string) => {
+const getStatusLabel = (status: string) => {
   switch (status) {
-    case "":
-      return { text: "No Status", color: "gray" };
     case "TODO":
-      return {
-        text: "未着手",
-        color:
-          "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300",
-      };
+      return "未着手";
     case "THINKING":
-      return {
-        text: "考え中",
-        color:
-          "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300",
-      };
+      return "考え中";
     case "DEVELOPING":
-      return {
-        text: "開発中",
-        color: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-      };
+      return "開発中";
     case "TEST":
-      return {
-        text: "テスト",
-        color: "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
-      };
-
+      return "テスト";
     case "BUILDING":
-      return {
-        text: "ビルドの調整",
-        color:
-          "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
-      };
+      return "ビルド調整";
     case "DONE":
-      return {
-        text: "完了",
-        color:
-          "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
-      };
+      return "完了";
     case "CANCELED":
-      return {
-        text: "未定",
-        color: "bg-gray-50 text-gray-700 dark:bg-gray-950 dark:text-gray-300",
-      };
+      return "未定";
+    default:
+      return "";
   }
 };
