@@ -13,3 +13,4 @@ export const parseTodo = (oldFile: string, newFile: string) => {
 };
 
 export { UpdateResult } from "./update_result.js";
+export type { TaskNodeTree } from "./task_node.js";
