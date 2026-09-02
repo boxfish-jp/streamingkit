@@ -314,13 +314,10 @@
       ];
 
       voicepeakWrapper = pkgs.writeShellScriptBin "voicepeak" ''
-        ${pkgs.patchelf}/bin/patchelf \
-          --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 \
-          --set-rpath "${voicepeakLibs}" \
-          ${cfg.voicepeakPath} 2>/dev/null || true
-        export LD_LIBRARY_PATH="${voicepeakLibs}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         cd ${dirOf cfg.voicepeakPath}
-        exec ${cfg.voicepeakPath} "$@"
+        exec ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 \
+          --library-path "${voicepeakLibs}" \
+          ${cfg.voicepeakPath} "$@"
       '';
     in
     {
