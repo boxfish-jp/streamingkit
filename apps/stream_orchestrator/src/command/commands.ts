@@ -15,6 +15,7 @@ export const getCommands = async () => {
     spotifyCommand,
     progressCommand,
     nurupoCommand,
+    songCommand,
   ];
 };
 
@@ -38,5 +39,18 @@ const progressCommand = {
 const nurupoCommand = {
   isTarget: (message) => message.content.startsWith("ぬるぽ"),
   action: () => sendCommentBothSites("bot: ガッ"),
+  synthesize: () => undefined,
+} as Command;
+
+export const songCommand = {
+  isTarget: (message) => message.content === "。曲",
+  action: () => [
+    {
+      type: "spotify",
+      content: {
+        instruction: "getCurrentTrack",
+      },
+    },
+  ],
   synthesize: () => undefined,
 } as Command;

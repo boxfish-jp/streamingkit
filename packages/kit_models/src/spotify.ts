@@ -3,7 +3,11 @@ interface AddQueue {
   uri: string;
 }
 
+interface GetCurrentTrack {
+  instruction: "getCurrentTrack";
+}
+
 export interface SpotifyMessage {
   type: "spotify";
-  content: AddQueue;
+  content: AddQueue | GetCurrentTrack;
 }

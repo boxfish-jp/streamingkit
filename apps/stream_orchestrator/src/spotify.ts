@@ -1,6 +1,16 @@
 import { OauthClient } from "oauth_client";
 import type { TokenStore } from "token_store";
 
+export interface TrackInfo {
+  artist: string;
+  title: string;
+  album: string;
+  artUrl: string;
+  trackId: string;
+  position: number;
+  length: number;
+}
+
 export class SpotifyClient extends OauthClient {
   constructor(clientId: string, clientSecret: string, tokenStore: TokenStore) {
     super({
@@ -9,12 +19,54 @@ export class SpotifyClient extends OauthClient {
       authConfig: {
         authorizeEndpoint: "https://accounts.spotify.com/authorize",
         tokenEndpoint: "https://accounts.spotify.com/api/token",
-        scopes: ["user-read-playback-state", "user-modify-playback-state"],
+        scopes: [
+          "user-read-playback-state",
+          "user-modify-playback-state",
+          "user-read-currently-playing",
+        ],
       },
       clientId,
       clientSecret,
       errorStatus: "serverFailedToGetSpotifyToken",
     });
+  }
+
+  async getCurrentTrack(): Promise<TrackInfo | null> {
+    if (!this._accessToken) {
+      throw new Error("Spotifyのアクセストークンがありません");
+    }
+
+    const url = "https://api.spotify.com/v1/me/player/currently-playing";
+    const response = await fetch(url, { headers: this.headers });
+
+    if (response.status === 204) {
+      return null;
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `再生中曲の取得エラー (${response.status}): ${errorText}`,
+      );
+    }
+
+    const body = await response.json();
+    const item = body?.item;
+    if (item?.type !== "track") {
+      return null;
+    }
+
+    return {
+      artist: (item.artists ?? [])
+        .map((artist: { name: string }) => artist.name)
+        .join("、"),
+      title: item.name,
+      album: item.album?.name ?? "",
+      artUrl: item.album?.images?.[0]?.url ?? "",
+      trackId: item.id ?? "",
+      position: body.progress_ms ?? 0,
+      length: item.duration_ms ?? 0,
+    };
   }
 
   async addQueue(trackUri: string): Promise<void> {

@@ -192,6 +192,26 @@ const main = async () => {
           if (message.content.instruction === "addQueue") {
             spotifyClient.addQueue(message.content.uri);
           }
+          if (message.content.instruction === "getCurrentTrack") {
+            spotifyClient
+              .getCurrentTrack()
+              .then((track) => {
+                const content = track
+                  ? `bot: ${track.artist} - ${track.title}`
+                  : "bot: ただいま再生中の曲はありません";
+                sendCommentBothSites(content).forEach((message) => {
+                  bus_evnet.emit(message);
+                });
+              })
+              .catch((error) => {
+                onMessage({
+                  type: "error",
+                  status: "serverFailedToGetSpotifyTrack",
+                  time: Date.now(),
+                  message: `❌ 再生中曲の取得に失敗しました。${error}`,
+                });
+              });
+          }
         }
         break;
       case "viewerCountUpdate": {

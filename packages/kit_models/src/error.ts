@@ -13,6 +13,7 @@ export interface ErrorMessage {
     | "serverSpotifyTokenNotFound"
     | "serverFailedToGetSpotifyToken"
     | "serverFailedToAddSpotifyQueue"
+    | "serverFailedToGetSpotifyTrack"
     | "serverYoutubeTokenNotFound"
     | "serverFailedToGetYoutubeToken"
     | "serverFailedToGetYoutubeComment"
