@@ -1,4 +1,3 @@
-export * from "./anime_info.js";
 export * from "./bus.js";
 export * from "./command.js";
 export * from "./comment.js";
@@ -6,6 +5,7 @@ export * from "./education.js";
 export * from "./education_config.js";
 export * from "./error.js";
 export * from "./inst_synthesize.js";
+export * from "./media_info.js";
 export * from "./message.js";
 export * from "./notify.js";
 export * from "./ping.js";

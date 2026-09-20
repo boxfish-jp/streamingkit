@@ -2,6 +2,7 @@ import { SocketClient } from "socket_client";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { WatchOrgFiles } from "./watch_file.js";
+import { WatchSpotify } from "./watch_spotify.js";
 
 const main = async () => {
   const argv = await yargs(hideBin(process.argv))
@@ -47,6 +48,12 @@ const main = async () => {
       oldFile,
       newFile,
     });
+  });
+
+  const spotifyWatcher = new WatchSpotify();
+  spotifyWatcher.on("onChange", (message) => {
+    console.log(`再生中: ${message.title} / ${message.artist}`);
+    socketClient.emitMessage(message);
   });
 };
 main();

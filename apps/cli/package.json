@@ -9,6 +9,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "dbus-next": "^0.10.2",
     "event_emitter": "workspace:*",
     "kit_models": "workspace:*",
     "read_file": "workspace:*",

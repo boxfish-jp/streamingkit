@@ -1,4 +1,3 @@
-import type { AnimeInfoMessage } from "./anime_info.js";
 import type { CommentMessage } from "./comment.js";
 import type { ConnectionMessage } from "./connection.js";
 import type {
@@ -7,6 +6,7 @@ import type {
 } from "./education.js";
 import type { ErrorMessage } from "./error.js";
 import type { InstSyntesizeMessage } from "./inst_synthesize.js";
+import type { MediaInfoMessage } from "./media_info.js";
 import type { NotifyMessage } from "./notify.js";
 import type { PingMessage } from "./ping.js";
 import type { SendCommentMessage } from "./send_comment.js";
@@ -18,7 +18,7 @@ import type { VideoMessage } from "./video.js";
 import type { viewerCountMessage } from "./viewer_count.js";
 
 export type Message =
-  | AnimeInfoMessage
+  | MediaInfoMessage
   | CommentMessage
   | StreamInfoMessage
   | SynthesizedMessage

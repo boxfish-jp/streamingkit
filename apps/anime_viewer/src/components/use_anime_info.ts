@@ -1,10 +1,10 @@
-import type { AnimeInfoMessage, Message } from "kit_models";
+import type { MediaInfoMessage, Message } from "kit_models";
 import { useEffect, useRef, useState } from "react";
 import { SocketClient } from "socket_client";
 
 export const useAnimeInfo = () => {
   const socketRef = useRef<SocketClient>(SocketClient.instance());
-  const [animeInfo, setAnimeInfo] = useState<AnimeInfoMessage | null>(null);
+  const [animeInfo, setAnimeInfo] = useState<MediaInfoMessage | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export const useAnimeInfo = () => {
     });
 
     socketRef.current.on("message", (message: Message) => {
-      if (message.type === "animeInfo") {
+      if (message.type === "mediaInfo" && message.kind === "anime") {
         setAnimeInfo(message);
       }
     });

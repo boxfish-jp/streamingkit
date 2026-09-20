@@ -8,6 +8,7 @@ allowBuilds:
   electron: true
   esbuild: true
   spawn-sync: true
+  usocket: false
 
 onlyBuiltDependencies:
   - '@swc/core'

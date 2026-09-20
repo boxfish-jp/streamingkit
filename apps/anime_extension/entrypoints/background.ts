@@ -1,4 +1,4 @@
-import type { AnimeInfoMessage } from "kit_models";
+import type { MediaInfoMessage } from "kit_models";
 import { SocketClient } from "socket_client";
 
 const STORAGE_KEY_HUB_URL = "anime_hub_url";
@@ -32,8 +32,8 @@ const setupMessageListener = () => {
       return true;
     }
 
-    if (message.type === "animeInfo") {
-      SocketClient.instance().emitMessage(message as AnimeInfoMessage);
+    if (message.type === "mediaInfo") {
+      SocketClient.instance().emitMessage(message as MediaInfoMessage);
       return true;
     }
   });

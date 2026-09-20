@@ -1,4 +1,4 @@
-import type { AnimeInfoMessage } from "kit_models";
+import type { MediaInfoMessage } from "kit_models";
 import {
   SCRIPT_SETTINGS_KEY,
   type ScriptSetting,
@@ -20,7 +20,14 @@ const SITE_NAME = (() => {
   return null;
 })();
 
-const extractAnimeInfo = (): Omit<AnimeInfoMessage, "type"> | null => {
+interface AnimeVideoInfo {
+  title: string;
+  episode: string;
+  progress: number;
+  duration: number;
+}
+
+const extractAnimeInfo = (): AnimeVideoInfo | null => {
   const video = document.querySelector<HTMLVideoElement>("video");
   if (!video) return null;
 
@@ -55,7 +62,7 @@ const extractAnimeInfo = (): Omit<AnimeInfoMessage, "type"> | null => {
   return null;
 };
 
-const hasChanged = (info: Omit<AnimeInfoMessage, "type">): boolean =>
+const hasChanged = (info: AnimeVideoInfo): boolean =>
   info.title !== lastTitle ||
   info.episode !== lastEpisode ||
   Math.abs(info.progress - lastProgress) > 0;
@@ -72,9 +79,15 @@ const startWatching = () => {
     lastProgress = info.progress;
 
     chrome.runtime.sendMessage({
-      type: "animeInfo",
+      type: "mediaInfo",
+      kind: "anime",
       ...info,
-    } as AnimeInfoMessage);
+      artist: "",
+      album: "",
+      artworkUrl: "",
+      uri: "",
+      playbackStatus: "Playing",
+    } as MediaInfoMessage);
   }, CHECK_INTERVAL);
 };
 
