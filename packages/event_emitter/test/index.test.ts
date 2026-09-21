@@ -54,4 +54,36 @@ describe("EventEmitter", () => {
     });
     expect(count).toBe(2);
   });
+
+  test("onの戻り関数で解除すると、以降のemitで呼ばれない", () => {
+    interface TestEvent {
+      test: [];
+    }
+    const emitter = new EventEmitter<TestEvent>();
+    let count = 0;
+    const remove = emitter.on("test", () => {
+      count += 1;
+    });
+    emitter.emit("test");
+    remove();
+    emitter.emit("test");
+    expect(count).toBe(1);
+  });
+
+  test("解除関数の多重呼び出しや、emit中の解除でも他リスナーに届く", () => {
+    interface TestEvent {
+      test: [];
+    }
+    const emitter = new EventEmitter<TestEvent>();
+    let count = 0;
+    const removeFirst = emitter.on("test", () => {
+      removeFirst();
+      removeFirst();
+    });
+    emitter.on("test", () => {
+      count += 1;
+    });
+    emitter.emit("test");
+    expect(count).toBe(1);
+  });
 });

@@ -1,0 +1,30 @@
+{
+  "name": "music_viewer",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "PAGE=music vite build && mv dist/music/music.html dist/music.html && rm -r dist/music",
+    "typecheck": "tsc -b --noEmit",
+    "clean": "rm -rf dist node_modules .turbo"
+  },
+  "dependencies": {
+    "@workspace/ui": "workspace:*",
+    "kit_models": "workspace:*",
+    "socket_client": "workspace:*",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/node": "^25.1.0",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "globals": "^17.2.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}

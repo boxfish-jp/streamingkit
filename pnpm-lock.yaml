@@ -322,6 +322,52 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  apps/music_viewer:
+    dependencies:
+      '@workspace/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      kit_models:
+        specifier: workspace:*
+        version: link:../../packages/kit_models
+      react:
+        specifier: ^19.2.4
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.7(react@19.2.7)
+      socket_client:
+        specifier: workspace:*
+        version: link:../../packages/socket_client
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.1.18
+        version: 4.3.2(vite@7.3.6(@types/node@25.9.4)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4))
+      '@types/node':
+        specifier: ^25.1.0
+        version: 25.9.4
+      '@types/react':
+        specifier: ^19.2.10
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: ^5.1.1
+        version: 5.2.0(supports-color@7.2.0)(vite@7.3.6(@types/node@25.9.4)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4))
+      globals:
+        specifier: ^17.2.0
+        version: 17.7.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.6(@types/node@25.9.4)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)
+      vite-plugin-singlefile:
+        specifier: ^2.3.0
+        version: 2.3.3(rollup@4.62.2)(vite@7.3.6(@types/node@25.9.4)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4))
+
   apps/stream_orchestrator:
     dependencies:
       education_store:

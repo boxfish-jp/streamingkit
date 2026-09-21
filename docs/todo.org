@@ -118,9 +118,12 @@ CLOSED: [2026-03-02 Mon 23:57]
 *** DONE 動作確認テスト
 
 ** UIの改善
-*** THINKING AIと壁打ちして目的を整理する
-
+*** DONE hoge   
+*** DONE todo_viewerへのアニメーション追加
+    CLOSED: [2026-08-12 水 16:17]
+*** DEVELOPING リファクタリング
 * 配信ツール周りの細々としたタスク
+*** TODO livestream_kitの新しいタグのリリースフロー
 ** バグ修正
 *** DONE 長文のコメントが読み上げられないバグ
     CLOSED: [2026-03-22 Sun 16:14]
@@ -224,3 +227,10 @@ CLOSED: [2026-07-03 Fri 01:23]
     CLOSED: [2026-07-04 土 23:50]
 *** DONE 実装
     CLOSED: [2026-07-04 土 23:50]
+** Spotify再生中情報の配信
+*** DONE kit_modelsのAnimeInfoMessageをMediaInfoMessage(kind:"anime"|"music")へ統一リネーム
+    CLOSED: [2026-09-19 土 22:37]
+*** DONE dbus(MPRIS)でSpotify再生中情報を監視してhubにmediaInfoメッセージで配信する
+    CLOSED: [2026-09-19 土 22:37]
+*** DONE anime_extension・anime_viewerをmediaInfo+kind:"anime"に追従させる
+    CLOSED: [2026-09-19 土 22:37]

@@ -6,6 +6,7 @@
   "scripts": {
     "todo_viewer": "pnpm -C apps/todo_viewer",
     "anime_viewer": "pnpm -C apps/anime_viewer",
+    "music_viewer": "pnpm -C apps/music_viewer",
     "anime_extension": "pnpm -C apps/anime_extension",
     "hub": "pnpm -C apps/hub",
     "cli": "pnpm -C apps/cli",

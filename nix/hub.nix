@@ -16,7 +16,7 @@ stdenv.mkDerivation (finalAttrs: {
   pnpmDeps = pnpmDeps;
   buildPhase = ''
     runHook preBuild
-    turbo build --filter=hub --filter=effect --filter=todo_viewer --filter=anime_viewer
+    turbo build --filter=hub --filter=effect --filter=todo_viewer --filter=anime_viewer --filter=music_viewer
     runHook postBuild
   '';
   installPhase = ''
@@ -28,6 +28,7 @@ stdenv.mkDerivation (finalAttrs: {
     cp -r apps/effect/dist/* $out/lib/$pname/apps/hub/static/
     cp -r apps/todo_viewer/dist/* $out/lib/$pname/apps/hub/static/
     cp -r apps/anime_viewer/dist/* $out/lib/$pname/apps/hub/static/
+    cp -r apps/music_viewer/dist/* $out/lib/$pname/apps/hub/static/
     cp -r $out/lib/hub/video/* $out/lib/$pname/apps/hub/video/
     mkdir -p $out/bin
 

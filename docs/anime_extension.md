@@ -25,8 +25,8 @@ Content script をサイトごとに切り替え可能な設計にし、サイ�
 
 | ファイル | 理由 |
 |---------|------|
-| `packages/kit_models/src/anime_info.ts` | `AnimeInfoMessage` は `title`/`episode`/`progress`/`duration` で汎用的。変更不要 |
-| `apps/anime_extension/entrypoints/background.ts` | すべての `AnimeInfoMessage` を共通中継。変更不要 |
+| `packages/kit_models/src/media_info.ts` | `MediaInfoMessage` は `title`/`episode`/`progress`/`duration` で汎用的 |
+| `apps/anime_extension/entrypoints/background.ts` | すべての `MediaInfoMessage` を共通中継 |
 | `apps/anime_extension/wxt.config.ts` | すでに `host_permissions: ["<all_urls>"]` で全サイト許可済み |
 | `apps/anime_extension/models/script_setting.ts` | `ScriptSetting` は name / site / enabled / defaultOff で汎用的。変更不要 |
 
@@ -191,16 +191,23 @@ const DEFAULT_SCRIPT_SETTINGS: ScriptSetting[] = [
 
 ## メッセージ型 (`kit_models`)
 
-`AnimeInfoMessage` の変更は不要。話数がないサイトでは `episode: ""`（空文字）を送信する。
+`MediaInfoMessage` の `episode` は話数がないサイトでは `""`（空文字）を送信する。
 ビューアー側はすでに `animeInfo?.episode || ""` と空文字ガード済み。
+アニメ/音楽を `kind` で判別する。アニメ固有の話数以外の音楽フィールドは拡張時に空文字で埋める。
 
 ```typescript
-interface AnimeInfoMessage {
-  type: "animeInfo";
+interface MediaInfoMessage {
+  type: "mediaInfo";
+  kind: "anime" | "music";
   title: string;
-  episode: string;   // 取得できないサイトは空文字
+  episode: string;   // 取得できないサイト・音楽は空文字
   progress: number;  // 秒数
   duration: number;  // 秒数
+  artist: string;    // アニメは空文字
+  album: string;     // アニメは空文字
+  artworkUrl: string; // アニメは空文字
+  uri: string;       // アニメは空文字
+  playbackStatus: "Playing" | "Paused" | "Stopped"; // アニメは "Playing"
 }
 ```
 
