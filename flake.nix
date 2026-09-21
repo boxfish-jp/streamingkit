@@ -19,22 +19,22 @@
         pkgs = import nixpkgs { inherit system; };
         pnpm = pkgs.pnpm_11;
         node = pkgs.nodejs_24;
-        version = "v1.0.17";
+        version = "v1.0.18";
         desktopSrc = fetchTarball {
           url = "https://github.com/boxfish-jp/streamingkit/releases/download/${version}/app-ubuntu-latest.tar.gz";
-          sha256 = "sha256:0qmkp5mzv79v99m8xj2h3m594z3h3b3nd70pq4n20zy77lc2n2di";
+          sha256 = "sha256:1alxqphn02y02my1c6hd2nav575pwgk4y8qgshdvr4r8423zm4ma";
         };
         src = pkgs.fetchFromGitHub {
           owner = "boxfish-jp";
           repo = "streamingkit";
           rev = version;
-          hash = "sha256-OVW+L6M+kEKVidgBwN6+41giLNC6Sl/PDNKdec1TdRc=";
+          hash = "sha256-Ln7fLRHiiaSEsTv6tFkpmz+wSkX1BTqqmrG9s5BCYMk=";
         };
         pnpmDeps = pkgs.fetchPnpmDeps {
           pname = "streamingkit";
           inherit version src pnpm;
           fetcherVersion = 4;
-          hash = "sha256-TxYL7jr9EHglvUc/LH/7HYCoDM/eDL0OGCyxJGQ5gmM=";
+          hash = "sha256-z0CWEcoVfjvT5KTYKgaXXaFJGAUpaHSqUBjnTpqzEks=";
         };
         nativeBuildInputs = [
           pnpm
