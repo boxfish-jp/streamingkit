@@ -12,5 +12,5 @@ export const parseTodo = (oldFile: string, newFile: string) => {
   return UpdateResult.createFromComparisionResult(comparisonResult);
 };
 
-export { UpdateResult } from "./update_result.js";
 export type { TaskNodeTree } from "./task_node.js";
+export { UpdateResult } from "./update_result.js";

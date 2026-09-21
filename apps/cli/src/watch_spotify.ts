@@ -151,12 +151,12 @@ export class WatchSpotify extends EventEmitter<WatchSpotifyEvent> {
     const properties = this._properties;
     if (!properties) return;
     const all = (await properties.GetAll(PLAYER_INTERFACE)) as MprisProperties;
-    const metadata = (unwrap(all["Metadata"]) ?? {}) as MprisProperties;
+    const metadata = (unwrap(all.Metadata) ?? {}) as MprisProperties;
     const positionUs = asNumber(
       await properties.Get(PLAYER_INTERFACE, "Position"),
     );
     this._emitIfChanged(
-      buildMediaInfo(metadata, asString(all["PlaybackStatus"]), positionUs),
+      buildMediaInfo(metadata, asString(all.PlaybackStatus), positionUs),
     );
   };
 

@@ -1,6 +1,6 @@
 export interface AudioQueueItem {
   deviceId: string;
-  audioData: Buffer;
+  audioData: Uint8Array;
   volume: number;
   onEnded: () => Promise<void>;
 }

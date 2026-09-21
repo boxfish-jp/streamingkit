@@ -8,7 +8,7 @@ declare global {
         callback: (value: {
           id: number;
           channel: number;
-          audio: Buffer;
+          audio: Uint8Array;
         }) => Promise<void>,
       ) => () => void;
       onFinish: (id: number, message: string) => void;

@@ -1,4 +1,5 @@
 html,
 body {
+  /* biome-ignore lint/complexity/noImportantStyles: OBSオーバーレイで他スタイルに勝つため意図的な指定 */
   background: transparent !important;
 }

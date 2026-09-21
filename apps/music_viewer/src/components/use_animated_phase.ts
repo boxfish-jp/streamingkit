@@ -27,7 +27,8 @@ const phaseAnimationClasses = (phase: AnimatedPhase) =>
   cn(
     phase === "entering" &&
       "animate-in fade-in slide-in-from-right fill-mode-both",
-    phase === "exiting" && "animate-out fade-out slide-out-to-right fill-mode-both",
+    phase === "exiting" &&
+      "animate-out fade-out slide-out-to-right fill-mode-both",
   );
 
 const useExitFallback = (

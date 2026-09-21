@@ -14,7 +14,7 @@ import { playAudioManagers } from "./play_audio";
 const onAudio = async (
   audioId: number,
   channelId: number,
-  audioData: Buffer,
+  audioData: Uint8Array,
 ) => {
   const channelsManager = ChannelsManager.instance();
   try {

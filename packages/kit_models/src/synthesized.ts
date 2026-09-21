@@ -1,6 +1,6 @@
 export interface SynthesizedMessage {
   type: "synthesized";
-  buffer: Buffer;
+  buffer: Uint8Array;
   channel: number;
 }
 

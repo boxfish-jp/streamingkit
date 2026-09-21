@@ -3,10 +3,12 @@ import { contextBridge, ipcRenderer } from "electron";
 
 // Custom APIs for renderer
 const api = {
-  onAudio: (callback: (value: { channel: number; audio: Buffer }) => void) => {
+  onAudio: (
+    callback: (value: { channel: number; audio: Uint8Array }) => void,
+  ) => {
     const func = (
       _event,
-      value: { id: number; channel: number; audio: Buffer },
+      value: { id: number; channel: number; audio: Uint8Array },
     ) => callback(value);
     ipcRenderer.on("audio", func);
     return () => {

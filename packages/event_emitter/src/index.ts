@@ -5,8 +5,9 @@ export class EventEmitter<T extends { [K in keyof T]: unknown[] }> {
     event: K,
     listener: (...args: T[K]) => void,
   ) => {
-    const listeners = (this._listeners[event] ??= []);
+    const listeners = this._listeners[event] ?? [];
     listeners.push(listener);
+    this._listeners[event] = listeners;
     return () => {
       const index = listeners.indexOf(listener);
       if (index >= 0) {
