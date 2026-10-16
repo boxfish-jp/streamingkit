@@ -41,7 +41,35 @@ describe("TimeSignal", () => {
     expect(onMessage).toHaveBeenCalledTimes(1);
     expect(onMessage).toHaveBeenCalledWith({
       type: "instSynthesize",
-      content: "15時になりました",
+      content: "午後3時ぐらいです",
+      channel: 4,
+    } satisfies InstSyntesizeMessage);
+  });
+
+  test("午前の時刻は午前と読み上げる", () => {
+    const onMessage = vi.fn();
+    const ts = new TimeSignal(() => true, onMessage);
+
+    setJstTime(9, 0);
+    (ts as unknown as TimeSignalInternal)._check();
+
+    expect(onMessage).toHaveBeenCalledWith({
+      type: "instSynthesize",
+      content: "午前9時ぐらいです",
+      channel: 4,
+    } satisfies InstSyntesizeMessage);
+  });
+
+  test("正午は午後0時と読み上げる", () => {
+    const onMessage = vi.fn();
+    const ts = new TimeSignal(() => true, onMessage);
+
+    setJstTime(12, 0);
+    (ts as unknown as TimeSignalInternal)._check();
+
+    expect(onMessage).toHaveBeenCalledWith({
+      type: "instSynthesize",
+      content: "午後0時ぐらいです",
       channel: 4,
     } satisfies InstSyntesizeMessage);
   });
@@ -56,7 +84,7 @@ describe("TimeSignal", () => {
     expect(onMessage).toHaveBeenCalledTimes(1);
     expect(onMessage).toHaveBeenCalledWith({
       type: "instSynthesize",
-      content: "15時30分です",
+      content: "午後3時30分ぐらいです",
       channel: 4,
     } satisfies InstSyntesizeMessage);
   });
@@ -109,7 +137,7 @@ describe("TimeSignal", () => {
     (ts as unknown as TimeSignalInternal)._check();
     expect(onMessage).toHaveBeenCalledWith({
       type: "instSynthesize",
-      content: "15時になりました",
+      content: "午後3時ぐらいです",
       channel: 4,
     } satisfies InstSyntesizeMessage);
 
@@ -124,7 +152,7 @@ describe("TimeSignal", () => {
     expect(onMessage).toHaveBeenCalledTimes(2);
     expect(onMessage).toHaveBeenLastCalledWith({
       type: "instSynthesize",
-      content: "15時30分です",
+      content: "午後3時30分ぐらいです",
       channel: 4,
     } satisfies InstSyntesizeMessage);
   });

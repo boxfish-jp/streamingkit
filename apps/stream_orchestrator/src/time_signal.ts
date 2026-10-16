@@ -39,8 +39,12 @@ export class TimeSignal {
 
     if (this._lastSignalKey === key) return;
 
+    const period = hour < 12 ? "午前" : "午後";
+    const hour12 = hour % 12;
     const content =
-      minute === 0 ? `${hour}時になりました` : `${hour}時30分です`;
+      minute === 0
+        ? `${period}${hour12}時ぐらいです`
+        : `${period}${hour12}時${minute}分ぐらいです`;
 
     this._onMessage({
       type: "instSynthesize",
