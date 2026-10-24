@@ -21,7 +21,12 @@ export const useAlbumCardPhase = (musicInfo: MediaInfoMessage) => {
       return;
     }
     lastTrackKeyRef.current = key;
-    if (!musicInfo.album && !musicInfo.artworkUrl && !musicInfo.artist) {
+    if (
+      !musicInfo.title &&
+      !musicInfo.album &&
+      !musicInfo.artworkUrl &&
+      !musicInfo.artist
+    ) {
       return;
     }
     setTime(ALBUM_CARD_DURATION);

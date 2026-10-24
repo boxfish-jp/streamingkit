@@ -29,16 +29,18 @@ export function AlbumCard({ musicInfo }: { musicInfo: MediaInfoMessage }) {
         </div>
       )}
       <div className="flex min-w-0 flex-col gap-1">
-        <span className="text-xs tracking-wider text-white/50 uppercase">
-          Now Playing
-        </span>
-        {musicInfo.artist && (
+        {musicInfo.title && (
           <span className="line-clamp-2 text-base font-semibold text-white">
+            {musicInfo.title}
+          </span>
+        )}
+        {musicInfo.artist && (
+          <span className="line-clamp-2 text-sm text-white/70">
             {musicInfo.artist}
           </span>
         )}
         {musicInfo.album && (
-          <span className="line-clamp-2 text-sm text-white/70">
+          <span className="line-clamp-2 text-xs text-white/50">
             {musicInfo.album}
           </span>
         )}
