@@ -78,8 +78,8 @@ git push origin TAG
 # src (fetchFromGitHub)
 hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
-# pnpmDeps (fetchPnpmDeps)
-hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+# depsHash (mkNodeDeps)
+depsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
 # desktopSrc (fetchTarball)
 sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
@@ -94,7 +94,7 @@ nix build .#cli
 ```
 
 `hash mismatch` のエラーに `got: sha256-...` が出たら、その値を該当の `hash` に埋める。
-まず `src`、直してから再ビルドすると次に `pnpmDeps` のハッシュが出るので、それも埋める。
+まず `src`、直してから再ビルドすると次に `depsHash`（`mkNodeDeps` の依存キャッシュ）のハッシュが出るので、それも埋める。
 
 ```sh
 nix build .#desktop
@@ -112,6 +112,7 @@ nix build .#cli
 nix build .#desktop
 nix build .#hub
 nix build .#voicevox_connector
+nix build .#stream_orchestrator
 ```
 
 終わったらユーザーに次に進んでよいか確認する。

@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    nix-node-build = {
+      url = "github:boxfish-jp/nix-node-build";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -11,6 +15,7 @@
       self,
       nixpkgs,
       flake-utils,
+      nix-node-build,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -30,66 +35,43 @@
           rev = version;
           hash = "sha256-Ln7fLRHiiaSEsTv6tFkpmz+wSkX1BTqqmrG9s5BCYMk=";
         };
-        pnpmDeps = pkgs.fetchPnpmDeps {
-          pname = "streamingkit";
-          inherit version src pnpm;
-          fetcherVersion = 4;
-          hash = "sha256-z0CWEcoVfjvT5KTYKgaXXaFJGAUpaHSqUBjnTpqzEks=";
+        depsHash = "sha256-z0CWEcoVfjvT5KTYKgaXXaFJGAUpaHSqUBjnTpqzEks=";
+        deps = nix-node-build.lib.mkNodeDeps {
+          inherit
+            depsHash
+            pkgs
+            pnpm
+            src
+            ;
+          packageManager = "pnpm";
         };
-        nativeBuildInputs = [
-          pnpm
-          node
-          pkgs.pnpmConfigHook
-          pkgs.turbo
-        ];
+        mkNodeApp = args: nix-node-build.lib.mkNodeApp ({ inherit pkgs; } // args);
+        mkApp =
+          file:
+          pkgs.callPackage file {
+            inherit
+              deps
+              mkNodeApp
+              node
+              pnpm
+              src
+              version
+              ;
+          };
       in
       {
         packages.default = self.packages.${system}.cli;
         formatter = pkgs.nixfmt-tree;
-        packages.cli = pkgs.callPackage ./nix/cli.nix {
-          inherit
-            node
-            version
-            src
-            pnpmDeps
-            nativeBuildInputs
-            ;
-        };
+        packages.cli = mkApp ./nix/cli.nix;
         packages.desktop = pkgs.callPackage ./nix/desktop.nix {
           inherit
             version
             desktopSrc
             ;
         };
-        packages.hub = pkgs.callPackage ./nix/hub.nix {
-          inherit
-            node
-            version
-            src
-            pnpmDeps
-            nativeBuildInputs
-            ;
-        };
-
-        packages.voicevox_connector = pkgs.callPackage ./nix/voicevox_connector.nix {
-          inherit
-            node
-            version
-            src
-            pnpmDeps
-            nativeBuildInputs
-            ;
-        };
-
-        packages.stream_orchestrator = pkgs.callPackage ./nix/stream_orchestrator.nix {
-          inherit
-            node
-            version
-            src
-            pnpmDeps
-            nativeBuildInputs
-            ;
-        };
+        packages.hub = mkApp ./nix/hub.nix;
+        packages.voicevox_connector = mkApp ./nix/voicevox_connector.nix;
+        packages.stream_orchestrator = mkApp ./nix/stream_orchestrator.nix;
         devShells.default = pkgs.callPackage ./nix/devshell.nix {
           inherit pnpm node;
         };

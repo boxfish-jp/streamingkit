@@ -18,6 +18,26 @@
         "type": "github"
       }
     },
+    "nix-node-build": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792856848,
+        "narHash": "sha256-sub0TJrh7j08aZaP7B5/JC4k0As0QZ82E291csQC72w=",
+        "owner": "boxfish-jp",
+        "repo": "nix-node-build",
+        "rev": "68282f0efdad56e4c6c36398de262dc7bf8ca095",
+        "type": "github"
+      },
+      "original": {
+        "owner": "boxfish-jp",
+        "repo": "nix-node-build",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1785090369,
@@ -37,6 +57,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "nix-node-build": "nix-node-build",
         "nixpkgs": "nixpkgs"
       }
     },

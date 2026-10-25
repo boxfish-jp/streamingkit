@@ -1,24 +1,30 @@
 {
-  version,
-  src,
-  pnpmDeps,
-  nativeBuildInputs,
-  node,
-  stdenv,
+  deps,
   lib,
+  mkNodeApp,
+  node,
+  pnpm,
+  src,
+  turbo,
+  version,
 }:
-stdenv.mkDerivation (finalAttrs: {
+mkNodeApp {
   pname = "hub";
-  version = version;
-
-  src = src;
-  nativeBuildInputs = nativeBuildInputs;
-  pnpmDeps = pnpmDeps;
-  buildPhase = ''
-    runHook preBuild
-    turbo build --filter=hub --filter=effect --filter=todo_viewer --filter=anime_viewer --filter=music_viewer
-    runHook postBuild
-  '';
+  inherit
+    deps
+    pnpm
+    src
+    version
+    ;
+  packageManager = "pnpm";
+  nodejs = node;
+  nativeBuildInputs = [ turbo ];
+  buildCommand = "turbo build --filter=hub --filter=effect --filter=todo_viewer --filter=anime_viewer --filter=music_viewer";
+  mainProgram = "hub";
+  meta = {
+    description = "配信ツールのWebSocketハブサーバー";
+    license = lib.licenses.mit;
+  };
   installPhase = ''
     runHook preInstall
     mkdir -p $out/lib/$pname
@@ -32,20 +38,14 @@ stdenv.mkDerivation (finalAttrs: {
     cp -r $out/lib/hub/video/* $out/lib/$pname/apps/hub/video/
     mkdir -p $out/bin
 
-    NODE_BIN="${node}/bin/node"
-
     cat > $out/bin/$pname <<EOF
     #!/usr/bin/env bash
     set -euo pipefail
     export NODE_PATH="${placeholder "out"}/lib/hub/node_modules"
     cd "${placeholder "out"}/lib/hub/apps/hub/"
-    exec "$NODE_BIN" "./dist/index.js" "\$@"
+    exec "${node}/bin/node" "./dist/index.js" "\$@"
     EOF
     chmod +x $out/bin/$pname
     runHook postInstall
   '';
-  meta = {
-    description = "配信ツールのWebSocketハブサーバー";
-    license = lib.licenses.mit;
-  };
-})
+}
