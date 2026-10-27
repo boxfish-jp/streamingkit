@@ -16,8 +16,13 @@
         let
           workDirExpanded =
             if lib.hasPrefix "~" cfg.workDir then "%h${lib.removePrefix "~" cfg.workDir}" else cfg.workDir;
+          obsArgs =
+            lib.optionalString (!cfg.obs.enable) " --no-obs"
+            + " --obs-url ${lib.escapeShellArg cfg.obs.url}"
+            + lib.optionalString (cfg.obs.input != null) " --obs-input ${lib.escapeShellArg cfg.obs.input}"
+            + " --obs-unmute-delay ${toString cfg.obs.unmuteDelay}";
         in
-        "${cliBin} run ${lib.escapeShellArg workDirExpanded} ${lib.escapeShellArg cfg.serverUrl}";
+        "${cliBin} run ${lib.escapeShellArg workDirExpanded} ${lib.escapeShellArg cfg.serverUrl}${obsArgs}";
     in
     {
       options.programs.streaming-kit-cli = {
@@ -41,6 +46,32 @@
           default = "http://192.168.68.11:8888";
           example = "http://localhost:8080";
           description = "サーバーのURL（systemd 実行時の第2引数）。";
+        };
+
+        obs = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "アニメ再生中にOBSのデスクトップ音声をミュートする。";
+          };
+
+          url = lib.mkOption {
+            type = lib.types.str;
+            default = "ws://127.0.0.1:4455";
+            description = "OBS WebSocketのURL。";
+          };
+
+          input = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "ミュートするOBS音声ソース名。nullなら自動検出。";
+          };
+
+          unmuteDelay = lib.mkOption {
+            type = lib.types.int;
+            default = 10;
+            description = "アニメのイベントが止まってからミュートを解除するまでの秒数。";
+          };
         };
 
         systemd.enable = lib.mkOption {

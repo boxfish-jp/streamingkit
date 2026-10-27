@@ -12,6 +12,7 @@
     "dbus-next": "^0.10.2",
     "event_emitter": "workspace:*",
     "kit_models": "workspace:*",
+    "obs-websocket-js": "^5.0.8",
     "read_file": "workspace:*",
     "socket_client": "workspace:*",
     "watch_file": "workspace:*",
