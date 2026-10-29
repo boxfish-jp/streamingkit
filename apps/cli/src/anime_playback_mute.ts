@@ -1,21 +1,21 @@
 import type { Message } from "kit_models";
 
-const DEFAULT_UNMUTE_DELAY_MS = 10_000;
+export const DEFAULT_UNMUTE_DELAY_MS = 10_000;
 
-interface WatchAnimeAudioOptions {
-  setMuted: (muted: boolean) => Promise<void>;
+interface AnimePlaybackMuteOptions {
+  setDesktopMuted: (muted: boolean) => Promise<void>;
   unmuteDelayMs?: number;
 }
 
-export class WatchAnimeAudio {
-  private _setMuted: (muted: boolean) => Promise<void>;
+export class AnimePlaybackMute {
+  private _setDesktopMuted: (muted: boolean) => Promise<void>;
   private _unmuteDelayMs: number;
   private _muted = false;
   private _disposed = false;
   private _unmuteTimer: ReturnType<typeof setTimeout> | null = null;
 
-  constructor(options: WatchAnimeAudioOptions) {
-    this._setMuted = options.setMuted;
+  constructor(options: AnimePlaybackMuteOptions) {
+    this._setDesktopMuted = options.setDesktopMuted;
     this._unmuteDelayMs = options.unmuteDelayMs ?? DEFAULT_UNMUTE_DELAY_MS;
   }
 
@@ -33,13 +33,13 @@ export class WatchAnimeAudio {
     this._unmuteTimer = null;
     if (!this._muted) return;
     this._muted = false;
-    await this._setMuted(false).catch(() => {});
+    await this._setDesktopMuted(false).catch(() => {});
   }
 
   private _mute = () => {
     if (this._muted) return;
     this._muted = true;
-    void this._setMuted(true).catch((error) => {
+    void this._setDesktopMuted(true).catch((error) => {
       console.error("OBS: ミュートに失敗しました", error);
     });
   };
@@ -51,7 +51,7 @@ export class WatchAnimeAudio {
     }
     if (!this._muted) return;
     this._muted = false;
-    void this._setMuted(false).catch((error) => {
+    void this._setDesktopMuted(false).catch((error) => {
       console.error("OBS: ミュート解除に失敗しました", error);
     });
   };

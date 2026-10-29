@@ -9,16 +9,15 @@ export const watchFile = async (
 ): Promise<{
   files: string[];
   on: (callback: onChange) => void;
-  remove: () => void;
+  remove: () => Promise<void>;
 }> => {
   let on: onChange = () => {};
   const watchingFiles: string[] = [];
+  const watcher = watch(searchPath, {
+    ignored: (path, stats) =>
+      !!stats && stats?.isFile() && !path.endsWith(extension),
+  });
   await new Promise<void>((resolve) => {
-    const watcher = watch(searchPath, {
-      ignored: (path, stats) =>
-        !!stats && stats?.isFile() && !path.endsWith(extension),
-    });
-
     watcher.on("ready", () => {
       const watched = watcher.getWatched();
       for (const dir in watched) {
@@ -46,8 +45,9 @@ export const watchFile = async (
     on: (callback: onChange) => {
       on = callback;
     },
-    remove: () => {
+    remove: async () => {
       on = () => {};
+      await watcher.close();
     },
   };
 };

@@ -1,14 +1,19 @@
 import { SocketClient } from "socket_client";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { ObsAudioClient } from "./obs_audio_client.js";
-import { WatchAnimeAudio } from "./watch_anime_audio.js";
-import { WatchOrgFiles } from "./watch_file.js";
-import { WatchSpotify } from "./watch_spotify.js";
+import {
+  AnimePlaybackMute,
+  DEFAULT_UNMUTE_DELAY_MS,
+} from "./anime_playback_mute.js";
+import { ObsAudioInputs } from "./obs_audio_inputs.js";
+import { ObsConnection } from "./obs_connection.js";
+import { ObsDesktopAudioMute } from "./obs_desktop_audio_mute.js";
+import { VoiceNotifier } from "./voice_notification.js";
+import { WatchMprisPlayer } from "./watch_mpris_player.js";
+import { WatchOrgFiles } from "./watch_org_files.js";
 
 const DEFAULT_OBS_URL = "ws://127.0.0.1:4455";
-const DEFAULT_OBS_UNMUTE_DELAY_SECONDS = 10;
-const VOICE_NOTIFICATION_CHANNEL = 4;
+const DEFAULT_OBS_UNMUTE_DELAY_SECONDS = DEFAULT_UNMUTE_DELAY_MS / 1_000;
 
 const main = async () => {
   const argv = await yargs(hideBin(process.argv))
@@ -30,7 +35,7 @@ const main = async () => {
           .option("obs", {
             type: "boolean",
             default: true,
-            describe: "OBSのデスクトップ音声をアニメ再生中にミュートする",
+            describe: "OBS連携を有効にする",
           })
           .option("obs-url", {
             type: "string",
@@ -60,43 +65,52 @@ const main = async () => {
     .parse();
 
   const socketClient = new SocketClient();
+  const voice = new VoiceNotifier((message) =>
+    socketClient.emitMessage(message),
+  );
   const dir = (argv.dir as string).trim();
   const url = (argv.url as string).trim();
-  const speak = (content: string) => {
-    socketClient.emitMessage({
-      type: "instSynthesize",
-      content,
-      channel: VOICE_NOTIFICATION_CHANNEL,
-    });
-  };
-  const obsAudio =
-    argv.obs === false
-      ? null
-      : new ObsAudioClient({
-          url: (argv.obsUrl as string).trim(),
-          inputName: (argv.obsInput as string | undefined)?.trim() || undefined,
+  const obsEnabled = argv.obs !== false;
+
+  const obsConnection = obsEnabled
+    ? new ObsConnection({
+        url: (argv.obsUrl as string).trim(),
+      })
+    : null;
+  const obsAudioInputs = obsConnection
+    ? new ObsAudioInputs(obsConnection, {
+        desktopInputName:
+          (argv.obsInput as string | undefined)?.trim() || undefined,
+        desktopInputHint: "--obs-inputで音声ソース名を指定してください",
+      })
+    : null;
+  const obsDesktopAudioMute =
+    obsConnection && obsAudioInputs
+      ? new ObsDesktopAudioMute(obsConnection, obsAudioInputs, {
           onMuteApplied: (muted) => {
-            speak(muted ? "ミュートしました" : "ミュート解除しました");
+            voice.speak(muted ? "ミュートしました" : "ミュート解除しました");
           },
-        });
-  const animeAudio = obsAudio
-    ? new WatchAnimeAudio({
-        setMuted: (muted) => obsAudio.setMuted(muted),
-        unmuteDelayMs: (argv.obsUnmuteDelay as number) * 1000,
+        })
+      : null;
+  const animePlaybackMute = obsDesktopAudioMute
+    ? new AnimePlaybackMute({
+        setDesktopMuted: (muted) => obsDesktopAudioMute.setMuted(muted),
+        unmuteDelayMs: (argv.obsUnmuteDelay as number) * 1_000,
       })
     : null;
 
+  void obsConnection?.start();
+
   socketClient.on("message", (message) => {
-    animeAudio?.handleMessage(message);
+    animePlaybackMute?.handleMessage(message);
   });
   socketClient.on("connect", () => {
     console.log("ハブと接続しました");
-    void obsAudio?.start();
   });
   socketClient.setServerUrl(url);
 
-  const watcher = new WatchOrgFiles(dir);
-  watcher.on("onChange", (oldFile, newFile) => {
+  const orgWatcher = new WatchOrgFiles(dir);
+  orgWatcher.on("onChange", (oldFile, newFile) => {
     console.log("ファイルが変更されました");
     socketClient.emitMessage({
       type: "todoChanged",
@@ -104,16 +118,20 @@ const main = async () => {
       newFile,
     });
   });
-
-  const spotifyWatcher = new WatchSpotify();
+  const spotifyWatcher = new WatchMprisPlayer();
   spotifyWatcher.on("onChange", (message) => {
     console.log(`再生中: ${message.title} / ${message.artist}`);
     socketClient.emitMessage(message);
   });
 
+  await orgWatcher.ready;
+
   const shutdown = async () => {
-    await animeAudio?.dispose();
-    await obsAudio?.dispose();
+    await animePlaybackMute?.dispose();
+    obsDesktopAudioMute?.dispose();
+    await obsConnection?.dispose();
+    await orgWatcher.dispose();
+    spotifyWatcher.dispose();
     socketClient.disconnect();
   };
   const exit = () => {
@@ -122,4 +140,7 @@ const main = async () => {
   process.once("SIGINT", exit);
   process.once("SIGTERM", exit);
 };
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

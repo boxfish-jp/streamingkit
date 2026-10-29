@@ -97,7 +97,7 @@ describe("watchFile:", async () => {
   });
 
   afterEach(async () => {
-    watcher.remove();
+    await watcher.remove();
     await rm(tmpDirPath, { recursive: true, force: true });
   });
 });

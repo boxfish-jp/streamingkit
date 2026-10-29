@@ -1,7 +1,10 @@
 import { Variant } from "dbus-next";
 import type { MediaInfoMessage } from "kit_models";
 import { describe, expect, test } from "vitest";
-import { buildMediaInfo } from "../src/watch_spotify.js";
+import {
+  buildMusicMediaInfo,
+  toMprisProperties,
+} from "../src/mpris_media_info.js";
 
 const metadata = {
   "mpris:trackid": new Variant("o", "/com/spotify/track/abc123"),
@@ -13,9 +16,24 @@ const metadata = {
   "xesam:url": new Variant("s", "https://open.spotify.com/track/abc123"),
 };
 
-describe("buildMediaInfo", () => {
+describe("toMprisProperties", () => {
+  test("Variantに包まれたプロパティを辞書に変換できる", () => {
+    const result = toMprisProperties(
+      new Variant("a{sv}", { "xesam:title": new Variant("s", "タイトル") }),
+    );
+
+    expect(result["xesam:title"]).toBeInstanceOf(Variant);
+  });
+
+  test("辞書でない値は空の辞書になる", () => {
+    expect(toMprisProperties(null)).toEqual({});
+    expect(toMprisProperties("invalid")).toEqual({});
+  });
+});
+
+describe("buildMusicMediaInfo", () => {
   test("MPRIS Metadata辞書からmusic用のMediaInfoMessageを構築できる", () => {
-    const result = buildMediaInfo(metadata, "Playing", 101_250_000n);
+    const result = buildMusicMediaInfo(metadata, "Playing", 101_250_000n);
     expect(result).toEqual<MediaInfoMessage>({
       type: "mediaInfo",
       kind: "music",
@@ -36,18 +54,18 @@ describe("buildMediaInfo", () => {
       ...metadata,
       "xesam:artist": new Variant("as", ["Artist A", "Artist B"]),
     };
-    const result = buildMediaInfo(multiArtist, "Playing", 0);
+    const result = buildMusicMediaInfo(multiArtist, "Playing", 0);
     expect(result.artist).toBe("Artist A, Artist B");
   });
 
   test("xesam:urlがない場合はmpris:trackidをuriにフォールバックする", () => {
     const { "xesam:url": _url, ...withoutUrl } = metadata;
-    const result = buildMediaInfo(withoutUrl, "Playing", 0);
+    const result = buildMusicMediaInfo(withoutUrl, "Playing", 0);
     expect(result.uri).toBe("/com/spotify/track/abc123");
   });
 
   test("空のMetadata(再生トラックなし)は空フィールドになる", () => {
-    const result = buildMediaInfo({}, "Stopped", 0);
+    const result = buildMusicMediaInfo({}, "Stopped", 0);
     expect(result).toMatchObject<Partial<MediaInfoMessage>>({
       title: "",
       artist: "",
@@ -61,12 +79,14 @@ describe("buildMediaInfo", () => {
   });
 
   test("PlaybackStatusがPlaying/Paused以外の値はStoppedになる", () => {
-    expect(buildMediaInfo(metadata, "", 0).playbackStatus).toBe("Stopped");
-    expect(buildMediaInfo(metadata, "Hoge", 0).playbackStatus).toBe("Stopped");
+    expect(buildMusicMediaInfo(metadata, "", 0).playbackStatus).toBe("Stopped");
+    expect(buildMusicMediaInfo(metadata, "Hoge", 0).playbackStatus).toBe(
+      "Stopped",
+    );
   });
 
   test("positionUsとlengthUsは秒に切り捨てて変換する", () => {
-    const result = buildMediaInfo(metadata, "Playing", 1_999_999);
+    const result = buildMusicMediaInfo(metadata, "Playing", 1_999_999);
     expect(result.progress).toBe(1);
     expect(result.duration).toBe(220);
   });
