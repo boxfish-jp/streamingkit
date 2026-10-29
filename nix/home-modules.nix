@@ -21,8 +21,12 @@
             + " --obs-url ${lib.escapeShellArg cfg.obs.url}"
             + lib.optionalString (cfg.obs.input != null) " --obs-input ${lib.escapeShellArg cfg.obs.input}"
             + " --obs-unmute-delay ${toString cfg.obs.unmuteDelay}";
+          micArgs =
+            lib.optionalString (!cfg.obs.enable || !cfg.mic.enable) " --no-mic"
+            + lib.optionalString (cfg.mic.source != null) " --obs-mic ${lib.escapeShellArg cfg.mic.source}"
+            + " --mic-check-delay ${toString cfg.mic.checkDelay}";
         in
-        "${cliBin} run ${lib.escapeShellArg workDirExpanded} ${lib.escapeShellArg cfg.serverUrl}${obsArgs}";
+        "${cliBin} run ${lib.escapeShellArg workDirExpanded} ${lib.escapeShellArg cfg.serverUrl}${obsArgs}${micArgs}";
     in
     {
       options.programs.streaming-kit-cli = {
@@ -71,6 +75,26 @@
             type = lib.types.int;
             default = 10;
             description = "アニメのイベントが止まってからミュートを解除するまでの秒数。";
+          };
+        };
+
+        mic = {
+          enable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "配信開始後にOBSのマイク入力を監視する。";
+          };
+
+          source = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "監視するOBSマイク音声ソース名。nullなら自動検出。";
+          };
+
+          checkDelay = lib.mkOption {
+            type = lib.types.int;
+            default = 120;
+            description = "配信開始からマイクを確認するまでの秒数。";
           };
         };
 
