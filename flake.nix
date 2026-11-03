@@ -24,18 +24,18 @@
         pkgs = import nixpkgs { inherit system; };
         pnpm = pkgs.pnpm_11;
         node = pkgs.nodejs_24;
-        version = "v1.0.19";
+        version = "v1.0.20";
         desktopSrc = fetchTarball {
           url = "https://github.com/boxfish-jp/streamingkit/releases/download/${version}/app-ubuntu-latest.tar.gz";
-          sha256 = "sha256:0f3mc658a41jnb5fayp1la98n7873hs8qw57m1h2jp8grxfk1p45";
+          sha256 = "sha256:15d7l7gp4g1wa1fddi694550jsp4sm5xyhlv83pajhcl5m6s6fi7";
         };
         src = pkgs.fetchFromGitHub {
           owner = "boxfish-jp";
           repo = "streamingkit";
           rev = version;
-          hash = "sha256-jgosYc7VxHQpUvpPBK8kQmhaHcTvVnXWQ/CSlSLs7D8=";
+          hash = "sha256-LRfh8Co9tAxaJbj4amYp91kRYyPx2AQP3sD3FvGnu/U=";
         };
-        depsHash = "sha256-z0CWEcoVfjvT5KTYKgaXXaFJGAUpaHSqUBjnTpqzEks=";
+        depsHash = "sha256-15Sw3rg5fTVeLUmZpC5FORtsgK33/Y/d4rU+f4WXN1s=";
         deps = nix-node-build.lib.mkNodeDeps {
           inherit
             depsHash
